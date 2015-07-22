@@ -1,0 +1,201 @@
+#ifndef FBLIB_CONFIG_H
+#define FBLIB_CONFIG_H
+
+
+/** A string with the 3 digits version number of FBLIB - This is intended for
+  *  autolinking pragmas only, such as they know the complete name of DLLs.
+  * This is only for Windows. In Unix it should be an empty string.
+  * \sa FBLIB_VERSION in <fblib/version.h>
+  */
+#define FBLIB_VERSION_POSTFIX "${FBLIB_DLL_VERSION_POSTFIX}"
+
+
+/** If defined, security checks (ASSERT_'s) will be performed in many FBLIB classes even
+  *  if "_DEBUG" is not declared, which is then the default behavior.
+  */
+#define FBLIB_ALWAYS_CHECKS_DEBUG                     ${CMAKE_FBLIB_ALWAYS_CHECKS_DEBUG}
+#define FBLIB_ALWAYS_CHECKS_DEBUG_MATRICES            ${CMAKE_FBLIB_ALWAYS_CHECKS_DEBUG_MATRICES}
+
+/** FBLIB_BUILT_AS_DLL is defined only if FBLIB has been built
+  *   as a shared library (.dll/.so) vs. a static library (.lib/.a).
+  *  Additionally, FBLIB_EXPORTS will be defined only when compiling
+  *   the DLLs, not when the user imports them.
+  */
+${CMAKE_FBLIB_BUILD_SHARED_LIB}
+
+/** Has FBLIB libjpeg? And whether it's in the system (Linux) or built-in (Windows, some rare cases in Linux). */
+#define FBLIB_HAS_JPEG             ${CMAKE_FBLIB_HAS_JPEG}
+#define FBLIB_HAS_JPEG_SYSTEM      ${CMAKE_FBLIB_HAS_JPEG_SYSTEM}
+
+/** Has FBLIB libpng? And whether it's in the system (Linux) or built-in (Windows, some rare cases in Linux). */
+#define FBLIB_HAS_PNG             ${CMAKE_FBLIB_HAS_PNG}
+#define FBLIB_HAS_PNG_SYSTEM      ${CMAKE_FBLIB_HAS_PNG_SYSTEM}
+
+/* Automatic definition of OS-macros */
+#if defined(_WIN32) || defined(_WIN32_)  || defined(WIN32) || defined(_WIN64)
+    #define FBLIB_OS_WINDOWS
+#elif defined(unix) || defined(__unix__) || defined(__unix)
+    #define FBLIB_OS_LINUX
+#elif defined(__APPLE__)
+    #define FBLIB_OS_APPLE
+#else
+    #error Unsupported platform (Found neither _WIN32_, __unix__ or __APPLE__)
+#endif
+
+
+/** Set to 0 to disable FBLIB_TRY_START/FBLIB_TRY_END blocks. Not recommended but for intensively tested programs only. */
+#define FBLIB_HAS_STACKED_EXCEPTIONS ${CMAKE_FBLIB_HAS_STACKED_EXCEPTIONS}
+
+/** Set to 0 to disable ASSERT_ statements. Not recommended but for intensively tested programs only. */
+#define FBLIB_HAS_ASSERT ${CMAKE_FBLIB_HAS_ASSERT}
+
+/** Only for Linux: the inotify kernel module has been found. Requires kernel 2.6.13.  */
+#define FBLIB_HAS_INOTIFY ${CMAKE_FBLIB_HAS_INOTIFY}
+
+/** The architecture is 32 or 64 bit wordsize:  */
+#define FBLIB_WORD_SIZE	${CMAKE_FBLIB_WORD_SIZE}
+
+/** Use optimized functions with the SSE2 machine instructions set */
+#if defined WIN32 && (!defined WIN64 || defined EM64T) && \
+ (_MSC_VER >= 1400) || (defined __SSE2__ && defined __GNUC__ && __GNUC__ >= 4)
+	#define FBLIB_HAS_SSE2  ${CMAKE_FBLIB_HAS_SSE2}   // This value can be set to 0 from CMake with DISABLE_SSE2
+#else
+	#define FBLIB_HAS_SSE2  0
+#endif
+
+
+
+/** Use optimized functions with the SSE3 machine instructions set */
+#if defined WIN32 && (!defined WIN64 || defined EM64T) && \
+ (_MSC_VER >= 1500) || (defined __SSE3__ && defined __GNUC__ && __GNUC__ >= 4)
+	#define FBLIB_HAS_SSE3  ${CMAKE_FBLIB_HAS_SSE3}   // This value can be set to 0 from CMake with DISABLE_SSE3
+#else
+	#define FBLIB_HAS_SSE3  0
+#endif
+
+/** Use optimized functions with the SSE4 machine instructions set */
+#define FBLIB_HAS_SSE4_1  ${CMAKE_FBLIB_HAS_SSE4_1}   // This value can be set to 0 from CMake with DISABLE_SSE4_1
+#define FBLIB_HAS_SSE4_2  ${CMAKE_FBLIB_HAS_SSE4_2}   // This value can be set to 0 from CMake with DISABLE_SSE4_2
+#define FBLIB_HAS_SSE4_A  ${CMAKE_FBLIB_HAS_SSE4_A}   // This value can be set to 0 from CMake with DISABLE_SSE4_A
+
+
+/** Whether ZLIB is present.  */
+#define FBLIB_HAS_ZLIB ${CMAKE_FBLIB_HAS_ZLIB}
+#define FBLIB_HAS_ZLIB_SYSTEM ${CMAKE_FBLIB_HAS_ZLIB_SYSTEM}
+
+
+/** Are we in a big-endian system? (Intel, amd, etc.. are little-endian) */
+#define FBLIB_IS_BIG_ENDIAN ${CMAKE_FBLIB_IS_BIG_ENDIAN}
+
+/** Use FBLIB global profiler? */
+#define FBLIB_ENABLE_EMBEDDED_GLOBAL_PROFILER ${CMAKE_FBLIB_ENABLE_EMBEDDED_GLOBAL_PROFILER}
+
+
+/** Standard headers */
+#ifndef HAVE_INTTYPES_H
+#cmakedefine HAVE_INTTYPES_H 1
+#endif
+
+#ifndef HAVE_STDINT_H
+#cmakedefine HAVE_STDINT_H 1
+#endif
+
+#ifndef HAVE_WINSOCK2_H
+#cmakedefine HAVE_WINSOCK2_H 1
+#endif
+
+#ifndef HAVE_ALLOCA_H
+#cmakedefine HAVE_ALLOCA_H 1
+#endif
+
+#ifndef HAVE_LINUX_SERIAL_H
+#cmakedefine HAVE_LINUX_SERIAL_H 1
+#endif
+
+#ifndef HAVE_LINUX_INPUT_H
+#cmakedefine HAVE_LINUX_INPUT_H 1
+#endif
+
+// Has <malloc.h>?
+#ifndef HAVE_MALLOC_H
+#cmakedefine HAVE_MALLOC_H 1
+#endif
+
+// Has <malloc/malloc.h>?
+#ifndef HAVE_MALLOC_MALLOC_H
+#cmakedefine HAVE_MALLOC_MALLOC_H 1
+#endif
+
+#ifndef HAVE_FREEGLUT_EXT_H
+#cmakedefine HAVE_FREEGLUT_EXT_H 1
+#endif
+
+/** Standard functions */
+#ifndef HAVE_TIMEGM
+#cmakedefine HAVE_TIMEGM
+#endif
+
+#ifndef HAVE_MKGMTIME
+#cmakedefine HAVE_MKGMTIME
+#endif
+
+#ifndef HAVE_ALLOCA
+#cmakedefine HAVE_ALLOCA
+#endif
+
+#ifndef HAVE_GETTID
+#cmakedefine HAVE_GETTID
+#endif
+
+#ifndef HAVE_SINCOS
+#cmakedefine HAVE_SINCOS
+#endif
+
+#ifndef HAVE_LRINT
+#cmakedefine HAVE_LRINT
+#endif
+
+#ifndef HAVE_OPENTHREAD
+#cmakedefine HAVE_OPENTHREAD
+#endif
+
+#ifndef HAVE_ERF
+#cmakedefine HAVE_ERF
+#endif
+
+#ifndef HAVE_POSIX_MEMALIGN
+#cmakedefine HAVE_POSIX_MEMALIGN
+#endif
+
+#ifndef HAVE_ALIGNED_MALLOC
+#cmakedefine HAVE_ALIGNED_MALLOC
+#endif
+
+#ifndef HAVE_STRTOK_R 
+#cmakedefine HAVE_STRTOK_R
+#endif
+
+/* Standard types  */
+#ifndef HAVE_LONG_DOUBLE
+#cmakedefine HAVE_LONG_DOUBLE
+#endif
+
+/* Backwards compatibility of FBLIB APIs: */
+#cmakedefine FBLIB_BACKCOMPATIB_08X 1
+
+/* Defined only if FBLIB is being build/was built with precompiled
+    headers enabled */
+#cmakedefine FBLIB_ENABLE_PRECOMPILED_HDRS 1
+
+// -------------------------------
+//			Some checks:
+// -------------------------------
+#if !defined(FBLIB_OS_WINDOWS) && !defined(FBLIB_OS_LINUX) && !defined(FBLIB_OS_APPLE)
+#error Neither OS detected from FBLIB_OS_LINUX, FBLIB_OS_APPLE or FBLIB_OS_WINDOWS!
+#endif
+
+
+#endif
+
+
+

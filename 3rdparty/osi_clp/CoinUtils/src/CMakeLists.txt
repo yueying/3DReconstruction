@@ -1,0 +1,21 @@
+
+file(
+	GLOB
+	COINUTILS_HEADER
+	*.hpp
+	*.h
+)
+file(
+	GLOB
+	COINUTILS_CPP
+	*.cpp
+)
+
+
+ADD_LIBRARY(lib_CoinUtils ${COINUTILS_HEADER} ${COINUTILS_CPP})
+
+if(ENABLE_SOLUTION_FOLDERS)
+	set_target_properties(lib_CoinUtils PROPERTIES FOLDER "3rd party")
+else(ENABLE_SOLUTION_FOLDERS)
+	SET_TARGET_PROPERTIES(lib_CoinUtils  PROPERTIES PROJECT_LABEL "(TEST) lib_CoinUtils")
+endif(ENABLE_SOLUTION_FOLDERS)

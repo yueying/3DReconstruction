@@ -1,0 +1,145 @@
+<html><head>
+<link rel="stylesheet" type="text/css" href="http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css" />
+<link rel="stylesheet" type="text/css" href="http://imagine.enpc.fr/~moulonp/style.css" /><script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.93/jsxgraphcore.js"></script>
+<title>fblib A Contrario Incremental SFM report.</title>
+</head>
+<h1>fblib A Contrario Incremental SFM report.</h1>
+<h1>Current directory: D:\CurrentProject\master\3DReconstruction\sources\data\et</h1>
+<hr>Dataset info:Number of images: 9<br>------------------<br>-- Tracks Stats --<br> Tracks number: 415<br> Images Id: <br>0, 1, 2, 3, 4, 5, 6, 7, 8, <br>------------------<br><table> <tr> <td>TrackLength, </td> <td>Occurrence<td> </tr><tr><td>2</td><td>286</td></tr><tr><td>3</td><td>90</td></tr><tr><td>4</td><td>31</td></tr><tr><td>5</td><td>8</td></tr></table><br><hr><h1>Essential Matrix.</h1>
+
+-------------------------------<br>-- Robust Essential matrix: <0,3> images: et000,et003<br>-- Threshold: 2.89663<br>-- Resection status: OK<br>-- Nb points used for robust Essential matrix estimation: 171<br>-- Nb points validated by robust estimation: 171<br>-- % points validated: 1<br>-------------------------------<br><h2>Residual of the robust estimation (Initial triangulation). Thresholded at: 2.89663</h2>
+
+<div id="InitialPairTriangulationResiduals" class="jxgbox" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+var board = JXG.JSXGraph.initBoard('InitialPairTriangulationResiduals', {boundingbox: [-10, 10, 10, -10], axis:true,showCopyright:false});
+board.suspendUpdate();
+var data0= [0.0203285,0.246276,0.0380899,0.0210749,0.442301,0.212036,0.162214,0.0482173,0.0522898,0.063312,0.138652,0.251055,0.399621,0.0202592,0.135805,0.0221293,0.0432806,0.403397,0.0157496,0.333965,0.260074,0.0339237,0.333759,0.0774372,0.0743555,0.131682,0.0894115,0.133748,0.047167,0.175862,0.0224485,0.800245,0.737597,0.0518825,0.0669911,0.256347,0.170006,0.331062,2.84469e-011,0.20361,0.433668,0.367161,0.573235,0.534882,0.2142,0.0621014,0.0129735,0.0283013,0.0130178,0.0489435,0.107945,0.356318,2.43535e-011,0.0460978,0.0554147,0.381314,0.406101,0.263581,0.335658,0.393128,0.36028,0.244992,0.0989504,0.0904227,0.43912,0.146987,0.515271,0.168791,0.0854752,0.288679,0.114025,0.727293,0.0111802,0.180811,0.255129,0.207388,0.117316,0.583531,0.584896,0.0578107,0.426,0.0805038,0.335875,0.351982,0.246232,0.412128,0.39537,0.203704,2.67233e-011,0.122007,0.0642857,0.0376038,0.0133528,0.550515,2.76705e-011,0.0334176,0.260639,0.0354555,0.166663,0.115066,0.374141,0.441884,0.255024,0.443485,0.0780616,0.0566299,1.69607e-011,0.394913,0.503634,0.378132,0.178353,0.0346886,0.286994,0.208923,0.330966,0.326088,0.25278,0.504559,0.241936,0.444167,0.427355,0.318135,0.222527,0.679862,0.718868,0.303005,0.0347143,0.557295,0.116178,0.165337,0.709827,0.0628334,0.632839,0.783792,0.0882273,0.0146721,0.000798665,0.595516,0.0901404,0.394611,0.0881423,0.858786,0.022692,0.412255,0.174981,0.163719,0.79513,0.145447,0.705168,0.67004,0.183653,0.380622,0.230767,0.0798109,0.183742,0.776871,0.269237,0.231323,0.0658351,0.0933453,0.548887,0.391869,0.266046,0.545109,0.498524,0.476427,0.399313,0.401845,0.716225,0.531509,0.0859563,];
+board.createElement('chart', data0, {chartStyle:'point',labels:data0});
+var p1 = board.create('point',[0,2.89663], {fixed:true});
+var p2 = board.create('point',[171,2.89663], {fixed:true});
+var li = board.create('line',[p1,p2], {strokeColor:'00ff00',strokeWidth:2});
+board.unsuspendUpdate();
+board.setBoundingBox([-34.2,1.03054,205.2,-0.171757]);
+</script>
+<h2>Histogram of residuals</h2>
+
+<div id="InitialPairTriangulationKeptInfo" class="jxgbox" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+var board = JXG.JSXGraph.initBoard('InitialPairTriangulationKeptInfo', {boundingbox: [-10, 10, 10, -10], axis:true,showCopyright:false});
+board.suspendUpdate();
+var data0= [0.00000,0.08894,0.17788,0.26681,0.35575,0.44469,0.53363,0.62257,0.71151,0.80044,];
+var data1= [56.00000,28.00000,26.00000,21.00000,29.00000,20.00000,12.00000,4.00000,5.00000,10.00000,];
+board.createElement('chart', [ data0,data1], {chartStyle:'line,point',labels:[ data0,data1]});
+var p2 = board.create('point',[2.89663,0.00000], {fixed:true});
+var p3 = board.create('point',[2.89663,56.00000], {fixed:true});
+var li = board.create('line',[p2,p3], {strokeColor:'00ff00',strokeWidth:2});
+board.unsuspendUpdate();
+board.setBoundingBox([-0.16009,66.40000,0.96053,-6.40000]);
+</script>
+<hr><h1>Resection of Image index: <1> image: et001<br> 
+</h1>
+
+-------------------------------<br>-- Robust Resection of camera index: <1> image: et001<br>-- Threshold: 21.8213<br>-- Resection status: OK<br>-- Nb points used for Resection: 28<br>-- Nb points validated by robust estimation: 28<br>-- % points validated: 1<br>-------------------------------<br><h2>Residual of the robust estimation (Resection). Thresholded at: 21.8213</h2>
+
+<div id="ResectionResidual_residualPlot_1" class="jxgbox" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+var board = JXG.JSXGraph.initBoard('ResectionResidual_residualPlot_1', {boundingbox: [-10, 10, 10, -10], axis:true,showCopyright:false});
+board.suspendUpdate();
+var data0= [4.76306,11.1155,8.95903,3.97199,1.74069,4.94387,5.95199,4.7439,4.32941,1.34712,6.11113,6.86663,4.50485,3.36863,10.0585,12.659,1.71044,6.98432,6.7511,17.0476,3.82652,5.98528,5.52268,6.40656,11.0832,10.4136,6.2756,4.67987,];
+board.createElement('chart', data0, {chartStyle:'point',labels:data0});
+var p1 = board.create('point',[0,21.8213], {fixed:true});
+var p2 = board.create('point',[28,21.8213], {fixed:true});
+var li = board.create('line',[p1,p2], {strokeColor:'00ff00',strokeWidth:2});
+board.unsuspendUpdate();
+board.setBoundingBox([-5.6,20.4571,33.6,-3.40951]);
+</script>
+
+<div id="ResectionResidual_residualHisto_1" class="jxgbox" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+var board = JXG.JSXGraph.initBoard('ResectionResidual_residualHisto_1', {boundingbox: [-10, 10, 10, -10], axis:true,showCopyright:false});
+board.suspendUpdate();
+var data0= [0.00000,4.84917,9.69834,14.54751,19.39668,24.24585,29.09502,33.94419,38.79336,43.64253,];
+var data1= [7.00000,14.00000,6.00000,1.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,];
+board.createElement('chart', [ data0,data1], {chartStyle:'line,point',labels:[ data0,data1]});
+var p2 = board.create('point',[21.82126,0.00000], {fixed:true});
+var p3 = board.create('point',[21.82126,7.00000], {fixed:true});
+var li = board.create('line',[p2,p3], {strokeColor:'00ff00',strokeWidth:2});
+board.unsuspendUpdate();
+board.setBoundingBox([-8.72851,16.80000,52.37104,-2.80000]);
+</script>
+<hr><h1>Resection of Image index: <4> image: et004<br> 
+</h1>
+
+-------------------------------<br>-- Robust Resection of camera index: <4> image: et004<br>-- Threshold: 7.46933<br>-- Resection status: OK<br>-- Nb points used for Resection: 20<br>-- Nb points validated by robust estimation: 20<br>-- % points validated: 1<br>-------------------------------<br><h2>Residual of the robust estimation (Resection). Thresholded at: 7.46933</h2>
+
+<div id="ResectionResidual_residualPlot_4" class="jxgbox" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+var board = JXG.JSXGraph.initBoard('ResectionResidual_residualPlot_4', {boundingbox: [-10, 10, 10, -10], axis:true,showCopyright:false});
+board.suspendUpdate();
+var data0= [3.32546,2.16308,3.62392,3.81878,1.46292,2.59963,1.49159,7.81614,2.02009,1.41671,2.17074,3.36217,2.16887,3.57239,0.184234,3.82541,2.0449,6.16715,2.14785,0.702114,];
+board.createElement('chart', data0, {chartStyle:'point',labels:data0});
+var p1 = board.create('point',[0,7.46933], {fixed:true});
+var p2 = board.create('point',[20,7.46933], {fixed:true});
+var li = board.create('line',[p1,p2], {strokeColor:'00ff00',strokeWidth:2});
+board.unsuspendUpdate();
+board.setBoundingBox([-4,9.37937,24,-1.56323]);
+</script>
+
+<div id="ResectionResidual_residualHisto_4" class="jxgbox" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+var board = JXG.JSXGraph.initBoard('ResectionResidual_residualHisto_4', {boundingbox: [-10, 10, 10, -10], axis:true,showCopyright:false});
+board.suspendUpdate();
+var data0= [0.00000,1.65985,3.31970,4.97955,6.63940,8.29925,9.95910,11.61895,13.27881,14.93866,];
+var data1= [5.00000,7.00000,6.00000,0.00000,1.00000,1.00000,0.00000,0.00000,0.00000,0.00000,];
+board.createElement('chart', [ data0,data1], {chartStyle:'line,point',labels:[ data0,data1]});
+var p2 = board.create('point',[7.46933,0.00000], {fixed:true});
+var p3 = board.create('point',[7.46933,5.00000], {fixed:true});
+var li = board.create('line',[p2,p3], {strokeColor:'00ff00',strokeWidth:2});
+board.unsuspendUpdate();
+board.setBoundingBox([-2.98773,8.40000,17.92639,-1.40000]);
+</script>
+<hr><h1>Resection of Image index: <2> image: et002<br> 
+</h1>
+
+-------------------------------<br>-- Robust Resection of camera index: <2> image: et002<br>-- Threshold: 6.08573<br>-- Resection status: OK<br>-- Nb points used for Resection: 30<br>-- Nb points validated by robust estimation: 30<br>-- % points validated: 1<br>-------------------------------<br><h2>Residual of the robust estimation (Resection). Thresholded at: 6.08573</h2>
+
+<div id="ResectionResidual_residualPlot_2" class="jxgbox" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+var board = JXG.JSXGraph.initBoard('ResectionResidual_residualPlot_2', {boundingbox: [-10, 10, 10, -10], axis:true,showCopyright:false});
+board.suspendUpdate();
+var data0= [1.48724,0.886474,0.828142,2.02876,2.09344,1.63646,1.70666,2.30642,0.26821,3.26647,2.1965,1.84263,1.96223,2.10967,1.70913,1.25391,1.84347,1.62622,2.98782,0.472949,2.17063,1.03753,2.49381,2.64719,2.53441,2.46583,4.57028,1.02315,1.09965,2.24036,];
+board.createElement('chart', data0, {chartStyle:'point',labels:data0});
+var p1 = board.create('point',[0,6.08573], {fixed:true});
+var p2 = board.create('point',[30,6.08573], {fixed:true});
+var li = board.create('line',[p1,p2], {strokeColor:'00ff00',strokeWidth:2});
+board.unsuspendUpdate();
+board.setBoundingBox([-6,5.48434,36,-0.914056]);
+</script>
+
+<div id="ResectionResidual_residualHisto_2" class="jxgbox" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+var board = JXG.JSXGraph.initBoard('ResectionResidual_residualHisto_2', {boundingbox: [-10, 10, 10, -10], axis:true,showCopyright:false});
+board.suspendUpdate();
+var data0= [0.00000,1.35238,2.70477,4.05715,5.40954,6.76192,8.11431,9.46669,10.81907,12.17146,];
+var data1= [7.00000,16.00000,6.00000,1.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,];
+board.createElement('chart', [ data0,data1], {chartStyle:'line,point',labels:[ data0,data1]});
+var p2 = board.create('point',[6.08573,0.00000], {fixed:true});
+var p3 = board.create('point',[6.08573,7.00000], {fixed:true});
+var li = board.create('line',[p2,p3], {strokeColor:'00ff00',strokeWidth:2});
+board.unsuspendUpdate();
+board.setBoundingBox([-2.43429,19.20000,14.60575,-3.20000]);
+</script>
+<hr><hr><h1>Structure from Motion process finished.</h1>
+-------------------------------<br>-- Structure from Motion (statistics):<br>-- #Camera calibrated: 5 from 9 input images.<br>-- #Tracks, #3D points: 220<br>-------------------------------<br><h2>Histogram of reprojection-residuals</h2>
+
+<div id="3DtoImageResiduals" class="jxgbox" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+var board = JXG.JSXGraph.initBoard('3DtoImageResiduals', {boundingbox: [-10, 10, 10, -10], axis:true,showCopyright:false});
+board.suspendUpdate();
+var data0= [0.00096,0.19249,0.38402,0.57555,0.76708,0.95861,1.15014,1.34167,1.53321,1.72474,];
+var data1= [225.00000,116.00000,84.00000,46.00000,26.00000,14.00000,3.00000,2.00000,0.00000,0.00000,];
+board.createElement('chart', [ data0,data1], {chartStyle:'line,point',labels:[ data0,data1]});
+board.unsuspendUpdate();
+board.setBoundingBox([-0.34380,270.00000,2.06949,-45.00000]);
+</script>
+</html>

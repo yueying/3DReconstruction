@@ -1,0 +1,18 @@
+file(
+	GLOB_RECURSE
+	OSI_HEADERS
+	*.hpp
+	*.h
+)
+file(
+	GLOB_RECURSE
+	OSI_SRCS
+	*.cpp
+)
+ADD_LIBRARY(lib_OsiClpSolver ${OSI_HEADERS} ${OSI_SRCS})
+
+if(ENABLE_SOLUTION_FOLDERS)
+	set_target_properties(lib_OsiClpSolver PROPERTIES FOLDER "3rd party")
+else(ENABLE_SOLUTION_FOLDERS)
+	SET_TARGET_PROPERTIES(lib_OsiClpSolver  PROPERTIES PROJECT_LABEL "(TEST) lib_OsiClpSolver")
+endif(ENABLE_SOLUTION_FOLDERS)

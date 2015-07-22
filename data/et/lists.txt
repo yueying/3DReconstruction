@@ -1,0 +1,9 @@
+et000.jpg;640;480;649.156;Canon;Canon PowerShot A10
+et001.jpg;640;480;649.156;Canon;Canon PowerShot A10
+et002.jpg;640;480;649.156;Canon;Canon PowerShot A10
+et003.jpg;640;480;649.156;Canon;Canon PowerShot A10
+et004.jpg;640;480;649.156;Canon;Canon PowerShot A10
+et005.jpg;640;480;649.156;Canon;Canon PowerShot A10
+et006.jpg;640;480;649.156;Canon;Canon PowerShot A10
+et007.jpg;640;480;649.156;Canon;Canon PowerShot A10
+et008.jpg;640;480;649.156;Canon;Canon PowerShot A10

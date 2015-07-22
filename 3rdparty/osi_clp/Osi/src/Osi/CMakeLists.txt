@@ -1,0 +1,19 @@
+file(
+	GLOB
+	OSI_OSI_HEADER
+	*.hpp
+	*.h
+)
+file(
+	GLOB
+	OSI_OSI_CPP
+	*.cpp
+)
+
+ADD_LIBRARY(lib_Osi ${OSI_OSI_HEADER} ${OSI_OSI_CPP})
+
+if(ENABLE_SOLUTION_FOLDERS)
+	set_target_properties(lib_Osi PROPERTIES FOLDER "3rd party")
+else(ENABLE_SOLUTION_FOLDERS)
+	SET_TARGET_PROPERTIES(lib_Osi  PROPERTIES PROJECT_LABEL "(TEST) lib_Osi")
+endif(ENABLE_SOLUTION_FOLDERS)

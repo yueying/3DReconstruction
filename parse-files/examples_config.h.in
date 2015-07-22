@@ -1,0 +1,12 @@
+/**
+  This file is intended for examples in the FBLIB distribution to locate needed
+  data files independently of where the user decides to build the library.
+*/
+   
+#ifndef FBLIB_EXAMPLES_CONFIG_H
+#define FBLIB_EXAMPLES_CONFIG_H
+
+#define FBLIB_EXAMPLES_BASE_DIRECTORY "${CMAKE_FBLIB_EXAMPLES_BASE_DIRECTORY}"
+
+#endif
+

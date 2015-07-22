@@ -1,0 +1,24 @@
+How to create new examples under the FBLIB tree:
+--------------------------------------------------------
+
+1) Go to [FBLIB]/samples
+
+2) Create a directory with the example name, e.g. "foo" ->
+   [FBLIB]/samples/foo/
+   
+3) Create the C++ file and save it as "test.cpp":
+   [FBLIB]/samples/foo/test.cpp
+   
+4) Add the example name to any of the lists in:
+   [FBLIB]/cmakemodules/DefineExamples.cmake
+
+5) In the build directory, run "cmake . -DBUILD_EXAMPLES=ON"
+
+6) An automatically generated CMake script will be created in:
+   [FBLIB]/samples/foo/CMakeLists.txt
+   
+7) Add both files to svn: 
+   svn add [FBLIB]/samples/foo/CMakeLists.txt [FBLIB]/samples/foo/test.cpp
+
+done!
+
