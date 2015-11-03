@@ -286,56 +286,6 @@ macro(internal_define_fblib_lib name headers_only is_metalib)
 		ENDIF (NOT is_metalib)
 	ENDIF (NOT ${headers_only})
 
-	# Generate the libfblib_$NAME.pc file for pkg-config:
-	IF(UNIX)
-		SET(fblib_pkgconfig_LIBNAME ${name})
-		get_property(_lst_deps GLOBAL PROPERTY "fblib_${name}_LIB_DEPS")
-		
-		# a comma-separated list of other fblib_* dependencies.
-		SET(fblib_pkgconfig_REQUIRES "")
-		FOREACH(DEP ${_lst_deps})
-			IF(NOT "${fblib_pkgconfig_REQUIRES}" STREQUAL "")
-				SET(fblib_pkgconfig_REQUIRES "${fblib_pkgconfig_REQUIRES},")
-			ENDIF(NOT "${fblib_pkgconfig_REQUIRES}" STREQUAL "")
-			SET(fblib_pkgconfig_REQUIRES "${fblib_pkgconfig_REQUIRES}${DEP}")
-		ENDFOREACH(DEP)
-
-		# Special case: For fblib_base, mark "eigen3" as a pkg-config dependency only 
-		#  if we are instructed to do so: (EIGEN_USE_EMBEDDED_VERSION=OFF)
-		IF(NOT EIGEN_USE_EMBEDDED_VERSION)
-			SET(fblib_pkgconfig_REQUIRES "${fblib_pkgconfig_REQUIRES},eigen3")
-		ENDIF(NOT EIGEN_USE_EMBEDDED_VERSION)
-
-		# "Libs" lines in .pc files:
-		# -----------------------------------------------------------
-		# * for install, normal lib:
-		#    Libs: -L${libdir}  -lfblib_@fblib_pkgconfig_LIBNAME@ 
-		# * for install, headers-only lib:
-		#    <none>
-		# * for local usage, normal lib:
-		#    Libs: -L${libdir} -Wl,-rpath,${libdir} -lfblib_@fblib_pkgconfig_LIBNAME@ 
-		# * for local usage, headers-only lib:
-		#    <none>
-		IF (${headers_only})
-			SET(fblib_pkgconfig_lib_line_install "")
-			SET(fblib_pkgconfig_lib_line_noinstall "")
-			SET(fblib_pkgconfig_libs_private_line "")
-		ELSE (${headers_only})
-			SET(fblib_pkgconfig_lib_line_install "Libs: -L\${libdir}  -lfblib_${name}")
-			SET(fblib_pkgconfig_lib_line_noinstall "Libs: -L\${libdir} -Wl,-rpath,\${libdir} -lfblib_${name}")
-			SET(fblib_pkgconfig_libs_private_line "Libs.private: ${FBLIBLIB_LINKER_LIBS}")
-		ENDIF (${headers_only})
-
-		# (1/2) Generate the .pc file for "make install"
-		CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/parse-files/fblib_template.pc.in" "${CMAKE_BINARY_DIR}/pkgconfig/fblib_${name}.pc" @ONLY)
-
-		# (2/2) And another .pc file for local usage:
-		SET(fblib_pkgconfig_NO_INSTALL_SOURCE "${FBLIB_SOURCE_DIR}")
-		SET(fblib_pkgconfig_NO_INSTALL_BINARY "${FBLIB_BINARY_DIR}")
-		CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/parse-files/fblib_template_no_install.pc.in" "${CMAKE_BINARY_DIR}/pkgconfig-no-install/fblib_${name}.pc" @ONLY)
-		
-	ENDIF(UNIX)
-
 	# --- End of conditional build of module ---
 	ENDIF(BUILD_fblib_${name}) 
 
