@@ -281,8 +281,7 @@ include(cmake/script_create_version_h.cmake REQUIRED)  # Build version.h
 # ---------------------------------------------------------------------------
 # The C++ include & link directories:
 # ---------------------------------------------------------------------------
-INCLUDE_DIRECTORIES(".")
-INCLUDE_DIRECTORIES("${FBLIB_CONFIG_FILE_INCLUDE_DIR}")
+INCLUDE_DIRECTORIES(".")# 首先包含当前面临
 
 LINK_DIRECTORIES("${CMAKE_BINARY_DIR}/lib")
 
