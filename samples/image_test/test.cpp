@@ -1,6 +1,7 @@
 #include <iostream>
 #include "fblib/image/image.h"
 #include "fblib/image/convolve.h"
+
 using namespace fblib::image;
 
 int main()

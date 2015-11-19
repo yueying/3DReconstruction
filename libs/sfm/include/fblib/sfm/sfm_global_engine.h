@@ -202,7 +202,7 @@ namespace fblib{
 			// Reporting ..
 			// ----
 			bool is_html_report_;
-			std::auto_ptr<fblib::utils::HtmlDocumentStream> html_doc_stream_;
+			std::shared_ptr<fblib::utils::HtmlDocumentStream> html_doc_stream_;
 
 		};
 

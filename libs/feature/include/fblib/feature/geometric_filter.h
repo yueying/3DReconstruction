@@ -10,6 +10,7 @@
 
 namespace fblib{
 	namespace feature{
+
 		template <typename FeatureT>
 		class ImageCollectionGeometricFilter
 		{

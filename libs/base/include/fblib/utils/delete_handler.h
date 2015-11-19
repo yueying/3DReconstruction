@@ -14,7 +14,7 @@ namespace fblib {
 		  * multiple threads deleting objects unintentionally.
 		  * Note, the DeleteHandler cannot itself be reference counted, otherwise it
 		  * would be responsible for deleting itself!
-		  * A static auto_ptr<> is used internally in Referenced.cpp to manage the
+		  * A static shared_ptr<> is used internally in Referenced.cpp to manage the
 		  * DeleteHandler's memory.*/
 		class BASE_IMPEXP DeleteHandler
 		{

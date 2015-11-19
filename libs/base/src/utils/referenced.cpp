@@ -20,7 +20,7 @@ namespace fblib
 		//#define ENFORCE_THREADSAFE
 		//#define DEBUG_OBJECT_ALLOCATION_DESTRUCTION
 
-		// specialized smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
+		// specialized smart pointer, used to get round shared_ptr<>'s lack of the destructor reseting itself to 0.
 		template<typename T>
 		struct ResetPointer
 		{
@@ -85,7 +85,7 @@ namespace fblib
 		};
 		static InitGlobalMutexes s_initGlobalMutexes;
 
-		// static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
+		// static std::shared_ptr<DeleteHandler> s_deleteHandler(0);
 		static DeleteHandlerPointer s_deleteHandler(0);
 
 		void Referenced::setDeleteHandler(DeleteHandler* handler)

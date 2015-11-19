@@ -1,3 +1,9 @@
+#include <cstdlib>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <map>
+
 #include "fblib/feature/indexed_match.h"
 #include "fblib/feature/indexed_match_utils.h"
 #include "fblib/image/image.h"
@@ -8,12 +14,6 @@
 #include "fblib/utils/file_system.h"
 #include "fblib/utils/progress.h"
 #include "fblib/utils/svg_drawer.h"
-
-#include <cstdlib>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <map>
 
 using namespace fblib::utils;
 using namespace fblib::feature;

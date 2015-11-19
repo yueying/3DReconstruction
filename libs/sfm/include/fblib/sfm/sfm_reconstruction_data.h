@@ -53,7 +53,7 @@ namespace fblib{
 			Vec m_radial_distortion; // radial distortion factor
 			double m_f; // focal
 
-			inline void ComputeUndistortedCoordinates(double xu, double yu, double &xd, double& yd) const
+			inline void computeUndistortedCoordinates(double xu, double yu, double &xd, double& yd) const
 			{
 				Vec2 point(xu, yu);
 				Vec2 principal_point(m_disto_center);
@@ -98,7 +98,7 @@ namespace fblib{
 					double xu, yu, xd, yd;
 					xu = double(i);
 					yu = double(j);
-					d.ComputeUndistortedCoordinates(xu, yu, xd, yd);
+					d.computeUndistortedCoordinates(xu, yu, xd, yd);
 					xd -= offset(0);
 					yd -= offset(1);
 					if (!J.Contains((int)yd, (int)xd))

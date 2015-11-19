@@ -31,6 +31,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <memory>
 
 #include "lemon/list_graph.h"
 #include "lemon/unionfind.h"
@@ -93,8 +94,8 @@ namespace fblib  {
 
 			lemon::ListDigraph g; //!<图节点容器，存放图节点
 			MapNodeIndex reverse_my_Map; //Node to index map
-			std::auto_ptr<IndexMap> index;
-			std::auto_ptr<UnionFindObject> myTracksUF;
+			std::shared_ptr<IndexMap> index;
+			std::shared_ptr<UnionFindObject> myTracksUF;
 
 			const UnionFindObject & getUnionFindEnum() const { return *myTracksUF; }
 			const MapNodeIndex & getReverseMap() const { return reverse_my_Map; }
@@ -139,8 +140,8 @@ namespace fblib  {
 				reverse_my_Map.sort();
 
 				// Add the element of myset to the UnionFind insert method.
-				index = std::auto_ptr<IndexMap>(new IndexMap(g));
-				myTracksUF = std::auto_ptr<UnionFindObject>(new UnionFindObject(*index));
+				index = std::shared_ptr<IndexMap>(new IndexMap(g));
+				myTracksUF = std::shared_ptr<UnionFindObject>(new UnionFindObject(*index));
 				for (lemon::ListDigraph::NodeIt it(g); it != INVALID; ++it) {
 					myTracksUF->insert(it);
 				}

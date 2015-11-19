@@ -1,4 +1,4 @@
-#include <cstdlib>
+﻿#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <iterator>
@@ -28,15 +28,15 @@ using namespace fblib::utils;
 using namespace fblib::feature;
 using namespace fblib::multiview;
 using namespace std;
-
+/**两幅图像计算的关系*/
 enum GeometricModel
 {
-	FUNDAMENTAL_MATRIX = 0,
-	ESSENTIAL_MATRIX = 1,
-	HOMOGRAPHY_MATRIX = 2
+	FUNDAMENTAL_MATRIX = 0,//基础矩阵
+	ESSENTIAL_MATRIX = 1,//本质矩阵
+	HOMOGRAPHY_MATRIX = 2//单应矩阵
 };
 
-// Equality functor to count the number of similar K matrices in the essential matrix case.
+//主要用于判断两幅图像是否有可能有相同的内参，因为畸变的数值变化很大
 bool testIntrinsicsEquality(
 	IntrinsicCameraInfo const &ci1,
 	IntrinsicCameraInfo const &ci2)
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 
 	std::string image_dir;
 	std::string out_dir = "";
-	std::string geometric_model = "f";
+	std::string geometric_model = "e";
 	float distance_ratio = .6f;
 	bool is_zoom = false;
 	float contrast_threshold = 0.04f;
@@ -116,19 +116,20 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-	// -----------------------------
-	// a. List images
-	// b. Compute features and descriptors
-	// c. Compute putative descriptor matches
-	// d. Geometric filtering of putative matches
-	// e. Export some statistics
-	// -----------------------------
+	// -------------------------------------------
+	// 计算过程
+	// a. 导入图像
+	// b. 计算特征和描述
+	// c. 计算可能的匹配
+	// d. 通过几何性质过滤可能的匹配
+	// e. 导出匹配统计信息
+	// -------------------------------------------
 
-	// �������Ŀ¼
+	// 创建输出目录
 	if (!fblib::utils::folder_exists(out_dir))
 		fblib::utils::folder_create(out_dir);
 
-	//����list.txt�ļ���ȡͼ�񼯵Ľ�����Ϣ
+	//根据list.txt文件获取图像集的焦距信息
 	std::string file_lists = fblib::utils::create_filespec(out_dir, "lists.txt");
 	if (!fblib::utils::is_file(file_lists)) {
 		std::cerr << std::endl
@@ -138,7 +139,7 @@ int main(int argc, char **argv)
 
 	std::vector<fblib::feature::CameraInfo> vec_camera_info;
 	std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-	if (!fblib::feature::LoadImageList(file_lists,vec_camera_info,
+	if (!fblib::feature::LoadImageList(file_lists, vec_camera_info,
 		vec_cameras_intrinsic
 		))
 	{
@@ -148,14 +149,12 @@ int main(int argc, char **argv)
 
 	if (geometric_model_to_compute == ESSENTIAL_MATRIX)
 	{
-		//-- In the case of the essential matrix we check if only one K matrix is present.
-		//-- Due to the fact that the generic framework allows only one K matrix for the
-		// robust essential matrix estimation in image collection.
-		std::vector<fblib::feature::IntrinsicCameraInfo>::iterator iterF =
+		// 对所有图像的相机矩阵信息进行去重，目前只处理具有相同内参的图片
+		std::vector<fblib::feature::IntrinsicCameraInfo>::iterator iterE =
 			std::unique(vec_cameras_intrinsic.begin(), vec_cameras_intrinsic.end(), testIntrinsicsEquality);
-		vec_cameras_intrinsic.resize(std::distance(vec_cameras_intrinsic.begin(), iterF));
+		vec_cameras_intrinsic.resize(std::distance(vec_cameras_intrinsic.begin(), iterE));
 		if (vec_cameras_intrinsic.size() == 1) {
-			// Set all the intrinsic ID to 0
+			// 将所有图片的id设为0，即只获取第一幅图像的内参信息即可
 			for (size_t i = 0; i < vec_camera_info.size(); ++i)
 				vec_camera_info[i].intrinsic_id = 0;
 		}
@@ -166,7 +165,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	// �����������Ա㷽��ķ���ͼ���ļ�����ͼ���С
+	// 两个别名，以便方便的访问图像文件名及图像大小
 	std::vector<std::string> file_names;
 	std::vector<std::pair<size_t, size_t> > vec_images_size;
 	for (std::vector<fblib::feature::CameraInfo>::const_iterator
@@ -179,7 +178,7 @@ int main(int argc, char **argv)
 		file_names.push_back(fblib::utils::create_filespec(image_dir, iter_camera_info->image_name));
 	}
 
-	//���������������ӣ���������Ѿ����㣬�����������������¼��㲢����
+	//计算特征和描述子，如果特征已经计算，则导入特征，否则重新计算并保存
 	typedef Descriptor<unsigned char, 128> DescriptorT;
 	typedef ScalePointFeature FeatureT;
 	typedef std::vector<FeatureT> FeatsT;
@@ -191,22 +190,21 @@ int main(int argc, char **argv)
 		vec_images_size.resize(file_names.size());
 
 		Image<unsigned char> gray_image;
-
+		// 显示处理百分比
 		ControlProgressDisplay my_progress_bar(file_names.size());
 		for (size_t i = 0; i < file_names.size(); ++i)  {
-
 			std::string feat = fblib::utils::create_filespec(out_dir,
 				fblib::utils::basename_part(file_names[i]), "feat");
 			std::string desc = fblib::utils::create_filespec(out_dir,
 				fblib::utils::basename_part(file_names[i]), "desc");
 
-			//����ļ����²���������������������м���
+			//如果文件夹下不存在特征及描述，则进行计算
 			if (!fblib::utils::file_exists(feat) || !fblib::utils::file_exists(desc)) {
 
 				if (!ReadImage(file_names[i].c_str(), &gray_image))
 					continue;
 
-				// ����������������Ȼ�����ǵ��뵽�ļ���
+				// 计算特征和描述，然后将他们导入到文件中
 				KeypointSetT keypoint_set;
 				SIFTDetector(gray_image,
 					keypoint_set.features(), keypoint_set.descriptors(),
@@ -217,66 +215,56 @@ int main(int argc, char **argv)
 		}
 	}
 
-	//---------------------------------------
-	// c. Compute putative descriptor matches
-	//    - L2 descriptor matching
-	//    - Keep correspondences only if NearestNeighbor ratio is ok
-	//---------------------------------------
+	// 计算可能的匹配
 	PairWiseMatches map_putatives_matches;
-	// Define the matcher and the used metric (Squared L2)
-	// ANN matcher could be defined as follow:
+
+	// 定义匹配算子采用(Squared L2)采用ANN
 	typedef flann::L2<DescriptorT::bin_type> MetricT;
 	typedef ArrayMatcherKdtreeFlann<DescriptorT::bin_type, MetricT> MatcherT;
-	// Brute force matcher can be defined as following:
+
+	// 或者可以采用暴力匹配，具体如下：
 	//typedef SquaredEuclideanDistanceVectorized<DescriptorT::bin_type> MetricT;
 	//typedef ArrayMatcherBruteForce<DescriptorT::bin_type, MetricT> MatcherT;
 
-	// ���ƥ���Ѿ����ڣ����µ���
+	// 如果匹配已经存在，重新导入
 	if (fblib::utils::file_exists(out_dir + "/matches.putative.txt"))
 	{
 		PairedIndexedMatchImport(out_dir + "/matches.putative.txt", map_putatives_matches);
 		std::cout << std::endl << "PUTATIVE MATCHES -- PREVIOUS RESULTS LOADED" << std::endl;
 	}
-	else // ����ƥ��
+	else // 计算匹配
 	{
 		MatcherAllInMemory<KeypointSetT, MatcherT> collectionMatcher(distance_ratio);
 		if (collectionMatcher.LoadData(file_names, out_dir))
 		{
 			std::cout << std::endl << "PUTATIVE MATCHES" << std::endl;
 			collectionMatcher.Match(file_names, map_putatives_matches);
-			//---------------------------------------
-			//-- Export putative matches
-			//---------------------------------------
+			// 导出可能的匹配
 			std::ofstream file(std::string(out_dir + "/matches.putative.txt").c_str());
 			if (file.is_open())
 				PairedIndexedMatchToStream(map_putatives_matches, file);
 			file.close();
 		}
 	}
-	//-- export putative matches Adjacency matrix
+	//导出可能的匹配，通过邻接矩阵的方式显示
 	PairWiseMatchingToAdjacencyMatrixSVG(file_names.size(),
 		map_putatives_matches,
 		fblib::utils::create_filespec(out_dir, "PutativeAdjacencyMatrix", "svg"));
 
-
-	//---------------------------------------
-	// d. Geometric filtering of putative matches
-	//    - AContrario Estimation of the desired geometric model
-	//    - Use an upper bound for the a contrario estimated threshold
-	//---------------------------------------
+	// 根据几何性质对可能的匹配进行过滤
 	PairWiseMatches map_geometric_matches;
 
-	ImageCollectionGeometricFilter<FeatureT> collectionGeomFilter;
-	const double maxResidualError = 4.0;
-	if (collectionGeomFilter.LoadData(file_names, out_dir))
+	ImageCollectionGeometricFilter<FeatureT> collection_geom_filter;
+	const double max_residual_error = 4.0;
+	if (collection_geom_filter.LoadData(file_names, out_dir))
 	{
 		std::cout << std::endl << " - GEOMETRIC FILTERING - " << std::endl;
 		switch (geometric_model_to_compute)
 		{
 		case FUNDAMENTAL_MATRIX:
 		{
-			collectionGeomFilter.Filter(
-				GeometricFilter_FMatrix_AC(maxResidualError),
+			collection_geom_filter.Filter(
+				GeometricFilter_FMatrix_AC(max_residual_error),
 				map_putatives_matches,
 				map_geometric_matches,
 				vec_images_size);
@@ -284,28 +272,28 @@ int main(int argc, char **argv)
 			break;
 		case ESSENTIAL_MATRIX:
 		{
-			collectionGeomFilter.Filter(
-				GeometricFilter_EMatrix_AC(vec_cameras_intrinsic[0].camera_matrix, maxResidualError),
+			collection_geom_filter.Filter(
+				GeometricFilter_EMatrix_AC(vec_cameras_intrinsic[0].camera_matrix, max_residual_error),
 				map_putatives_matches,
 				map_geometric_matches,
 				vec_images_size);
 
-			//-- Perform an additional check to remove pairs with poor overlap
-			std::vector<PairWiseMatches::key_type> vec_toRemove;
-			for (PairWiseMatches::const_iterator iterMap = map_geometric_matches.begin();
-				iterMap != map_geometric_matches.end(); ++iterMap)
+			//进行额外的检查，用于移除比较差的重叠
+			std::vector<PairWiseMatches::key_type> vec_to_remove;
+			for (PairWiseMatches::const_iterator iter_map = map_geometric_matches.begin();
+				iter_map != map_geometric_matches.end(); ++iter_map)
 			{
-				size_t putativePhotometricCount = map_putatives_matches.find(iterMap->first)->second.size();
-				size_t putativeGeometricCount = iterMap->second.size();
-				float ratio = putativeGeometricCount / (float)putativePhotometricCount;
-				if (putativeGeometricCount < 50 || ratio < .3f)  {
-					// the pair will be removed
-					vec_toRemove.push_back(iterMap->first);
+				size_t putative_photometric_count = map_putatives_matches.find(iter_map->first)->second.size();
+				size_t putative_geometric_count = iter_map->second.size();
+				float ratio = putative_geometric_count / (float)putative_photometric_count;
+				if (putative_geometric_count < 50 || ratio < .3f)  {
+					//添加到移除向量中
+					vec_to_remove.push_back(iter_map->first);
 				}
 			}
-			//-- remove discarded pairs
+			//移除废弃的匹配对
 			for (std::vector<PairWiseMatches::key_type>::const_iterator
-				iter = vec_toRemove.begin(); iter != vec_toRemove.end(); ++iter)
+				iter = vec_to_remove.begin(); iter != vec_to_remove.end(); ++iter)
 			{
 				map_geometric_matches.erase(*iter);
 			}
@@ -314,8 +302,8 @@ int main(int argc, char **argv)
 		case HOMOGRAPHY_MATRIX:
 		{
 
-			collectionGeomFilter.Filter(
-				GeometricFilter_HMatrix_AC(maxResidualError),
+			collection_geom_filter.Filter(
+				GeometricFilter_HMatrix_AC(max_residual_error),
 				map_putatives_matches,
 				map_geometric_matches,
 				vec_images_size);
@@ -323,15 +311,13 @@ int main(int argc, char **argv)
 			break;
 		}
 
-		//---------------------------------------
-		//-- Export geometric filtered matches
-		//---------------------------------------
+		// 导出根据几何性质过滤之后的匹配
 		std::ofstream file(string(out_dir + "/" + geometric_matches_filename).c_str());
 		if (file.is_open())
 			PairedIndexedMatchToStream(map_geometric_matches, file);
 		file.close();
 
-		//-- export Adjacency matrix
+		// 导出邻接矩阵
 		std::cout << "\n Export Adjacency Matrix of the pairwise's geometric matches"
 			<< std::endl;
 		PairWiseMatchingToAdjacencyMatrixSVG(file_names.size(),

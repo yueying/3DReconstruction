@@ -80,7 +80,7 @@ namespace fblib{
 			}
 			if (is_html_report_)
 			{
-				html_doc_stream_ = auto_ptr<HtmlDocumentStream>(
+				html_doc_stream_ = shared_ptr<HtmlDocumentStream>(
 					new HtmlDocumentStream("GlobalReconstructionEngine SFM report."));
 				html_doc_stream_->pushInfo(
 					htmlMarkup("h1", std::string("Current directory: ") +
@@ -233,15 +233,7 @@ namespace fblib{
 
 		bool GlobalReconstructionEngine::Process()
 		{
-
-			//---------------------------------
-			//-- Global Calibration -----------
-			//---------------------------------
-
-			//-------------------
-			// Load data
-			//-------------------
-
+			// 进行全局处理
 			if (!ReadInputData())  {
 				FBLIB_INFO << "\nError while parsing input data" << std::endl;
 				return false;
@@ -715,8 +707,8 @@ namespace fblib{
 				  html_doc_stream_->pushInfo(os.str());
 			  }
 		  }
-	  }
   }
+		}
 
 			//-------------------
 			//-- Bundle Adjustment on translation and structure
@@ -780,7 +772,7 @@ namespace fblib{
 			}
 
 			return true;
-		}
+	}
 
 		bool testIntrinsicsEquality(
 			feature::IntrinsicCameraInfo const &ci1,
@@ -801,9 +793,9 @@ namespace fblib{
 			}
 
 			// a. Read images names
-			std::string sListsFile = fblib::utils::create_filespec(matches_path_, "lists", "txt");
+			std::string lists_file = fblib::utils::create_filespec(matches_path_, "lists", "txt");
 			std::string sComputedMatchesFile_E = fblib::utils::create_filespec(matches_path_, "matches.e", "txt");
-			if (!fblib::utils::is_file(sListsFile) ||
+			if (!fblib::utils::is_file(lists_file) ||
 				!fblib::utils::is_file(sComputedMatchesFile_E))
 			{
 				std::cerr << std::endl
@@ -814,7 +806,7 @@ namespace fblib{
 			// a. Read images names
   {
 	  if (!fblib::feature::LoadImageList(
-		  sListsFile, vec_camera_image_names_,
+		  lists_file, vec_camera_image_names_,
 		  vec_intrinsic_groups_
 		  ))
 	  {
@@ -1237,7 +1229,7 @@ namespace fblib{
 					}
 				}
 			}
-		}
+				}
 
 		void GlobalReconstructionEngine::TripletListing(std::vector< Triplet > & vec_triplets) const
 		{
@@ -1976,5 +1968,5 @@ namespace fblib{
 				}
 			}
 		}
-	}
-} // namespace fblib
+			}
+		} // namespace fblib

@@ -41,10 +41,10 @@ namespace fblib {
 			*/
 			bool Build(const Scalar * dataset, int rows_num, int dimension) {
 				if (rows_num < 1) {
-					memory_mapping = std::auto_ptr< Eigen::Map<BaseMat> >(NULL);
+					memory_mapping = std::shared_ptr< Eigen::Map<BaseMat> >(NULL);
 					return false;
 				}
-				memory_mapping = std::auto_ptr< Eigen::Map<BaseMat> >
+				memory_mapping = std::shared_ptr< Eigen::Map<BaseMat> >
 					(new Eigen::Map<BaseMat>((Scalar*)dataset, rows_num, dimension));
 				return true;
 			};
@@ -135,7 +135,7 @@ namespace fblib {
 
 		private:
 			typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> BaseMat;//!<定义动态行优先的矩阵
-			std::auto_ptr< Eigen::Map<BaseMat> > memory_mapping;//!<使用内存映射，避免内存重新分配
+			std::shared_ptr< Eigen::Map<BaseMat> > memory_mapping;//!<使用内存映射，避免内存重新分配
 		};
 
 	}  // namespace feature

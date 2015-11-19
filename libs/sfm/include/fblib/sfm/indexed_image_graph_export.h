@@ -1,15 +1,12 @@
 ﻿#ifndef FBLIB_SFM_INDEXED_IMAGE_GRAPH_EXPORT_H_
 #define FBLIB_SFM_INDEXED_IMAGE_GRAPH_EXPORT_H_
 
-#include <lemon/core.h>
-
 #include <iostream>
 #include <fstream>
+#include <lemon/core.h>
 
 namespace fblib  {
 	namespace sfm  {
-		using namespace std;
-
 		// Export an Image connection graph
 		//   to graphviz file format.
 		// Example :

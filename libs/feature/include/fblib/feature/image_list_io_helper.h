@@ -22,15 +22,16 @@ namespace fblib{
 			std::string image_name;//!<对应相机图片
 			size_t intrinsic_id;//!<图片id
 		};
-
+		/**相机内参信息*/
 		struct IntrinsicCameraInfo
 		{
-			size_t width, height;
-			float focal;
-			Mat3 camera_matrix;
-			bool is_known_intrinsic; // 当解析内参值为6和12时为true
-			std::string camera_maker, camera_model;
-
+			size_t width, height;//!<图像的宽度和高度
+			float focal;//!< 焦距值
+			Mat3 camera_matrix;//!<相机内参矩阵
+			bool is_known_intrinsic; //!< 当解析内参值为6和12时为true
+			std::string camera_maker;//!<相机厂商
+			std::string camera_model;//!<相机型号
+			/**用于判断两个相机内参是否相等*/
 			bool operator() (const IntrinsicCameraInfo  &ci1, const IntrinsicCameraInfo &ci2)const
 			{
 				bool is_equal = false;
@@ -66,8 +67,8 @@ namespace fblib{
 		 * \return	true if it succeeds, false if it fails.
 		 */
 		static bool LoadImageList(const std::string list_file_name,
-			std::vector<CameraInfo> & vec_camera_info,
-			std::vector<IntrinsicCameraInfo> & vec_cameras_intrinsic,			
+			std::vector<CameraInfo> &vec_camera_info,
+			std::vector<IntrinsicCameraInfo> &vec_cameras_intrinsic,
 			bool is_verbose = true)
 		{
 			typedef std::set<IntrinsicCameraInfo, IntrinsicCameraInfo> SetIntrinsicCameraInfo;
@@ -165,7 +166,7 @@ namespace fblib{
 
 					intrinsic_camera_info.camera_matrix = K;
 					// 直接使用内参矩阵第一个参数作为焦距值，没有根据图像大小进行修改;
-					intrinsic_camera_info.focal = static_cast<float>(K(0, 0)); 
+					intrinsic_camera_info.focal = static_cast<float>(K(0, 0));
 				}
 					break;
 				default:
@@ -200,16 +201,16 @@ namespace fblib{
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		static bool LoadImageList(const std::string list_file_name, 
-			std::vector<std::string> & vec_camera_image_name,			
+		static bool LoadImageList(const std::string list_file_name,
+			std::vector<std::string> & vec_camera_image_name,
 			bool is_verbose = true)
 		{
 			vec_camera_image_name.clear();
 			std::vector<fblib::feature::CameraInfo> vec_camera_info;
 			std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-			if (LoadImageList(list_file_name, 
+			if (LoadImageList(list_file_name,
 				vec_camera_info,
-				vec_cameras_intrinsic,				
+				vec_cameras_intrinsic,
 				is_verbose))
 			{
 				for (std::vector<fblib::feature::CameraInfo>::const_iterator

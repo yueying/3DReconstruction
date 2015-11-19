@@ -11,7 +11,7 @@ namespace fblib{
 		using namespace std;
 
 		/**
-		  * @brief C_Progress manage the appropriate count_step of progress
+		  * \brief C_Progress manage the appropriate count_step of progress
 		  *  -- Class modeled from BOOST::PROGRESS::progress_display
 		  * Usage :
 		  * C_Progress progress( COUNT );

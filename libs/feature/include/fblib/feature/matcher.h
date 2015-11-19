@@ -14,8 +14,8 @@ namespace fblib {
 		class Matcher
 		{
 		public:
-			Matcher() {};
 
+			Matcher() {};
 			virtual ~Matcher() {};
 
 			/**
@@ -26,9 +26,8 @@ namespace fblib {
 			 * \param [in,out]	map_putatives_matches	The map putatives matches.
 			 */
 			virtual void Match(
-				const std::vector<std::string> & vec_filenames,
-				PairWiseMatches & map_putatives_matches 
-				)const = 0;
+				const std::vector<std::string> &vec_filenames,
+				PairWiseMatches &map_putatives_matches )const = 0;
 		};
 	}// namespace feature
 }; // namespace fblib

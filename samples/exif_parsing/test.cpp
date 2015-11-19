@@ -1,16 +1,16 @@
-/*************************************************************************
- * ÎÄ¼þ£º test.cpp
- * Ê±¼ä£º 2015/04/29 15:09
- * ×÷Õß£º ·ë±ø
- * ÓÊ¼þ£º fengbing123@gmail.com
+ï»¿/*************************************************************************
+ * æ–‡ä»¶ï¼š test.cpp
+ * æ—¶é—´ï¼š 2015/04/29 15:09
+ * ä½œè€…ï¼š å†¯å…µ
+ * é‚®ä»¶ï¼š fengbing123@gmail.com
  *
- * ËµÃ÷£º exif²âÊÔ
+ * è¯´æ˜Žï¼š exifæµ‹è¯•
  *************************************************************************/
-#include <memory>
 #include "fblib/image/exif_simple.h"
 #include "fblib/utils/cmd_line.h"
 
 using namespace fblib::utils;
+
 int main(int argc, char *argv[])
 {
 	CmdLine cmd;
@@ -34,8 +34,11 @@ int main(int argc, char *argv[])
 		<< "--imagefile " << input_image << std::endl;
 
 	fblib::image::EXIFSimple exif_sample;
-	exif_sample.open(input_image);
-
+	bool is_parse = exif_sample.open(input_image);
+	if (!is_parse)
+	{
+		std::cerr << "Can't get the exif info!" << std::endl;
+	}
 	std::cout << "width : " << exif_sample.getWidth() << std::endl;
 	std::cout << "height : " << exif_sample.getHeight() << std::endl;
 	std::cout << "focal : " << exif_sample.getFocalLength() << std::endl;

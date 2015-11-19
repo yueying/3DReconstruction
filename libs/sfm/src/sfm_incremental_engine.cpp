@@ -50,7 +50,7 @@ namespace fblib{
 			}
 			if (is_html_report_)
 			{
-				html_doc_stream_ = std::auto_ptr<HtmlDocumentStream>(
+				html_doc_stream_ = std::shared_ptr<HtmlDocumentStream>(
 					new HtmlDocumentStream("fblib A Contrario Incremental SFM report."));
 
 				html_doc_stream_->pushInfo(

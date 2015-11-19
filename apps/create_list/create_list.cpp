@@ -19,6 +19,7 @@
 
 using namespace fblib::image;
 using namespace fblib::utils;
+
 int main(int argc, char **argv)
 {
 	CmdLine cmd;
@@ -94,7 +95,7 @@ int main(int argc, char **argv)
 			size_t width = -1;
 			size_t height = -1;
 
-			std::auto_ptr<EXIFSimple> exif_reader(new EXIFSimple());
+			std::shared_ptr<EXIFSimple> exif_reader(new EXIFSimple());
 			exif_reader->open(image_filename);
 
 			//分情况讨论，考虑focal是否提供
@@ -123,7 +124,7 @@ int main(int argc, char **argv)
 							height = imageRGBA.Height();
 						}
 						else
-							continue; // image is not considered, cannot be read
+							continue; // 还没有考虑其他类型的图像，先过
 					}
 				}
 				if (focal_pix_per_mm == -1)

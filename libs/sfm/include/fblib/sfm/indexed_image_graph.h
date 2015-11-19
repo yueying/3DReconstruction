@@ -31,16 +31,16 @@ namespace fblib  {
 
 			GraphT g;
 			map_Size_t_Node map_size_t_to_node; // Original image index to graph node
-			auto_ptr<map_NodeMapIndex> map_nodeMapIndex; // Association of data to graph Node
-			auto_ptr<map_NodeMapName> map_codeMapName; // Association of data to graph Node
-			auto_ptr<map_EdgeMap> map_edgeMap; // Number of point matches between the source and the target
+			shared_ptr<map_NodeMapIndex> map_nodeMapIndex; // Association of data to graph Node
+			shared_ptr<map_NodeMapName> map_codeMapName; // Association of data to graph Node
+			shared_ptr<map_EdgeMap> map_edgeMap; // Number of point matches between the source and the target
 
 			IndexedImageGraph(const PairWiseMatches & map_indexed_matches,
 				const std::vector<string> &vec_fileNames)
 			{
-				map_nodeMapIndex = auto_ptr<map_NodeMapIndex>(new map_NodeMapIndex(g));
-				map_codeMapName = auto_ptr<map_NodeMapName>(new map_NodeMapName(g));
-				map_edgeMap = auto_ptr<map_EdgeMap>(new map_EdgeMap(g));
+				map_nodeMapIndex = shared_ptr<map_NodeMapIndex>(new map_NodeMapIndex(g));
+				map_codeMapName = shared_ptr<map_NodeMapName>(new map_NodeMapName(g));
+				map_edgeMap = shared_ptr<map_EdgeMap>(new map_EdgeMap(g));
 
 				//A-- Compute the number of node we need
 				set<size_t> setNodes;
