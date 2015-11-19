@@ -1,12 +1,11 @@
-#include "fblib/camera/pinhole_camera.h"
+ï»¿#include "fblib/camera/pinhole_camera.h"
 #include "fblib/image/image.h"
 #include "fblib/feature/features.h"
 #include "fblib/feature/matcher_brute_force.h"
 #include "fblib/feature/indexed_match_decorator.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/triangulation.h"
 #include "fblib/multiview/essential_estimation.h"
-
 #include "fblib/feature/sift.hpp"
 #include "fblib/feature/two_view_matches.h"
 
@@ -20,22 +19,23 @@ using namespace fblib::utils;
 using namespace fblib::feature;
 using namespace fblib::camera;
 using namespace fblib::math;
+using namespace fblib::multiview;
 
 
-/**	´Ó(ASCII)ÎÄ¼şÖĞ¶ÁÈ¡Ïà»úÄÚ²Î
+/**	ä»(ASCII)æ–‡ä»¶ä¸­è¯»å–ç›¸æœºå†…å‚
  *	fx 0 cx
  *  0 fy cy
  *  0 0 1
  */
 bool ReadIntrinsic(const std::string &file_name, Mat3 &camera_matrix);
 
-/** ½«3DµãºÍÏà»úÎ»ÖÃÊı¾İµ¼Èëµ½PLYÎÄ¼şÖĞ
+/** å°†3Dç‚¹å’Œç›¸æœºä½ç½®æ•°æ®å¯¼å…¥åˆ°PLYæ–‡ä»¶ä¸­
  */
 bool ExportToPly(const std::vector<Vec3> &vec_points,
 	const std::vector<Vec3> &vec_camera_pose,
 	const std::string &file_name);
 
-/**	Í¨¹ıÈı½Ç»¯µ¼³öÊı¾İµãÎ»ply¸ñÊ½£¨µãÔÚÏà»úÇ°£©
+/**	é€šè¿‡ä¸‰è§’åŒ–å¯¼å‡ºæ•°æ®ç‚¹ä½plyæ ¼å¼ï¼ˆç‚¹åœ¨ç›¸æœºå‰ï¼‰
  */
 void TriangulateAndSaveResult(
 	const PinholeCamera &left_camera,
@@ -56,20 +56,20 @@ int main(int argc, char *argv[]) {
 	ReadImage(left_image_name.c_str(), &left_image);
 	ReadImage(right_image_name.c_str(), &right_image);
 
-	// ¶¨ÒåÊ¹ÓÃµÄÃèÊö×Ó(SIFT : 128 floatÀàĞÍÖµ)
+	// å®šä¹‰ä½¿ç”¨çš„æè¿°å­(SIFT : 128 floatç±»å‹å€¼)
 	typedef float descType;
 	typedef Descriptor<descType, 128> SIFTDescriptor;
 
-	// ¶¨ÒåvectorÓÃÀ´´æ´¢¼ì²âµ½µÄÌØÕ÷ºÍ¶ÔÓ¦ÃèÊö×Ó
+	// å®šä¹‰vectorç”¨æ¥å­˜å‚¨æ£€æµ‹åˆ°çš„ç‰¹å¾å’Œå¯¹åº”æè¿°å­
 	std::vector<ScalePointFeature> left_features, right_features;
 	std::vector<SIFTDescriptor > left_descriptors, right_descriptors;
-	// ¼ÆËãSIFTÌØÕ÷£¬ÉèÖÃ¼ÆËãÌØÕ÷²ÎÊı
+	// è®¡ç®—SIFTç‰¹å¾ï¼Œè®¾ç½®è®¡ç®—ç‰¹å¾å‚æ•°
 	bool is_zoom = false;
 	bool is_root_sift = true;
 	SIFTDetector(left_image, left_features, left_descriptors, is_zoom, is_root_sift);
 	SIFTDetector(right_image, right_features, right_descriptors, is_zoom, is_root_sift);
 
-	// ½«×óÓÒÍ¼ÏñºÏ²¢ÏÔÊ¾½øĞĞ¶Ô±È
+	// å°†å·¦å³å›¾åƒåˆå¹¶æ˜¾ç¤ºè¿›è¡Œå¯¹æ¯”
 	{
 		Image<unsigned char> concat;
 		ConcatHorizontal(left_image, right_image, concat);
@@ -77,12 +77,12 @@ int main(int argc, char *argv[]) {
 		WriteImage(out_filename.c_str(), concat);
 	}
 
-	// »­³ö×óÓÒÁ½·ùÍ¼ÏñµÄÌØÕ÷
+	// ç”»å‡ºå·¦å³ä¸¤å¹…å›¾åƒçš„ç‰¹å¾
   {
 	  Image<unsigned char> concat;
 	  ConcatHorizontal(left_image, right_image, concat);
 
-	  // »­³öÌØÕ÷ :
+	  // ç”»å‡ºç‰¹å¾ :
 	  for (size_t i = 0; i < left_features.size(); ++i)  {
 		  const ScalePointFeature &left_img = left_features[i];
 		  DrawCircle(left_img.x(), left_img.y(), left_img.scale(), 255, &concat);
@@ -96,25 +96,25 @@ int main(int argc, char *argv[]) {
   }
 
 	std::vector<IndexedMatch> vec_putative_matches;
-	// Ö´ĞĞÌØÕ÷Æ¥Åä£¬ÕÒ×î½üÁÚÆ¥Åä£¬Í¨¹ı¾àÀë±È½øĞĞ¹ıÂË
+	// æ‰§è¡Œç‰¹å¾åŒ¹é…ï¼Œæ‰¾æœ€è¿‘é‚»åŒ¹é…ï¼Œé€šè¿‡è·ç¦»æ¯”è¿›è¡Œè¿‡æ»¤
 	{
-		//¶¨ÒåÆ¥ÅäµÄ¶ÈÁ¿±ê×¼£¬²ÉÓÃÅ·Ê½¾àÀëµÄÆ½·½
+		//å®šä¹‰åŒ¹é…çš„åº¦é‡æ ‡å‡†ï¼Œé‡‡ç”¨æ¬§å¼è·ç¦»çš„å¹³æ–¹
 		typedef SquaredEuclideanDistanceVectorized<SIFTDescriptor::bin_type> Metric;
-		// ¶¨Òå±©Á¦Æ¥Åä
+		// å®šä¹‰æš´åŠ›åŒ¹é…
 		typedef ArrayMatcherBruteForce<SIFTDescriptor::bin_type, Metric> MatcherT;
-		// Éè¶¨¾àÀë±ÈÂÊ½øĞĞÆ¥Åä
+		// è®¾å®šè·ç¦»æ¯”ç‡è¿›è¡ŒåŒ¹é…
 		GetPutativesMatches<SIFTDescriptor, MatcherT>(left_descriptors, right_descriptors, Square(0.8), vec_putative_matches);
 
 		IndexedMatchDecorator<float> match_deduplicator(
 			vec_putative_matches, left_features, right_features);
 		match_deduplicator.getDeduplicated(vec_putative_matches);
 
-		// ¾àÀë±ÈÂÊ¹ıºó»­³öÏà¶ÔÓÚµÄÆ¥Åä
+		// è·ç¦»æ¯”ç‡è¿‡åç”»å‡ºç›¸å¯¹äºçš„åŒ¹é…
 		SvgDrawer svg_stream(left_image.Width() + right_image.Width(), max(left_image.Height(), right_image.Height()));
 		svg_stream.drawImage(left_image_name, left_image.Width(), left_image.Height());
 		svg_stream.drawImage(right_image_name, right_image.Width(), right_image.Height(), left_image.Width());
 		for (size_t i = 0; i < vec_putative_matches.size(); ++i) {
-			//µÃµ½ÌØÕ÷£¬»æÖÆÔ²ÓÃÖ±Ïß½øĞĞÁ¬½Ó
+			//å¾—åˆ°ç‰¹å¾ï¼Œç»˜åˆ¶åœ†ç”¨ç›´çº¿è¿›è¡Œè¿æ¥
 			const ScalePointFeature & left_feature = left_features[vec_putative_matches[i]._i];
 			const ScalePointFeature & right_feature = right_features[vec_putative_matches[i]._j];
 			svg_stream.drawLine(left_feature.x(), left_feature.y(), right_feature.x() + left_image.Width(), right_feature.y(), SvgStyle().stroke("green", 2.0));
@@ -127,17 +127,17 @@ int main(int argc, char *argv[]) {
 		svg_file.close();
 	}
 
-	// Í¨¹ıÁ½Í¼ÏñÖ®¼äµÄ±¾ÖÊ¾ØÕó¶ÔÆ¥Åä¶Ô½øĞĞ¹ıÂË
+	// é€šè¿‡ä¸¤å›¾åƒä¹‹é—´çš„æœ¬è´¨çŸ©é˜µå¯¹åŒ¹é…å¯¹è¿›è¡Œè¿‡æ»¤
   {
 	  Mat3 camera_matrix;
-	  //¶ÁÈ¡Ïà»úÄÚ²Î¾ØÕó
+	  //è¯»å–ç›¸æœºå†…å‚çŸ©é˜µ
 	  if (!ReadIntrinsic(fblib::utils::create_filespec(input_dir, "camera_matrix", "txt"), camera_matrix))
 	  {
 		  std::cerr << "Cannot read intrinsic parameters." << std::endl;
 		  return EXIT_FAILURE;
 	  }
 
-	  //A. ×¼±¸Æ¥ÅäµÄ¶ÔÓ¦µã
+	  //A. å‡†å¤‡åŒ¹é…çš„å¯¹åº”ç‚¹
 	  Mat left_points(2, vec_putative_matches.size());
 	  Mat right_points(2, vec_putative_matches.size());
 	  for (size_t k = 0; k < vec_putative_matches.size(); ++k)  {
@@ -147,19 +147,19 @@ int main(int argc, char *argv[]) {
 		  right_points.col(k) = right_feature.coords().cast<double>();
 	  }
 
-	  //B. ±¾ÖÊ¾ØÕóµÄÂ³°ôĞÔ¹À¼Æ 
+	  //B. æœ¬è´¨çŸ©é˜µçš„é²æ£’æ€§ä¼°è®¡ 
 	  std::vector<size_t> vec_inliers;
 	  Mat3 essential_matrix;
 	  std::pair<size_t, size_t> left_image_size(left_image.Width(), left_image.Height());
 	  std::pair<size_t, size_t> right_image_size(right_image.Width(), right_image.Height());
 	  double thresholdE = 0.0, NFA = 0.0;
 	  if (robustEssential(
-		  camera_matrix, camera_matrix,         // Ïà»ú¾ØÕó
-		  left_points, right_points,       // ×óÓÒ¶ÔÓ¦µã
-		  &essential_matrix,           // ±¾ÖÊ¾ØÕó
+		  camera_matrix, camera_matrix,         // ç›¸æœºçŸ©é˜µ
+		  left_points, right_points,       // å·¦å³å¯¹åº”ç‚¹
+		  &essential_matrix,           // æœ¬è´¨çŸ©é˜µ
 		  &vec_inliers, // inliers 
-		  left_image_size,    // ×óÍ¼Ïñ´óĞ¡
-		  right_image_size,    // ÓÒÍ¼Ïñ´óĞ¡
+		  left_image_size,    // å·¦å›¾åƒå¤§å°
+		  right_image_size,    // å³å›¾åƒå¤§å°
 		  &thresholdE,  // Found AContrario Theshold
 		  &NFA,         // Found AContrario NFA
 		  std::numeric_limits<double>::infinity()))
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
 			  << " putatives correspondences"
 			  << std::endl;
 
-		  // ÏÔÊ¾Í¨¹ı±¾ÖÊ¾ØÕóÔ¼ÊøÖ®ºóµÄÆ¥Åäµã¶Ô
+		  // æ˜¾ç¤ºé€šè¿‡æœ¬è´¨çŸ©é˜µçº¦æŸä¹‹åçš„åŒ¹é…ç‚¹å¯¹
 		  SvgDrawer svg_stream(left_image.Width() + right_image.Width(), max(left_image.Height(), right_image.Height()));
 		  svg_stream.drawImage(left_image_name, left_image.Width(), left_image.Height());
 		  svg_stream.drawImage(right_image_name, right_image.Width(), right_image.Height(), left_image.Width());
@@ -188,7 +188,7 @@ int main(int argc, char *argv[]) {
 		  svg_file << svg_stream.closeSvgFile().str();
 		  svg_file.close();
 
-		  //¸ù¾İ±¾ÖÊ¾ØÕó¼ÆËã³öÏà»úµÄÍâ²Î
+		  //æ ¹æ®æœ¬è´¨çŸ©é˜µè®¡ç®—å‡ºç›¸æœºçš„å¤–å‚
 		  Mat3 R;
 		  Vec3 t;
 		  if (!EstimateRtFromE(camera_matrix, camera_matrix, left_points, right_points, essential_matrix, vec_inliers,
@@ -201,18 +201,18 @@ int main(int argc, char *argv[]) {
 			  << "-- Rotation|Translation matrices: --" << std::endl
 			  << R << std::endl << std::endl << t << std::endl;
 
-		  // ¹¹½¨×óÓÒÏà»ú
+		  // æ„å»ºå·¦å³ç›¸æœº
 		  PinholeCamera left_camera(camera_matrix, Mat3::Identity(), Vec3::Zero());
 		  PinholeCamera right_camera(camera_matrix, R, t);
 
-		  // Í¨¹ıÈı½Ç¶¨Î»¼ÆËãÈıÎ¬µã
+		  // é€šè¿‡ä¸‰è§’å®šä½è®¡ç®—ä¸‰ç»´ç‚¹
 		  std::vector<Vec3> vec_3d_points;
 		  TriangulateAndSaveResult(
 			  left_camera, right_camera,
 			  vec_inliers,
 			  left_points, right_points, vec_3d_points);
 
-		  // ½«Ïà»úÎ»ÖÃºÍ3dµãµ¼³ö£¬³ÉplyÎÄ¼ş
+		  // å°†ç›¸æœºä½ç½®å’Œ3dç‚¹å¯¼å‡ºï¼Œæˆplyæ–‡ä»¶
 		  std::vector<Vec3> vec_camera_pose;
 		  vec_camera_pose.push_back(left_camera.camera_center_);
 		  vec_camera_pose.push_back(right_camera.camera_center_);
@@ -227,7 +227,7 @@ int main(int argc, char *argv[]) {
 	return EXIT_SUCCESS;
 }
 
-// ¶ÁÈ¡Ïà»úÄÚ²Î
+// è¯»å–ç›¸æœºå†…å‚
 bool ReadIntrinsic(const std::string & file_name, Mat3 & camera_matrix)
 {
 	std::ifstream in;
@@ -245,7 +245,7 @@ bool ReadIntrinsic(const std::string & file_name, Mat3 & camera_matrix)
 	return true;
 }
 
-// ½«ĞÎ³ÉµÄ3DµãºÍÏà»úÎ»ÖÃµ¼Èëµ½PLY¸ñÊ½ÖĞ
+// å°†å½¢æˆçš„3Dç‚¹å’Œç›¸æœºä½ç½®å¯¼å…¥åˆ°PLYæ ¼å¼ä¸­
 bool ExportToPly(const std::vector<Vec3> & vec_points,
 	const std::vector<Vec3> & vec_camera_pose,
 	const std::string & file_name)
@@ -279,7 +279,7 @@ bool ExportToPly(const std::vector<Vec3> & vec_points,
 	return is_ok;
 }
 
-/**	Í¨¹ıÈı½Ç¶¨Î»£¬È·¶¨ÓĞĞ§3dµã£¬µ¼³öµ½PLYÖĞ
+/**	é€šè¿‡ä¸‰è§’å®šä½ï¼Œç¡®å®šæœ‰æ•ˆ3dç‚¹ï¼Œå¯¼å‡ºåˆ°PLYä¸­
  */
 void TriangulateAndSaveResult(
 	const PinholeCamera &left_camera,
@@ -298,7 +298,7 @@ void TriangulateAndSaveResult(
 		Vec3 world_point = Vec3::Zero();
 		TriangulateDLT(left_camera.projection_matrix_, left_point, right_camera.projection_matrix_, right_point, &world_point);
 
-		// ¼ÆËãÍ¶Ó°Îó²î
+		// è®¡ç®—æŠ•å½±è¯¯å·®
 		double projection_residual = (left_camera.Residual(world_point, left_point) + right_camera.Residual(world_point, right_point)) / 2.0;
 		vec_residuals.push_back(projection_residual);
 		if (left_camera.Depth(world_point) < 0 && right_camera.Depth(world_point) < 0) {
@@ -314,7 +314,7 @@ void TriangulateAndSaveResult(
 			<< " correspondence(s) with negative depth have been discarded."
 			<< std::endl;
 	}
-	//¶ÔÍ¶Ó°Îó²î½øĞĞÍ³¼Æ·ÖÎö ÏÔÊ¾
+	//å¯¹æŠ•å½±è¯¯å·®è¿›è¡Œç»Ÿè®¡åˆ†æ æ˜¾ç¤º
 	float min_residual , max_residual , meam_residual , median_residual ;
 	MinMaxMeanMedian<float>(vec_residuals.begin(), vec_residuals.end(),
 		min_residual , max_residual , meam_residual , median_residual );

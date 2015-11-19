@@ -80,7 +80,7 @@ namespace fblib{
 			// Accessors
 			//--
 
-			const reconstructorHelper & refToReconstructorHelper() const
+			const ReconstructorHelper & refToReconstructorHelper() const
 			{
 				return reconstructor_data_;
 			}
@@ -194,7 +194,7 @@ namespace fblib{
 			// Structure visibility
 			MapTracks map_selected_tracks_; // reconstructed track (visibility per 3D point)
 			// Scene and structure container (for disk output)
-			reconstructorHelper reconstructor_data_;
+			ReconstructorHelper reconstructor_data_;
 			//-----
 
 

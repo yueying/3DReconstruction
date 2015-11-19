@@ -3,9 +3,10 @@
 
 #include <iostream>
 #include "fblib/math/numeric.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 using namespace fblib::math;
-
+using fblib::camera::EuclideanToHomogeneous;
+using fblib::camera::Project;
 namespace fblib {
 	namespace multiview {
 
@@ -283,7 +284,7 @@ namespace fblib {
 
 			// Compute the residual of the projection distance(point_2d, Project(P,point_3d))
 			static double Error(const Mat34 & P, const Vec2 & point_2d, const Vec3 & point_3d) {
-				return (point_2d - Project(P, point_3d)).norm();
+				return (point_2d - fblib::camera::Project(P, point_3d)).norm();
 			}
 		};
 

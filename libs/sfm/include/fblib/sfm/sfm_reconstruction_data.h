@@ -14,7 +14,7 @@
 #include "fblib/tracking/tracks.h"
 #include "fblib/camera/pinhole_camera.h"
 #include "fblib/camera/brown_pinhole_camera.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 
 #include "fblib/sfm/sfm_ply_helper.h"
 #include "fblib/utils/progress.h"
@@ -111,7 +111,7 @@ namespace fblib{
 		}
 
 		/// Represent data in order to make 3D reconstruction process easier
-		struct reconstructorHelper
+		struct ReconstructorHelper
 		{
 			//--
 			// TYPEDEF
@@ -297,7 +297,7 @@ namespace fblib{
 							{
 								set_image_index.insert(map_cameratoIndex[imageId]);
 								const fblib::camera::BrownPinholeCamera & cam = (map_Camera.find(imageId))->second;
-								double z = fblib::multiview::Depth(cam.rotation_matrix_, cam.translation_vector_, pos);
+								double z = fblib::camera::Depth(cam.rotation_matrix_, cam.translation_vector_, pos);
 								znear[map_cameratoIndex[imageId]] = std::min(znear[map_cameratoIndex[imageId]], z);
 								zfar[map_cameratoIndex[imageId]] = std::max(zfar[map_cameratoIndex[imageId]], z);
 							}

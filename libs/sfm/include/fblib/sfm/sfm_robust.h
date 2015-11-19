@@ -8,7 +8,7 @@
 #include "fblib/multiview/solver_resection_kernel.h"
 #include "fblib/multiview/solver_resection_p3p.h"
 #include "fblib/multiview/solver_essential_kernel.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/triangulation.h"
 #include "fblib/camera/pinhole_camera.h"
 

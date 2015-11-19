@@ -1,4 +1,4 @@
-#include <cstdlib>
+﻿#include <cstdlib>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -53,11 +53,7 @@ int main(int argc, char ** argv)
 		return EXIT_FAILURE;
 	}
 
-
-	//---------------------------------------
-	// Read images names
-	//---------------------------------------
-
+	// 读取图像文件名
 	std::vector<fblib::feature::CameraInfo> vec_camera_info;
 	std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
 	if (!fblib::feature::LoadImageList(
@@ -70,17 +66,11 @@ int main(int argc, char ** argv)
 		return false;
 	}
 
-	//---------------------------------------
-	// Read matches
-	//---------------------------------------
-
+	// 从文件中导入匹配索引值
 	PairWiseMatches map_matches;
 	PairedIndexedMatchImport(match_file, map_matches);
 
-	// ------------
-	// For each pair, export the matches
-	// ------------
-
+	// 导出匹配对
 	fblib::utils::folder_create(out_dir);
 	std::cout << "\n Export pairwise matches" << std::endl;
 	ControlProgressDisplay my_progress_bar(map_matches.size());
@@ -91,25 +81,25 @@ int main(int argc, char ** argv)
 		const size_t I = iter->first.first;
 		const size_t J = iter->first.second;
 
-		std::vector<fblib::feature::CameraInfo>::const_iterator camInfoI = vec_camera_info.begin() + I;
-		std::vector<fblib::feature::CameraInfo>::const_iterator camInfoJ = vec_camera_info.begin() + J;
+		std::vector<fblib::feature::CameraInfo>::const_iterator caminfoI_it = vec_camera_info.begin() + I;
+		std::vector<fblib::feature::CameraInfo>::const_iterator caminfoJ_it = vec_camera_info.begin() + J;
 
 		const std::pair<size_t, size_t>
-			dimImage0 = std::make_pair(vec_cameras_intrinsic[camInfoI->intrinsic_id].width, vec_cameras_intrinsic[camInfoI->intrinsic_id].height),
-			dimImage1 = std::make_pair(vec_cameras_intrinsic[camInfoJ->intrinsic_id].width, vec_cameras_intrinsic[camInfoJ->intrinsic_id].height);
+			dim_image0 = std::make_pair(vec_cameras_intrinsic[caminfoI_it->intrinsic_id].width, vec_cameras_intrinsic[caminfoI_it->intrinsic_id].height),
+			dim_image1 = std::make_pair(vec_cameras_intrinsic[caminfoJ_it->intrinsic_id].width, vec_cameras_intrinsic[caminfoJ_it->intrinsic_id].height);
 
-		SvgDrawer svg_stream(dimImage0.first + dimImage1.first, max(dimImage0.second, dimImage1.second));
+		SvgDrawer svg_stream(dim_image0.first + dim_image1.first, max(dim_image0.second, dim_image1.second));
 		svg_stream.drawImage(fblib::utils::create_filespec(image_dir, vec_camera_info[I].image_name),
-			dimImage0.first,
-			dimImage0.second);
+			dim_image0.first,
+			dim_image0.second);
 		svg_stream.drawImage(fblib::utils::create_filespec(image_dir, vec_camera_info[J].image_name),
-			dimImage1.first,
-			dimImage1.second, dimImage0.first);
+			dim_image1.first,
+			dim_image1.second, dim_image0.first);
 
-		const vector<IndexedMatch> & vec_filtered_matches = iter->second;
+		const vector<IndexedMatch> &vec_filtered_matches = iter->second;
 
 		if (!vec_filtered_matches.empty()) {
-			// Load the features from the features files
+			// 从特征文件中导入特征
 			std::vector<ScalePointFeature> vec_featI, vec_featJ;
 			LoadFeatsFromFile(
 				fblib::utils::create_filespec(matches_dir, fblib::utils::basename_part(vec_camera_info[I].image_name), ".feat"),
@@ -118,21 +108,21 @@ int main(int argc, char ** argv)
 				fblib::utils::create_filespec(matches_dir, fblib::utils::basename_part(vec_camera_info[J].image_name), ".feat"),
 				vec_featJ);
 
-			//-- Draw link between features :
+			// 在两幅特征之间划线
 			for (size_t i = 0; i < vec_filtered_matches.size(); ++i)  {
 				const ScalePointFeature & left_img = vec_featI[vec_filtered_matches[i]._i];
 				const ScalePointFeature & right_img = vec_featJ[vec_filtered_matches[i]._j];
 				svg_stream.drawLine(left_img.x(), left_img.y(),
-					right_img.x() + dimImage0.first, right_img.y(), SvgStyle().stroke("green", 2.0));
+					right_img.x() + dim_image0.first, right_img.y(), SvgStyle().stroke("green", 2.0));
 			}
 
-			//-- Draw features (in two loop, in order to have the features upper the link, svg layer order):
+			// 绘制特征
 			for (size_t i = 0; i < vec_filtered_matches.size(); ++i)  {
 				const ScalePointFeature & left_img = vec_featI[vec_filtered_matches[i]._i];
 				const ScalePointFeature & right_img = vec_featJ[vec_filtered_matches[i]._j];
 				svg_stream.drawCircle(left_img.x(), left_img.y(), left_img.scale(),
 					SvgStyle().stroke("yellow", 2.0));
-				svg_stream.drawCircle(right_img.x() + dimImage0.first, right_img.y(), right_img.scale(),
+				svg_stream.drawCircle(right_img.x() + dim_image0.first, right_img.y(), right_img.scale(),
 					SvgStyle().stroke("yellow", 2.0));
 			}
 		}

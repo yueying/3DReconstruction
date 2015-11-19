@@ -23,6 +23,7 @@ define_fblib_lib(
 	fblib_base
 	fblib_image
 	fblib_feature
+	fblib_camera
 	)
 
 

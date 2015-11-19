@@ -5,7 +5,11 @@
 #include <fstream>
 
 #include "fblib/math/numeric.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
+
+using fblib::camera::Project;
+using fblib::camera::P_From_KRt;
+
 
 namespace fblib {
 	namespace multiview{

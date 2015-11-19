@@ -1,8 +1,8 @@
-﻿#include "multiview_precomp.h"
-#include "fblib/multiview/projection.h"
+﻿#include "camera_precomp.h"
+#include "fblib/camera/projection.h"
 
 namespace fblib {
-	namespace multiview{
+	namespace camera{
 		
 		void P_From_KRt(const Mat3 &K, const Mat3 &R, const Vec3 &t, Mat34 *P) {
 			P->block<3, 3>(0, 0) = R;

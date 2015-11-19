@@ -2,7 +2,7 @@
 #define FBLIB_SFM_RESECTION_KERNEL_H_
 
 #include <vector>
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/two_view_kernel.h"
 #include "fblib/math/numeric.h"
 
@@ -28,7 +28,7 @@ namespace fblib {
 				// Compute the residual of the projection distance(point_2d, Project(P,point_3d))
 				static double Error(const Mat34 & P, const Vec2 & point_2d, const Vec3 & point_3d)
 				{
-					Vec2 x = Project(P, point_3d);
+					Vec2 x = fblib::camera::Project(P, point_3d);
 					return (x - point_2d).norm();
 				}
 			};

@@ -1,9 +1,10 @@
 ﻿#include "multiview_precomp.h"
 #include "fblib/math/numeric.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/triangulation.h"
 #include "fblib/multiview/essential.h"
 
+using namespace fblib::camera;
 namespace fblib {
 	namespace multiview{
 		

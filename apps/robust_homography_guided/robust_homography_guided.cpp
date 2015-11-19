@@ -4,7 +4,7 @@
 #include "fblib/feature/matcher_brute_force.h"
 #include "fblib/feature/indexed_match_decorator.h"
 #include "fblib/feature/estimator_acransac_kernel_adaptator.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/triangulation.h"
 #include "fblib/multiview/essential_estimation.h"
 #include "fblib/multiview/solver_affine.h"

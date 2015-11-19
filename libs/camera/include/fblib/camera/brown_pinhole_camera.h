@@ -2,10 +2,9 @@
 #define FBLIB_CAMERA_BROWNPINHOLECAMERA_H
 
 #include "fblib/math/numeric.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/camera/pinhole_camera.h"
 
-using namespace fblib::multiview;
 namespace fblib{
 	namespace camera{
 		// Apply camera intrinsics to the normalized point to get image coordinates.
@@ -116,7 +115,7 @@ namespace fblib{
 
 			// Compute the depth of the X point. R*X[2]+t[2].
 			double Depth(const Vec3 &X) const{
-				return fblib::multiview::Depth(rotation_matrix_, translation_vector_, X);
+				return fblib::camera::Depth(rotation_matrix_, translation_vector_, X);
 			}
 
 			/// Return the angle (degree) between two pinhole point rays

@@ -3,7 +3,7 @@
 #include "fblib/feature/features.h"
 #include "fblib/feature/matcher_brute_force.h"
 #include "fblib/feature/indexed_match_decorator.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/triangulation.h"
 #include "fblib/multiview/essential_estimation.h"
 

@@ -1,6 +1,8 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/triangulation.h"
+
+using fblib::camera::HomogeneousToEuclidean;
 
 namespace fblib {
 	namespace multiview{

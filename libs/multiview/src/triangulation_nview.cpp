@@ -1,6 +1,7 @@
 ﻿#include "multiview_precomp.h"
 #include "fblib/multiview/triangulation_nview.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
+using namespace fblib::camera;
 
 namespace fblib {
 	namespace multiview{

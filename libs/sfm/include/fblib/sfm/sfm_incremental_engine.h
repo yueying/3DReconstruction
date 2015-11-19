@@ -62,7 +62,7 @@ namespace fblib{
 			/// Give a color to all the 3D points
 			void ColorizeTracks(std::vector<Vec3> & vec_tracks_color) const;
 
-			const reconstructorHelper & refToReconstructorHelper() const
+			const ReconstructorHelper & refToReconstructorHelper() const
 			{
 				return reconstructor_data_;
 			}
@@ -141,7 +141,7 @@ namespace fblib{
 			// ----
 
 			// helper to save reconstructed data (Camera and 3D points)
-			reconstructorHelper reconstructor_data_;
+			ReconstructorHelper reconstructor_data_;
 
 			// tracks that are reconstructed during the sequential SfM process
 			fblib::tracking::MapTracks map_reconstructed_;

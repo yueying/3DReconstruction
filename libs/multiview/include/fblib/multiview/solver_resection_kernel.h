@@ -2,10 +2,11 @@
 #define FBLIB_MULTIVIEW_RESECTION_KERNEL_H_
 
 #include <vector>
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/two_view_kernel.h"
 
 using namespace fblib::math;
+using namespace fblib::camera;
 
 namespace fblib {
 	namespace multiview {

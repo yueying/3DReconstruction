@@ -1293,7 +1293,7 @@ namespace fblib{
 			std::set<size_t> set_camIndex;
 			std::map<size_t, size_t> map_camIndexToNumber_extrinsic, map_camIndexToNumber_intrinsic;
 			size_t cpt = 0;
-			for (reconstructorHelper::Map_BrownPinholeCamera::const_iterator iter = reconstructor_data_.map_Camera.begin();
+			for (ReconstructorHelper::Map_BrownPinholeCamera::const_iterator iter = reconstructor_data_.map_Camera.begin();
 				iter != reconstructor_data_.map_Camera.end();  ++iter, ++cpt)
 			{
 				// in order to map camera index to contiguous number
@@ -1492,7 +1492,7 @@ namespace fblib{
 				}
 
 				// Get back camera external and intrinsic parameters
-				for (reconstructorHelper::Map_BrownPinholeCamera::iterator iter = reconstructor_data_.map_Camera.begin();
+				for (ReconstructorHelper::Map_BrownPinholeCamera::iterator iter = reconstructor_data_.map_Camera.begin();
 					iter != reconstructor_data_.map_Camera.end(); ++iter)
 				{
 					const size_t imageId = iter->first;
@@ -1549,7 +1549,7 @@ namespace fblib{
 		double IncrementalReconstructionEngine::ComputeResidualsHistogram(Histogram<double> * histo)
 		{
 			std::set<size_t> set_camIndex;
-			for (reconstructorHelper::Map_BrownPinholeCamera::const_iterator iter = reconstructor_data_.map_Camera.begin();
+			for (ReconstructorHelper::Map_BrownPinholeCamera::const_iterator iter = reconstructor_data_.map_Camera.begin();
 				iter != reconstructor_data_.map_Camera.end();
 				++iter)
 			{

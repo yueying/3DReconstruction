@@ -79,7 +79,7 @@ int main(int argc, char **argv)
   {
     std::cout << std::endl << " Ac-Sfm took (s): " << timer.Stop() << "." << std::endl;
 
-    const reconstructorHelper & reconstructor_helper_ref = to_3d_engine.refToReconstructorHelper();
+    const ReconstructorHelper & reconstructor_helper_ref = to_3d_engine.refToReconstructorHelper();
     std::vector<Vec3> vec_tracks_color;
     if (is_colored_point_cloud)
     {

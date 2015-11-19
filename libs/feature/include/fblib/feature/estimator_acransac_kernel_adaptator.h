@@ -15,8 +15,9 @@
 //  by the generic ACRANSAC routine.
 //
 #include "fblib/math/numeric.h"
+#include "fblib/multiview/conditioning.h"
 using namespace fblib::math;
-
+using namespace fblib::multiview;
 namespace fblib {
 	namespace feature{
 

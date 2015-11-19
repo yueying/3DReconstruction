@@ -2,10 +2,11 @@
 #define FBLIB_MULTIVIEW_SOLVER_HOMOGRAPHY_KERNEL_H_
 
 #include <vector>
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/two_view_kernel.h"
 
 using namespace fblib::math;
+using fblib::camera::EuclideanToHomogeneous;
 
 namespace fblib {
 	namespace multiview {

@@ -2,9 +2,7 @@
 #define FBLIB_CAMERA_PINHOLE_CAMERA_H
 
 #include "fblib/math/numeric.h"
-#include "fblib/multiview/projection.h"
-
-using namespace fblib::multiview;
+#include "fblib/camera/projection.h"
 
 namespace fblib{
 	namespace camera{
@@ -50,7 +48,7 @@ namespace fblib{
 
 			static Vec2 Project(const Mat34 &projection_matrix, const Vec3 &world_point)
 			{
-				return fblib::multiview::Project(projection_matrix, world_point);
+				return fblib::camera::Project(projection_matrix, world_point);
 			}
 
 			/**
@@ -62,7 +60,7 @@ namespace fblib{
 			 */
 			Vec2 Project(const Vec3 &world_point) const
 			{
-				return fblib::multiview::Project(projection_matrix_, world_point);
+				return fblib::camera::Project(projection_matrix_, world_point);
 			}
 
 			/**
@@ -78,7 +76,7 @@ namespace fblib{
 				const Mat34 &projection_matrix,
 				const Vec3 &world_point,
 				const Vec2 &ref) {
-				return (ref - fblib::multiview::Project(projection_matrix, world_point)).norm();
+				return (ref - fblib::camera::Project(projection_matrix, world_point)).norm();
 			}
 
 			/**
@@ -90,11 +88,11 @@ namespace fblib{
 			 * \return	返回投影误差
 			 */
 			double Residual(const Vec3 &world_point, const Vec2 &ref) const  {
-				return (ref - fblib::multiview::Project(projection_matrix_, world_point)).norm();
+				return (ref - fblib::camera::Project(projection_matrix_, world_point)).norm();
 			}
 
 			double ResidualSquared(const Vec3 &world_point, const Vec2& ref) const  {
-				return (ref - fblib::multiview::Project(projection_matrix_, world_point)).squaredNorm();
+				return (ref - fblib::camera::Project(projection_matrix_, world_point)).squaredNorm();
 			}
 
 			/**
@@ -105,7 +103,7 @@ namespace fblib{
 			* \return	返回相机坐标系下，X点的Zc坐标值
 			*/
 			double Depth(const Vec3 &X) const{
-				return fblib::multiview::Depth(rotation_matrix_, translation_vector_, X);
+				return fblib::camera::Depth(rotation_matrix_, translation_vector_, X);
 			}
 
 			/// Return the angle (degree) between two pinhole point rays

@@ -2,12 +2,14 @@
 #define FBLIB_APPS_ROBUST_ESSENTIAL_H_
 
 #include "fblib/multiview/solver_essential_kernel.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/triangulation.h"
 #include "fblib/feature/estimator_acransac.h"
 #include "fblib/feature/estimator_acransac_kernel_adaptator.h"
 
 using namespace fblib::feature;
+using fblib::camera::P_From_KRt;
+using fblib::camera::Depth;
 
 namespace fblib{
 	namespace multiview{
