@@ -30,8 +30,8 @@
 #endif
 namespace fblib{
 	namespace sfm{
-		using namespace std;
 
+		using namespace std;
 		// A simple container and undistort function for the Brown's distortion model [1]
 		// Variables:
 		// (x,y): 2D point in the image (pixel)
@@ -79,7 +79,7 @@ namespace fblib{
 		Image undistortImage(
 			const Image& I,
 			const BrownDistoModel& d,
-			fblib::image::RGBColor fillcolor = fblib::image::BLACK,
+			fblib::image::RGBColor fill_color = fblib::image::BLACK,
 			bool bcenteringPPpoint = false)
 		{
 			int w = I.Width();
@@ -90,6 +90,7 @@ namespace fblib{
 				offset = Vec2(cx, cy) - d.m_disto_center;
 
 			Image J(w, h);
+
 #ifdef USE_OPENMP
 #pragma omp parallel for
 #endif
@@ -102,7 +103,7 @@ namespace fblib{
 					xd -= offset(0);
 					yd -= offset(1);
 					if (!J.Contains((int)yd, (int)xd))
-						J(j, i) = fillcolor;
+						J(j, i) = fill_color;
 					else
 						J(j, i) = SampleLinear(I, (float)yd, (float)xd);
 				}
@@ -121,19 +122,19 @@ namespace fblib{
 
 			// Reconstructed tracks (updated during the process)
 			std::set<size_t> set_trackId;
-			std::map<size_t, Vec3> map_3DPoints; // Associated 3D point
+			std::map<size_t, Vec3> map_3d_points; // 相关的3D点
 
 			// Reconstructed camera information
 			std::set<size_t> set_imagedId;
 			Map_BrownPinholeCamera map_Camera;
 
-			bool exportToPlyFile(const std::string & file_name, const std::vector<Vec3> * pvec_color = NULL) const
+			bool exportToPlyFile(const std::string &file_name, const std::vector<Vec3> *pvec_color = NULL) const
 			{
 				// get back 3D point into a vector (map value to vector transformation)
 				std::vector<Vec3> vec_Reconstructed3DPoints;
-				vec_Reconstructed3DPoints.reserve(map_3DPoints.size());
-				std::transform(map_3DPoints.begin(),
-					map_3DPoints.end(),
+				vec_Reconstructed3DPoints.reserve(map_3d_points.size());
+				std::transform(map_3d_points.begin(),
+					map_3d_points.end(),
 					std::back_inserter(vec_Reconstructed3DPoints),
 					RetrieveValue());
 				//-- Add camera position to the Point cloud
@@ -142,7 +143,7 @@ namespace fblib{
 					iter != map_Camera.end(); ++iter) {
 					vec_camera_pose.push_back(iter->second.camera_center_);
 				}
-				return ExportToPly(vec_Reconstructed3DPoints, vec_camera_pose, file_name, pvec_color);
+				return exportToPly(vec_Reconstructed3DPoints, vec_camera_pose, file_name, pvec_color);
 			}
 
 			bool ExportToOpenMVGFormat(
@@ -274,7 +275,7 @@ namespace fblib{
 						// Look through the track and add point position
 						const tracking::SubmapTrack & track = (map_reconstructed.find(trackId))->second;
 
-						Vec3 pos = map_3DPoints.find(trackId)->second;
+						Vec3 pos = map_3d_points.find(trackId)->second;
 
 						if (pvec_color)
 						{
@@ -376,10 +377,10 @@ namespace fblib{
 								// Image with no null distortion
 								// - Open the image, undistort it and export it
 								fblib::image::Image<fblib::image::RGBColor > image;
-								if (fblib::image::ReadImage(fblib::utils::create_filespec(image_path, sImageName).c_str(), &image))
+								if (fblib::image::readImage(fblib::utils::create_filespec(image_path, sImageName).c_str(), &image))
 								{
 									fblib::image::Image<fblib::image::RGBColor> imageU = undistortImage(image, distoModel);
-									fblib::image::WriteImage(sOutImagePath.c_str(), imageU);
+									fblib::image::writeImage(sOutImagePath.c_str(), imageU);
 								}
 							}
 						}
@@ -453,10 +454,10 @@ namespace fblib{
 						const std::string & sImageName = file_names[imageIndex];
 						std::ostringstream os;
 						os << std::setw(8) << std::setfill('0') << count;
-						fblib::image::ReadImage(fblib::utils::create_filespec(image_path, sImageName).c_str(), &image);
+						fblib::image::readImage(fblib::utils::create_filespec(image_path, sImageName).c_str(), &image);
 						std::string sCompleteImageName = fblib::utils::create_filespec(
 							fblib::utils::folder_append_separator(out_dir) + "visualize", os.str(), "jpg");
-						fblib::image::WriteImage(sCompleteImageName.c_str(), image);
+						fblib::image::writeImage(sCompleteImageName.c_str(), image);
 					}
 
 					//pmvs_options.txt

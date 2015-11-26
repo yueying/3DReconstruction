@@ -234,7 +234,7 @@ namespace fblib{
 		bool GlobalReconstructionEngine::Process()
 		{
 			// 进行全局处理
-			if (!ReadInputData())  {
+			if (!readInputData())  {
 				FBLIB_INFO << "\nError while parsing input data" << std::endl;
 				return false;
 			}
@@ -549,7 +549,7 @@ namespace fblib{
 		  //-- Export camera center
 		  vec_C.push_back(map_camera_[camNodeId].camera_center_);
 	  }
-	  ExportToPly(vec_C, fblib::utils::create_filespec(out_dir_, "cameraPath", "ply"));
+	  exportToPly(vec_C, fblib::utils::create_filespec(out_dir_, "cameraPath", "ply"));
   }
 
 			//-------------------
@@ -669,7 +669,7 @@ namespace fblib{
 		  }
 		  FBLIB_INFO << "\n Tracks have been removed : " << set_idx_to_remove.size() << std::endl;
 	  }
-		  ExportToPly(vec_all_scenes_, fblib::utils::create_filespec(out_dir_, "raw_pointCloud_LP", "ply"));
+		  exportToPly(vec_all_scenes_, fblib::utils::create_filespec(out_dir_, "raw_pointCloud_LP", "ply"));
 
 		  {
 			  // Display some statistics of reprojection errors
@@ -766,7 +766,7 @@ namespace fblib{
 					++iter, ++i)
 				{
 					const Vec3 & point_3d = *iter;
-					reconstructor_data_.map_3DPoints[i] = point_3d;
+					reconstructor_data_.map_3d_points[i] = point_3d;
 					reconstructor_data_.set_trackId.insert(i);
 				}
 			}
@@ -781,7 +781,7 @@ namespace fblib{
 			return ci1.camera_matrix == ci2.camera_matrix;
 		}
 
-		bool GlobalReconstructionEngine::ReadInputData()
+		bool GlobalReconstructionEngine::readInputData()
 		{
 			if (!fblib::utils::is_folder(image_path_) ||
 				!fblib::utils::is_folder(matches_path_) ||
@@ -805,7 +805,7 @@ namespace fblib{
 
 			// a. Read images names
   {
-	  if (!fblib::feature::LoadImageList(
+	  if (!fblib::feature::loadImageList(
 		  lists_file, vec_camera_image_names_,
 		  vec_intrinsic_groups_
 		  ))
@@ -839,7 +839,7 @@ namespace fblib{
   }
 
 			// b. Read matches (Essential)
-			if (!feature::PairedIndexedMatchImport(sComputedMatchesFile_E, map_matches_fundamental_)) {
+			if (!feature::pairedIndexedMatchImport(sComputedMatchesFile_E, map_matches_fundamental_)) {
 				std::cerr << "Unable to read the Essential matrix matches" << std::endl;
 				return false;
 			}
@@ -1032,7 +1032,7 @@ namespace fblib{
 					//--> Estimate the best possible Rotation/Translation from E
 					Mat3 R;
 					Vec3 t;
-					if (!EstimateRtFromE(K, K, x1, x2, E, vec_inliers, &R, &t))
+					if (!estimateRtFromE(K, K, x1, x2, E, vec_inliers, &R, &t))
 					{
 						FBLIB_INFO << " /!\\ Failed to compute initial R|t for the initial pair"
 							<< std::endl;
@@ -1606,7 +1606,7 @@ namespace fblib{
 					Vec3 & point_3d = *iter;
 					point_3d = Vec3(pt[0], pt[1], pt[2]);
 				}
-				ExportToPly(vec_all_scenes, fblib::utils::create_filespec(out_dir_, "raw_pointCloud_BA_T_Xi", "ply"));
+				exportToPly(vec_all_scenes, fblib::utils::create_filespec(out_dir_, "raw_pointCloud_BA_T_Xi", "ply"));
 
 				// Get back camera
 				i = 0;
@@ -1814,7 +1814,7 @@ namespace fblib{
 					Vec3 & point_3d = *iter;
 					point_3d = Vec3(pt[0], pt[1], pt[2]);
 				}
-				ExportToPly(vec_all_scenes, fblib::utils::create_filespec(out_dir_, "raw_pointCloud_BA_RT_Xi", "ply"));
+				exportToPly(vec_all_scenes, fblib::utils::create_filespec(out_dir_, "raw_pointCloud_BA_RT_Xi", "ply"));
 
 				// Get back camera
 				i = 0;
@@ -1930,7 +1930,7 @@ namespace fblib{
 					std::advance(iterTT, packet_vec[0].index);
 					const size_t indexImage = iterTT->first;
 					fblib::image::Image<fblib::image::RGBColor> image;
-					ReadImage(
+					readImage(
 						fblib::utils::create_filespec(
 						image_path_,
 						fblib::utils::basename_part(vec_camera_image_names_[indexImage].image_name),

@@ -102,7 +102,8 @@ namespace fblib
 			}
 			return viewport;
 		}
-
+		/** html流文件处理
+		*/
 		class HtmlDocumentStream
 		{
 		public:

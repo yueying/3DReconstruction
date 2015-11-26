@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
 	// 读取图像文件名
 	std::vector<fblib::feature::CameraInfo> vec_camera_info;
 	std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-	if (!fblib::feature::LoadImageList(
+	if (!fblib::feature::loadImageList(
 		fblib::utils::create_filespec(matches_dir, "lists", "txt"),
 		vec_camera_info,
 		vec_cameras_intrinsic
@@ -68,7 +68,7 @@ int main(int argc, char ** argv)
 
 	// 从文件中导入匹配索引值
 	PairWiseMatches map_matches;
-	PairedIndexedMatchImport(match_file, map_matches);
+	pairedIndexedMatchImport(match_file, map_matches);
 
 	// 导出匹配对
 	fblib::utils::folder_create(out_dir);

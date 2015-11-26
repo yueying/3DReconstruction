@@ -32,7 +32,7 @@ namespace fblib{
 
 		private:
 			/// Read input data (point correspondences, K matrix)
-			bool ReadInputData();
+			bool readInputData();
 
 			/**
 			 * \brief	选择最好的初始匹配对
@@ -131,9 +131,8 @@ namespace fblib{
 			fblib::feature::PairWiseMatches map_matches_fundamental_; // pairwise matches for Fundamental model
 			fblib::tracking::MapTracks map_tracks_; // reconstructed track (visibility per 3D point)
 
-			//-- configuration of the reconstruction
-			std::pair<size_t, size_t> initial_pair_;
-			bool is_use_bundle_adjustment_;
+			std::pair<size_t, size_t> initial_pair_;//!< 初始匹配对
+			bool is_use_bundle_adjustment_;//!<是否使用BA
 			bool is_refine_point_and_distortion_; // Boolean used to know if Principal point and Radial disto is refined
 
 			// -----
@@ -159,11 +158,8 @@ namespace fblib{
 			std::map<size_t, std::vector<size_t> > map_images_id_per_intrinsic_group_;
 			std::map<size_t, Vec6 > map_intrinsics_per_group_;
 
-			// -----
-			// Reporting ..
-			// ----
-			bool is_html_report_;
-			std::shared_ptr<fblib::utils::HtmlDocumentStream> html_doc_stream_;
+			bool is_html_report_;//!<是否产生html的报告
+			std::shared_ptr<fblib::utils::HtmlDocumentStream> html_doc_stream_;//!<html 流处理
 
 		};
 

@@ -11,7 +11,7 @@
 //
 // Usage :
 //  PairWiseMatches map_matches;
-//  PairedIndexedMatchImport(match_file, map_matches); // Load series of pairwise matches
+//  pairedIndexedMatchImport(match_file, map_matches); // Load series of pairwise matches
 //  //---------------------------------------
 //  // Compute tracks from matches
 //  //---------------------------------------

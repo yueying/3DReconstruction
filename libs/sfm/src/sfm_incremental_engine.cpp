@@ -80,7 +80,7 @@ namespace fblib{
 		bool IncrementalReconstructionEngine::Process()
 		{
 			// 导入数据
-			if (!ReadInputData())
+			if (!readInputData())
 				return false;
 
 			// 增量式重建
@@ -124,7 +124,7 @@ namespace fblib{
 				<< "-- Structure from Motion (statistics):\n"
 				<< "-- #Camera calibrated: " << reconstructor_data_.map_Camera.size()
 				<< " from " << camera_image_names_.size() << " input images.\n"
-				<< "-- #Tracks, #3D points: " << reconstructor_data_.map_3DPoints.size() << "\n"
+				<< "-- #Tracks, #3D points: " << reconstructor_data_.map_3d_points.size() << "\n"
 				<< "-------------------------------" << "\n";
 
 			Histogram<double> h;
@@ -143,7 +143,7 @@ namespace fblib{
 					<< "-- Structure from Motion (statistics):<br>"
 					<< "-- #Camera calibrated: " << reconstructor_data_.map_Camera.size()
 					<< " from " << camera_image_names_.size() << " input images.<br>"
-					<< "-- #Tracks, #3D points: " << reconstructor_data_.map_3DPoints.size() << "<br>"
+					<< "-- #Tracks, #3D points: " << reconstructor_data_.map_3d_points.size() << "<br>"
 					<< "-------------------------------" << "<br>";
 				html_doc_stream_->pushInfo(os.str());
 
@@ -164,7 +164,7 @@ namespace fblib{
 			return true;
 		}
 
-		bool IncrementalReconstructionEngine::ReadInputData()
+		bool IncrementalReconstructionEngine::readInputData()
 		{
 			if (!fblib::utils::is_folder(image_path_) ||
 				!fblib::utils::is_folder(matches_path_) ||
@@ -186,7 +186,7 @@ namespace fblib{
 			}
 
 			// a、读取图像名
-			if (!fblib::feature::LoadImageList(file_lists, camera_image_names_,
+			if (!fblib::feature::loadImageList(file_lists, camera_image_names_,
 				vec_intrinsic_groups_
 				))
 			{
@@ -208,7 +208,7 @@ namespace fblib{
 			}
 
 			// b. 读取对应匹配图片
-			if (!PairedIndexedMatchImport(computed_matches_file, map_matches_fundamental_)) {
+			if (!pairedIndexedMatchImport(computed_matches_file, map_matches_fundamental_)) {
 				std::cerr << "Unable to read the fundamental matrix matches" << std::endl;
 				return false;
 			}
@@ -318,6 +318,7 @@ namespace fblib{
 		*/
 		bool IncrementalReconstructionEngine::InitialPairChoice(std::pair<size_t, size_t> & initial_pair_index)
 		{
+			// 直接给出初始匹配对
 			if (initial_pair_ != std::make_pair<size_t, size_t>(0, 0))
 			{
 				initial_pair_index = initial_pair_;
@@ -457,7 +458,7 @@ namespace fblib{
 			//--> Estimate the best possible Rotation/Translation from E
 			Mat3 RJ;
 			Vec3 tJ;
-			if (!EstimateRtFromE(intrinsicCamI.camera_matrix, intrinsicCamJ.camera_matrix,
+			if (!estimateRtFromE(intrinsicCamI.camera_matrix, intrinsicCamJ.camera_matrix,
 				x1, x2, E, vec_inliers,
 				&RJ, &tJ))
 			{
@@ -513,7 +514,7 @@ namespace fblib{
 						&& camJ.Depth(vec_3dPoint[cptIndex]) > 0)  {
 						double angle = BrownPinholeCamera::AngleBetweenRay(camI, camJ, xI, xJ);
 						if (angle > 2.)  {
-							reconstructor_data_.map_3DPoints[trackId] = vec_3dPoint[cptIndex];
+							reconstructor_data_.map_3d_points[trackId] = vec_3dPoint[cptIndex];
 							reconstructor_data_.set_trackId.insert(trackId);
 							map_reconstructed_[trackId].insert(make_pair(I, vec_index[cptIndex]._i));
 							map_reconstructed_[trackId].insert(make_pair(J, vec_index[cptIndex]._j));
@@ -532,13 +533,13 @@ namespace fblib{
 			}
 
 			FBLIB_INFO << "--#Triangulated 3D points: " << vec_inliers.size() << "\n";
-			FBLIB_INFO << "--#Triangulated 3D points under threshold: " << reconstructor_data_.map_3DPoints.size() << "\n";
+			FBLIB_INFO << "--#Triangulated 3D points under threshold: " << reconstructor_data_.map_3d_points.size() << "\n";
 			FBLIB_INFO << "--#Putative correspondences: " << x1.cols() << "\n";
 
 			set_remaining_image_id_.erase(I);
 			set_remaining_image_id_.erase(J);
 
-			if (!reconstructor_data_.map_3DPoints.empty())
+			if (!reconstructor_data_.map_3d_points.empty())
 			{
 				// Add information related to the View (I,J) to the reconstruction data
 				reconstructor_data_.set_imagedId.insert(I);
@@ -625,7 +626,7 @@ namespace fblib{
 					"Reconstruction_Report.html").c_str());
 				htmlFileStream << html_doc_stream_->getDoc();
 			}
-			return !reconstructor_data_.map_3DPoints.empty();
+			return !reconstructor_data_.map_3d_points.empty();
 		}
 
 		/// Functor to sort a vector of pair given the pair's second value
@@ -790,7 +791,7 @@ namespace fblib{
 				iterfeatId != vec_featIdForResection.end();
 				++iterfeatId, ++iterTrackId, ++cpt)
 			{
-				point_3d.col(cpt) = reconstructor_data_.map_3DPoints[*iterTrackId];
+				point_3d.col(cpt) = reconstructor_data_.map_3d_points[*iterTrackId];
 				point_2d.col(cpt) = vec_featsImageIndex[*iterfeatId].coords().cast<double>();
 			}
 
@@ -982,7 +983,7 @@ namespace fblib{
 			  {
 				  ostringstream os;
 				  os << "scene_" << I << "-" << J;
-				  ExportToPly(vec_3dPoint,
+				  exportToPly(vec_3dPoint,
 					  fblib::utils::create_filespec(out_dir_, os.str(), "ply"));
 			  }
 
@@ -997,7 +998,7 @@ namespace fblib{
 			  const double maxThJ = std::max(4.0, map_ac_threshold_[J]);
 
 			  //- Add reconstructed point to the reconstruction data
-			  size_t cardPointsBefore = reconstructor_data_.map_3DPoints.size();
+			  size_t cardPointsBefore = reconstructor_data_.map_3d_points.size();
 			  for (size_t i = 0; i < vec_tracksToAdd.size(); ++i)
 			  {
 				  const size_t trackId = vec_tracksToAdd[i];
@@ -1018,7 +1019,7 @@ namespace fblib{
 					  {
 						  double angle = BrownPinholeCamera::AngleBetweenRay(cam1, cam2, x1, x2);
 						  if (angle > 2) {
-							  reconstructor_data_.map_3DPoints[trackId] = vec_3dPoint[i];
+							  reconstructor_data_.map_3d_points[trackId] = vec_3dPoint[i];
 							  reconstructor_data_.set_trackId.insert(trackId);
 							  map_reconstructed_[trackId].insert(make_pair(I, vec_index[i]._i));
 							  map_reconstructed_[trackId].insert(make_pair(J, vec_index[i]._j));
@@ -1028,7 +1029,7 @@ namespace fblib{
 			  }
 
 			  FBLIB_INFO << "--Triangulated 3D points [" << I << "-" << J << "]: "
-				  << "\t #Validated/#Possible: " << reconstructor_data_.map_3DPoints.size() - cardPointsBefore
+				  << "\t #Validated/#Possible: " << reconstructor_data_.map_3d_points.size() - cardPointsBefore
 				  << "/" << vec_3dPoint.size() << std::endl
 				  << " #3DPoint for the entire scene: " << reconstructor_data_.set_trackId.size() << std::endl;
 
@@ -1056,8 +1057,8 @@ namespace fblib{
 			std::map<size_t, std::set<size_t> > map_trackToErase; // trackid, imageIndexes
 			std::set<size_t> set_trackToErase;
 
-			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3DPoints.begin();
-				iter != reconstructor_data_.map_3DPoints.end(); ++iter)
+			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3d_points.begin();
+				iter != reconstructor_data_.map_3d_points.end(); ++iter)
 			{
 				const size_t trackId = iter->first;
 				const Vec3 & point_3d = iter->second;
@@ -1127,7 +1128,7 @@ namespace fblib{
 					map_reconstructed_[trackId].clear();
 					map_reconstructed_.erase(trackId);
 					reconstructor_data_.set_trackId.erase(trackId);
-					reconstructor_data_.map_3DPoints.erase(trackId);
+					reconstructor_data_.map_3d_points.erase(trackId);
 					++rejectedTrack;
 				}
 			}
@@ -1200,7 +1201,7 @@ namespace fblib{
 					std::advance(iterTT, packet_vec[0].index);
 					const size_t indexImage = iterTT->first;
 					fblib::image::Image<fblib::image::RGBColor> image;
-					ReadImage(
+					readImage(
 						fblib::utils::create_filespec(
 						image_path_,
 						fblib::utils::basename_part(camera_image_names_[indexImage].image_name),
@@ -1248,12 +1249,12 @@ namespace fblib{
 
 			const size_t nbCams = reconstructor_data_.map_Camera.size();
 			const size_t nbIntrinsics = map_images_id_per_intrinsic_group_.size();
-			const size_t nbPoints3D = reconstructor_data_.map_3DPoints.size();
+			const size_t nbPoints3D = reconstructor_data_.map_3d_points.size();
 
 			// Count the number of measurement (sum of the reconstructed track length)
 			size_t nbmeasurements = 0;
-			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3DPoints.begin();
-				iter != reconstructor_data_.map_3DPoints.end();
+			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3d_points.begin();
+				iter != reconstructor_data_.map_3d_points.end();
 				++iter)
 			{
 				const size_t trackId = iter->first;
@@ -1343,8 +1344,8 @@ namespace fblib{
 			}
 
 			// Setup 3D points
-			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3DPoints.begin();
-				iter != reconstructor_data_.map_3DPoints.end();
+			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3d_points.begin();
+				iter != reconstructor_data_.map_3d_points.end();
 				++iter)
 			{
 				const Vec3 & point_3d = iter->second;
@@ -1355,8 +1356,8 @@ namespace fblib{
 
 			// fill measurements
 			cpt = 0;
-			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3DPoints.begin();
-				iter != reconstructor_data_.map_3DPoints.end();
+			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3d_points.begin();
+				iter != reconstructor_data_.map_3d_points.end();
 				++iter)
 			{
 				const size_t trackId = iter->first;
@@ -1483,8 +1484,8 @@ namespace fblib{
 
 				// Get back 3D points
 				cpt = 0;
-				for (std::map<size_t, Vec3>::iterator iter = reconstructor_data_.map_3DPoints.begin();
-					iter != reconstructor_data_.map_3DPoints.end(); ++iter, ++cpt)
+				for (std::map<size_t, Vec3>::iterator iter = reconstructor_data_.map_3d_points.begin();
+					iter != reconstructor_data_.map_3d_points.end(); ++iter, ++cpt)
 				{
 					const double * pt = ba_problem.mutable_points() + cpt * 3;
 					Vec3 & point_3d = iter->second;
@@ -1559,10 +1560,10 @@ namespace fblib{
 			// For each 3D point sum their reprojection error
 
 			std::vector<float> vec_residuals;
-			vec_residuals.reserve(reconstructor_data_.map_3DPoints.size());
+			vec_residuals.reserve(reconstructor_data_.map_3d_points.size());
 
-			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3DPoints.begin();
-				iter != reconstructor_data_.map_3DPoints.end();
+			for (std::map<size_t, Vec3>::const_iterator iter = reconstructor_data_.map_3d_points.begin();
+				iter != reconstructor_data_.map_3d_points.end();
 				++iter)
 			{
 				const size_t trackId = iter->first;

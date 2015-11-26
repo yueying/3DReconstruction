@@ -45,7 +45,7 @@ namespace fblib {
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		static bool PairedIndexedMatchImport(
+		static bool pairedIndexedMatchImport(
 			const std::string & file_name,
 			PairWiseMatches & map_indexed_matches)
 		{

@@ -139,7 +139,7 @@ int main(int argc, char **argv)
 
 	std::vector<fblib::feature::CameraInfo> vec_camera_info;
 	std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-	if (!fblib::feature::LoadImageList(file_lists, vec_camera_info,
+	if (!fblib::feature::loadImageList(file_lists, vec_camera_info,
 		vec_cameras_intrinsic
 		))
 	{
@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 			//如果文件夹下不存在特征及描述，则进行计算
 			if (!fblib::utils::file_exists(feat) || !fblib::utils::file_exists(desc)) {
 
-				if (!ReadImage(file_names[i].c_str(), &gray_image))
+				if (!readImage(file_names[i].c_str(), &gray_image))
 					continue;
 
 				// 计算特征和描述，然后将他们导入到文件中
@@ -229,7 +229,7 @@ int main(int argc, char **argv)
 	// 如果匹配已经存在，重新导入
 	if (fblib::utils::file_exists(out_dir + "/matches.putative.txt"))
 	{
-		PairedIndexedMatchImport(out_dir + "/matches.putative.txt", map_putatives_matches);
+		pairedIndexedMatchImport(out_dir + "/matches.putative.txt", map_putatives_matches);
 		std::cout << std::endl << "PUTATIVE MATCHES -- PREVIOUS RESULTS LOADED" << std::endl;
 	}
 	else // 计算匹配

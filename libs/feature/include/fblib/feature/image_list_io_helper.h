@@ -66,7 +66,7 @@ namespace fblib{
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		static bool LoadImageList(const std::string list_file_name,
+		static bool loadImageList(const std::string list_file_name,
 			std::vector<CameraInfo> &vec_camera_info,
 			std::vector<IntrinsicCameraInfo> &vec_cameras_intrinsic,
 			bool is_verbose = true)
@@ -201,14 +201,14 @@ namespace fblib{
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		static bool LoadImageList(const std::string list_file_name,
+		static bool loadImageList(const std::string list_file_name,
 			std::vector<std::string> & vec_camera_image_name,
 			bool is_verbose = true)
 		{
 			vec_camera_image_name.clear();
 			std::vector<fblib::feature::CameraInfo> vec_camera_info;
 			std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-			if (LoadImageList(list_file_name,
+			if (loadImageList(list_file_name,
 				vec_camera_info,
 				vec_cameras_intrinsic,
 				is_verbose))

@@ -2,7 +2,7 @@
 
 #include "fblib/math/numeric.h"
 #include "fblib/multiview/essential.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/solver_essential_five_point.h"
 #include "testing.h"
 
@@ -10,7 +10,7 @@
 
 using namespace fblib::multiview;
 using namespace fblib::math;
-
+using namespace fblib::camera;
 struct TestData {
   //-- Dataset that encapsulate :
   // 3D points and their projection given P1 and P2

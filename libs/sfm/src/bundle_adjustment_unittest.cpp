@@ -5,13 +5,14 @@
 #include "testing.h"
 
 #include "fblib/multiview/nview_data_sets.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 
 #include "fblib/sfm/pinhole_ceres_functor.h"
 #include "fblib/sfm/problem_data_container.h"
 
 using namespace fblib::multiview;
 using namespace fblib::sfm;
+using namespace fblib::camera;
 
 /**	通过Bundle Adjustment来优化相机的内外参，给出模拟环境，对观测点添加[-.5,.5]的随机噪声
  */

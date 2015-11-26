@@ -105,21 +105,21 @@ int main(int argc, char **argv)
 			if (!exif_reader->doesHaveExifInfo() || focal_pix_per_mm != -1)
 			{
 				Image<unsigned char> image;
-				if (ReadImage(image_filename.c_str(), &image))  {
+				if (readImage(image_filename.c_str(), &image))  {
 					width = image.Width();
 					height = image.Height();
 				}
 				else
 				{
 					Image<RGBColor> imageRGB;
-					if (ReadImage(image_filename.c_str(), &imageRGB)) {
+					if (readImage(image_filename.c_str(), &imageRGB)) {
 						width = imageRGB.Width();
 						height = imageRGB.Height();
 					}
 					else
 					{
 						Image<RGBAColor> imageRGBA;
-						if (ReadImage(image_filename.c_str(), &imageRGBA))  {
+						if (readImage(image_filename.c_str(), &imageRGBA))  {
 							width = imageRGBA.Width();
 							height = imageRGBA.Height();
 						}

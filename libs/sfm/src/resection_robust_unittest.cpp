@@ -6,11 +6,12 @@
 #include "fblib/feature/score_evaluator.h"
 #include "fblib/sfm/resection_kernel.h"
 
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/nview_data_sets.h"
 
 using namespace fblib::feature;
 using namespace fblib::multiview;
+using namespace fblib::camera;
 
 TEST(Resection_L_Infinity, Robust_OutlierFree) {
 

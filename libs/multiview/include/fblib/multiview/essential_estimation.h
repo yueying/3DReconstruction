@@ -1,11 +1,11 @@
 ﻿#ifndef FBLIB_APPS_ROBUST_ESSENTIAL_H_
 #define FBLIB_APPS_ROBUST_ESSENTIAL_H_
 
-#include "fblib/multiview/solver_essential_kernel.h"
 #include "fblib/camera/projection.h"
-#include "fblib/multiview/triangulation.h"
 #include "fblib/feature/estimator_acransac.h"
 #include "fblib/feature/estimator_acransac_kernel_adaptator.h"
+#include "fblib/multiview/solver_essential_kernel.h"
+#include "fblib/multiview/triangulation.h"
 
 using namespace fblib::feature;
 using fblib::camera::P_From_KRt;
@@ -82,7 +82,7 @@ namespace fblib{
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		bool EstimateRtFromE(const Mat3 &left_camera_intrinsic, const Mat3 &right_camera_intrinsic,
+		bool estimateRtFromE(const Mat3 &left_camera_intrinsic, const Mat3 &right_camera_intrinsic,
 			const Mat &left_points, const Mat &right_points,
 			const Mat3 &essential_matrix, const std::vector<size_t> &vec_inliers,
 			Mat3 *rotation_matrix, Vec3 *translation_vector)
@@ -100,7 +100,7 @@ namespace fblib{
 			// 从本质矩阵中恢复相机的外参
 			MotionFromEssential(essential_matrix, &vec_rotation, &vec_translation);
 
-			//-> Test the 4 solutions will all the point
+			// 对所有的点测试本质矩阵分解的4种可能性
 			assert(vec_rotation.size() == 4);
 			assert(vec_translation.size() == 4);
 
@@ -120,13 +120,13 @@ namespace fblib{
 					const Vec2 & x1_ = left_points.col(vec_inliers[k]);
 					const Vec2 & x2_ = right_points.col(vec_inliers[k]);
 					TriangulateDLT(P1, x1_, P2, x2_, &X);
-					// Test if point is front to the two cameras.
+					// 测试点是否在两个相机的前面
 					if (Depth(R1, t1, X) > 0 && Depth(R2, t2, X) > 0) {
 						++f[i];
 					}
 				}
 			}
-			// Check the solution :
+			// 对结果进行分析
 			std::cout << "\translation_vector Number of points in front of both cameras:"
 				<< f[0] << " " << f[1] << " " << f[2] << " " << f[3] << std::endl;
 			std::vector<size_t>::iterator iter = max_element(f.begin(), f.end());

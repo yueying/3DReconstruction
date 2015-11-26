@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "fblib/multiview/nview_data_sets.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/sfm/linear_programming_interface.h"
 #include "fblib/sfm/linear_programming_osi.h"
 #include "fblib/sfm/bisection_linear_programming.h"
@@ -13,9 +13,10 @@
 using namespace fblib::math;
 using namespace fblib::multiview;
 using namespace fblib::sfm;
+using namespace fblib::camera;
 
 // 平移操作
-void Translate(const Mat3X & input_3d_point, const Vec3 & translation,
+void Translate(const Mat3X &input_3d_point, const Vec3 &translation,
   Mat3X * output_3d_point)  {
     output_3d_point->resize(input_3d_point.rows(), input_3d_point.cols());
     for (size_t i=0; i<(size_t)input_3d_point.cols(); ++i) {

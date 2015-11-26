@@ -40,8 +40,8 @@ int main() {
 		+ "/imageData/StanfordMobileVisualSearch/Ace_1.png";
 
 	Image<unsigned char> left_image, right_image;
-	ReadImage(left_image_name.c_str(), &left_image);
-	ReadImage(right_image_name.c_str(), &right_image);
+	readImage(left_image_name.c_str(), &left_image);
+	readImage(right_image_name.c_str(), &right_image);
 
 	// Define the used descriptor (SIFT : 128 float value)
 	typedef unsigned char descType;
@@ -59,15 +59,15 @@ int main() {
 	// Show both images side by side
 	{
 		Image<unsigned char> concat;
-		ConcatHorizontal(left_image, right_image, concat);
+		concatHorizontal(left_image, right_image, concat);
 		string out_filename = "00_images.jpg";
-		WriteImage(out_filename.c_str(), concat);
+		writeImage(out_filename.c_str(), concat);
 	}
 
 	//- Draw features on the two image (side by side)
   {
 	  Image<unsigned char> concat;
-	  ConcatHorizontal(left_image, right_image, concat);
+	  concatHorizontal(left_image, right_image, concat);
 
 	  //-- Draw features :
 	  for (size_t i = 0; i < left_features.size(); ++i)  {
@@ -79,7 +79,7 @@ int main() {
 		  DrawCircle(right_img.x() + left_image.Width(), right_img.y(), right_img.scale(), 255, &concat);
 	  }
 	  string out_filename = "01_features.jpg";
-	  WriteImage(out_filename.c_str(), concat);
+	  writeImage(out_filename.c_str(), concat);
   }
 
 	//-- Perform matching -> find Nearest neighbor, filtered with Distance ratio

@@ -27,17 +27,17 @@ using namespace fblib::multiview;
  *  0 fy cy
  *  0 0 1
  */
-bool ReadIntrinsic(const std::string &file_name, Mat3 &camera_matrix);
+bool readIntrinsic(const std::string &file_name, Mat3 &camera_matrix);
 
 /** 将3D点和相机位置数据导入到PLY文件中
  */
-bool ExportToPly(const std::vector<Vec3> &vec_points,
+bool exportToPly(const std::vector<Vec3> &vec_points,
 	const std::vector<Vec3> &vec_camera_pose,
 	const std::string &file_name);
 
 /**	通过三角化导出数据点位ply格式（点在相机前）
  */
-void TriangulateAndSaveResult(
+void triangulateAndSaveResult(
 	const PinholeCamera &left_camera,
 	const PinholeCamera &right_camera,
 	const std::vector<size_t> &vec_inliers,
@@ -53,8 +53,8 @@ int main(int argc, char *argv[]) {
 	std::string right_image_name = input_dir + "100_7102.jpg";
 
 	Image<unsigned char> left_image, right_image;
-	ReadImage(left_image_name.c_str(), &left_image);
-	ReadImage(right_image_name.c_str(), &right_image);
+	readImage(left_image_name.c_str(), &left_image);
+	readImage(right_image_name.c_str(), &right_image);
 
 	// 定义使用的描述子(SIFT : 128 float类型值)
 	typedef float descType;
@@ -72,15 +72,15 @@ int main(int argc, char *argv[]) {
 	// 将左右图像合并显示进行对比
 	{
 		Image<unsigned char> concat;
-		ConcatHorizontal(left_image, right_image, concat);
+		concatHorizontal(left_image, right_image, concat);
 		std::string out_filename = "01_concat.jpg";
-		WriteImage(out_filename.c_str(), concat);
+		writeImage(out_filename.c_str(), concat);
 	}
 
 	// 画出左右两幅图像的特征
   {
 	  Image<unsigned char> concat;
-	  ConcatHorizontal(left_image, right_image, concat);
+	  concatHorizontal(left_image, right_image, concat);
 
 	  // 画出特征 :
 	  for (size_t i = 0; i < left_features.size(); ++i)  {
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 		  DrawCircle(right_img.x() + left_image.Width(), right_img.y(), right_img.scale(), 255, &concat);
 	  }
 	  std::string out_filename = "02_features.jpg";
-	  WriteImage(out_filename.c_str(), concat);
+	  writeImage(out_filename.c_str(), concat);
   }
 
 	std::vector<IndexedMatch> vec_putative_matches;
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
   {
 	  Mat3 camera_matrix;
 	  //读取相机内参矩阵
-	  if (!ReadIntrinsic(fblib::utils::create_filespec(input_dir, "camera_matrix", "txt"), camera_matrix))
+	  if (!readIntrinsic(fblib::utils::create_filespec(input_dir, "camera_matrix", "txt"), camera_matrix))
 	  {
 		  std::cerr << "Cannot read intrinsic parameters." << std::endl;
 		  return EXIT_FAILURE;
@@ -191,7 +191,7 @@ int main(int argc, char *argv[]) {
 		  //根据本质矩阵计算出相机的外参
 		  Mat3 R;
 		  Vec3 t;
-		  if (!EstimateRtFromE(camera_matrix, camera_matrix, left_points, right_points, essential_matrix, vec_inliers,
+		  if (!estimateRtFromE(camera_matrix, camera_matrix, left_points, right_points, essential_matrix, vec_inliers,
 			  &R, &t))
 		  {
 			  std::cerr << " /!\\ Failed to compute initial right_feature|t for the initial pair" << std::endl;
@@ -207,7 +207,7 @@ int main(int argc, char *argv[]) {
 
 		  // 通过三角定位计算三维点
 		  std::vector<Vec3> vec_3d_points;
-		  TriangulateAndSaveResult(
+		  triangulateAndSaveResult(
 			  left_camera, right_camera,
 			  vec_inliers,
 			  left_points, right_points, vec_3d_points);
@@ -216,7 +216,7 @@ int main(int argc, char *argv[]) {
 		  std::vector<Vec3> vec_camera_pose;
 		  vec_camera_pose.push_back(left_camera.camera_center_);
 		  vec_camera_pose.push_back(right_camera.camera_center_);
-		  ExportToPly(vec_3d_points, vec_camera_pose, "EssentialGeometry.ply");
+		  exportToPly(vec_3d_points, vec_camera_pose, "EssentialGeometry.ply");
 
 	  }
 	  else  {
@@ -228,7 +228,7 @@ int main(int argc, char *argv[]) {
 }
 
 // 读取相机内参
-bool ReadIntrinsic(const std::string & file_name, Mat3 & camera_matrix)
+bool readIntrinsic(const std::string & file_name, Mat3 & camera_matrix)
 {
 	std::ifstream in;
 	in.open(file_name.c_str(), std::ifstream::in);
@@ -246,7 +246,7 @@ bool ReadIntrinsic(const std::string & file_name, Mat3 & camera_matrix)
 }
 
 // 将形成的3D点和相机位置导入到PLY格式中
-bool ExportToPly(const std::vector<Vec3> & vec_points,
+bool exportToPly(const std::vector<Vec3> & vec_points,
 	const std::vector<Vec3> & vec_camera_pose,
 	const std::string & file_name)
 {
@@ -281,7 +281,7 @@ bool ExportToPly(const std::vector<Vec3> & vec_points,
 
 /**	通过三角定位，确定有效3d点，导出到PLY中
  */
-void TriangulateAndSaveResult(
+void triangulateAndSaveResult(
 	const PinholeCamera &left_camera,
 	const PinholeCamera &right_camera,
 	const std::vector<size_t> &vec_inliers,

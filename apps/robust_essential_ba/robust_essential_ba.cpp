@@ -35,12 +35,12 @@ using namespace fblib::sfm;
 bool readIntrinsic(const std::string & fileName, Mat3 & camera_matrix);
 
 /// Export 3D point vector and camera position to PLY format
-bool ExportToPly(const std::vector<Vec3> & vec_points,
+bool exportToPly(const std::vector<Vec3> & vec_points,
   const std::vector<Vec3> & vec_camera_pose,
   const std::string & file_name);
 
 /// Triangulate and export valid point as PLY (point in front of the cameras)
-void TriangulateAndSaveResult(
+void triangulateAndSaveResult(
   const PinholeCamera & left_camera,
   const PinholeCamera & right_camera,
   std::vector<size_t> & vec_inliers,
@@ -91,8 +91,8 @@ int main() {
   string right_image_name = input_dir + "100_7102.jpg";
 
   Image<unsigned char> left_image, right_image;
-  ReadImage(left_image_name.c_str(), &left_image);
-  ReadImage(right_image_name.c_str(), &right_image);
+  readImage(left_image_name.c_str(), &left_image);
+  readImage(right_image_name.c_str(), &right_image);
 
   // 定义使用的描述子(SIFT : 128 float类型值)
   typedef float descType;
@@ -110,15 +110,15 @@ int main() {
   // 将左右图像合并显示进行对比
   {
     Image<unsigned char> concat;
-    ConcatHorizontal(left_image, right_image, concat);
+    concatHorizontal(left_image, right_image, concat);
     string out_filename = "01_concat.jpg";
-    WriteImage(out_filename.c_str(), concat);
+    writeImage(out_filename.c_str(), concat);
   }
 
   // 画出左右两幅图像的特征
   {
     Image<unsigned char> concat;
-    ConcatHorizontal(left_image, right_image, concat);
+    concatHorizontal(left_image, right_image, concat);
 
 	// 画出特征 :
     for (size_t i=0; i < left_features.size(); ++i )  {
@@ -130,7 +130,7 @@ int main() {
       DrawCircle(right_img.x()+left_image.Width(), right_img.y(), right_img.scale(), 255, &concat);
     }
     string out_filename = "02_features.jpg";
-    WriteImage(out_filename.c_str(), concat);
+    writeImage(out_filename.c_str(), concat);
   }
 
   std::vector<IndexedMatch> vec_putative_matches;
@@ -230,7 +230,7 @@ int main() {
       //C. Extract the rotation and translation of the camera from the essential matrix
       Mat3 R;
       Vec3 t;
-      if (!EstimateRtFromE(camera_matrix, camera_matrix, left_points, right_points, essential_matrix, vec_inliers,
+      if (!estimateRtFromE(camera_matrix, camera_matrix, left_points, right_points, essential_matrix, vec_inliers,
         &R, &t))
       {
         std::cerr << " /!\\ Failed to compute initial R|t for the initial pair" << std::endl;
@@ -248,7 +248,7 @@ int main() {
       // invalid point that do not respect cheirality are discarded (removed
       //  from the list of inliers.
       std::vector<Vec3> vec_3d_points;
-      TriangulateAndSaveResult(
+      triangulateAndSaveResult(
         left_camera, right_camera,
         vec_inliers,
         left_points, right_points, vec_3d_points);
@@ -300,7 +300,7 @@ int main() {
       std::vector<Vec3> vec_camera_pose;
       vec_camera_pose.push_back( left_camera.camera_center_ );
       vec_camera_pose.push_back( right_camera.camera_center_ );
-      ExportToPly(vec_3d_points, vec_camera_pose, "EssentialGeometry.ply");
+      exportToPly(vec_3d_points, vec_camera_pose, "EssentialGeometry.ply");
 
     }
     else  {
@@ -330,7 +330,7 @@ bool readIntrinsic(const std::string & fileName, Mat3 & camera_matrix)
 }
 
 /// Export 3D point vector and camera position to PLY format
-bool ExportToPly(const std::vector<Vec3> & vec_points,
+bool exportToPly(const std::vector<Vec3> & vec_points,
   const std::vector<Vec3> & vec_camera_pose,
   const std::string & file_name)
 {
@@ -364,7 +364,7 @@ bool ExportToPly(const std::vector<Vec3> & vec_points,
 }
 
 /// Triangulate and export valid point as PLY (point in front of the cameras)
-void TriangulateAndSaveResult(
+void triangulateAndSaveResult(
   const PinholeCamera & left_camera,
   const PinholeCamera & right_camera,
   std::vector<size_t> & vec_inliers,

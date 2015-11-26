@@ -6,6 +6,7 @@
 #include "fblib/multiview/two_view_kernel.h"
 
 using namespace fblib::math;
+
 using fblib::camera::EuclideanToHomogeneous;
 
 namespace fblib {

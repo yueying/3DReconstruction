@@ -4,6 +4,7 @@
 
 using namespace std;
 using namespace fblib::multiview;
+using namespace fblib::camera;
 
 TEST(HomographyKernelTest, Fitting_Unnormalized) {
   // Define 3 knows homographies (Use as GT).

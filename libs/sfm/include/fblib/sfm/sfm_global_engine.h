@@ -119,7 +119,7 @@ namespace fblib{
 
 			/**	读取输入数据（对应点和相机内参）
 			 */
-			bool ReadInputData();
+			bool readInputData();
 
 			bool CleanGraph();
 

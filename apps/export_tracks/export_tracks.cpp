@@ -58,7 +58,7 @@ int main(int argc, char ** argv)
 	// ∂¡»°ÕºœÒ√˚
 	std::vector<fblib::feature::CameraInfo> vec_camera_info;
 	std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-	if (!fblib::feature::LoadImageList(
+	if (!fblib::feature::loadImageList(
 		fblib::utils::create_filespec(matches_dir, "lists", "txt"),
 		vec_camera_info,
 		vec_cameras_intrinsic
@@ -70,7 +70,7 @@ int main(int argc, char ** argv)
 
 	// ∂¡»°∆•≈‰
 	fblib::feature::PairWiseMatches map_matches;
-	PairedIndexedMatchImport(match_file, map_matches);
+	pairedIndexedMatchImport(match_file, map_matches);
 
 	fblib::tracking::TracksBuilder tracks_builder;
 	fblib::tracking::MapTracks map_tracks;

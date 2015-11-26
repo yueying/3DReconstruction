@@ -1,9 +1,10 @@
-﻿#include "fblib/multiview/projection.h"
+﻿#include "fblib/camera/projection.h"
 #include "fblib/multiview/nview_data_sets.h"
 #include "fblib/multiview/triangulation.h"
 #include "testing.h"
 
 using namespace fblib::multiview;
+using namespace fblib::camera;
 using namespace std;
 
 TEST(Triangulation, TriangulateDLT) {

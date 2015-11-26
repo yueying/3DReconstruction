@@ -19,7 +19,7 @@ namespace fblib{
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		static bool ExportToPly(const std::vector<Vec3> &vec_points,
+		static bool exportToPly(const std::vector<Vec3> &vec_points,
 			const std::string &file_name)
 		{
 			std::ofstream outfile;
@@ -56,7 +56,7 @@ namespace fblib{
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		static bool ExportToPly(const std::vector<Vec3> & vec_points,
+		static bool exportToPly(const std::vector<Vec3> & vec_points,
 			const std::vector<Vec3> & vec_camera_pose,
 			const std::string & file_name,
 			const std::vector<Vec3> * vec_colored_points = NULL)

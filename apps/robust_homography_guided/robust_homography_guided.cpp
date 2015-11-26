@@ -34,8 +34,8 @@ int main() {
     + "/data/imageData/StanfordMobileVisualSearch/Ace_1.png";
 
   Image<unsigned char> left_image, right_image;
-  ReadImage(left_image_name.c_str(), &left_image);
-  ReadImage(right_image_name.c_str(), &right_image);
+  readImage(left_image_name.c_str(), &left_image);
+  readImage(right_image_name.c_str(), &right_image);
 
   // 定义使用的描述子(SIFT : 128 float类型值)
   typedef float descType;
@@ -53,15 +53,15 @@ int main() {
   // 将左右图像合并显示进行对比
   {
     Image<unsigned char> concat;
-    ConcatHorizontal(left_image, right_image, concat);
+    concatHorizontal(left_image, right_image, concat);
     string out_filename = "01_concat.jpg";
-    WriteImage(out_filename.c_str(), concat);
+    writeImage(out_filename.c_str(), concat);
   }
 
   // 画出左右两幅图像的特征
   {
     Image<unsigned char> concat;
-    ConcatHorizontal(left_image, right_image, concat);
+    concatHorizontal(left_image, right_image, concat);
 
 	// 画出特征 :
     for (size_t i=0; i < left_features.size(); ++i )  {
@@ -73,7 +73,7 @@ int main() {
       DrawCircle(right_img.x()+left_image.Width(), right_img.y(), right_img.scale(), 255, &concat);
     }
     string out_filename = "02_features.jpg";
-    WriteImage(out_filename.c_str(), concat);
+    writeImage(out_filename.c_str(), concat);
   }
 
   std::vector<IndexedMatch> vec_putative_matches;
@@ -112,8 +112,8 @@ int main() {
     Mat right_points(2, vec_putative_matches.size());
 
     for (size_t k = 0; k < vec_putative_matches.size(); ++k)  {
-      const ScalePointFeature & left_feature = left_features[vec_putative_matches[k]._i];
-      const ScalePointFeature & right_feature = right_features[vec_putative_matches[k]._j];
+      const ScalePointFeature &left_feature = left_features[vec_putative_matches[k]._i];
+      const ScalePointFeature &right_feature = right_features[vec_putative_matches[k]._j];
       left_points.col(k) = left_feature.coords().cast<double>();
       right_points.col(k) = right_feature.coords().cast<double>();
     }

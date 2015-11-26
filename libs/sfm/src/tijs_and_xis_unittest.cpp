@@ -2,7 +2,7 @@
 #include "fblib/math/numeric.h"
 #include "testing.h"
 
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 
 #include "fblib/sfm/linear_programming_interface.h"
 #include "fblib/sfm/linear_programming_osi.h"
@@ -17,7 +17,7 @@ using namespace fblib::math;
 
 using namespace fblib::multiview;
 using namespace fblib::sfm;
-
+using namespace fblib::camera;
 TEST(Translation_Structure_L_Infinity, OSICLP_SOLVER) {
 
   const size_t kViewNum = 3;

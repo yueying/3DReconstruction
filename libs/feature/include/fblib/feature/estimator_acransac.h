@@ -114,7 +114,7 @@ namespace fblib {
 		 *
 		 * @param[in] kernel model and metric object
 		 * @param[out] vec_inliers points that fit the estimated model
-		 * @param[in] nIter maximum number of consecutive iterations
+		 * @param[in] iter_num maximum number of consecutive iterations
 		 * @param[out] model returned model if found
 		 * @param[in] precision upper bound of the precision (squared error)
 		 * @param[in] is_verbose display console log
@@ -124,7 +124,7 @@ namespace fblib {
 		template<typename Kernel>
 		std::pair<double, double> ACRANSAC(const Kernel &kernel,
 			std::vector<size_t> & vec_inliers,
-			size_t nIter = 1024,
+			size_t iter_num = 1024,
 			typename Kernel::Model * model = NULL,
 			double precision = std::numeric_limits<double>::infinity(),
 			bool is_verbose = false)
@@ -159,11 +159,11 @@ namespace fblib {
 			double errorMax = std::numeric_limits<double>::infinity();
 
 			// Reserve 10% of iterations for focused sampling
-			size_t nIterReserve = nIter / 10;
-			nIter -= nIterReserve;
+			size_t nIterReserve = iter_num / 10;
+			iter_num -= nIterReserve;
 
 			// Main estimation loop.
-			for (size_t iter = 0; iter < nIter; ++iter) {
+			for (size_t iter = 0; iter < iter_num; ++iter) {
 				UniformSample(sample_size, vec_index, &vec_sample); // Get random sample
 
 				std::vector<typename Kernel::Model> vec_models; // Up to max_models solutions
@@ -214,16 +214,16 @@ namespace fblib {
 				}
 
 				// ACRANSAC optimization: draw samples among best set of inliers so far
-				if ((better && minNFA < 0) || (iter + 1 == nIter && nIterReserve)) {
+				if ((better && minNFA < 0) || (iter + 1 == iter_num && nIterReserve)) {
 					if (vec_inliers.empty()) { // No model found at all so far
-						nIter++; // Continue to look for any model, even not meaningful
+						iter_num++; // Continue to look for any model, even not meaningful
 						nIterReserve--;
 					}
 					else {
 						// ACRANSAC optimization: draw samples among best set of inliers so far
 						vec_index = vec_inliers;
 						if (nIterReserve) {
-							nIter = iter + 1 + nIterReserve;
+							iter_num = iter + 1 + nIterReserve;
 							nIterReserve = 0;
 						}
 					}

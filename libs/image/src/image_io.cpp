@@ -40,7 +40,7 @@ namespace fblib {
 			return Unknown;
 		}
 
-		int ReadImage(const char *filename,
+		int readImage(const char *filename,
 			std::vector<unsigned char> * ptr,
 			int * w,
 			int * h,
@@ -59,7 +59,7 @@ namespace fblib {
 			};
 		}
 
-		int WriteImage(const char * filename,
+		int writeImage(const char * filename,
 			const std::vector<unsigned char> & ptr,
 			int w,
 			int h,

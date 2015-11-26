@@ -1,9 +1,10 @@
 ﻿#include "fblib/multiview/solver_fundamental_kernel.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "testing.h"
 
 using namespace fblib::multiview;
 using namespace fblib::math;
+using namespace fblib::camera;
 using namespace std;
 
 // Check that sin(angle(a, b)) < tolerance.

@@ -4,7 +4,7 @@
 #include "testing.h"
 #include "fblib/math/numeric.h"
 
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/nview_data_sets.h"
 #include "fblib/sfm/linear_programming_interface.h"
 #include "fblib/sfm/linear_programming_osi.h"
@@ -14,6 +14,7 @@
 using namespace fblib::math;
 using namespace fblib::multiview;
 using namespace fblib::sfm;
+using namespace fblib::camera;
 
 TEST(Translation_Structure_L_Infinity_Noisy, Outlier_OSICLP_SOLVER) {
 

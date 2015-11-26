@@ -51,15 +51,18 @@ namespace fblib {
 				double jitter_amount = 0.01);
 		};
 
-		/// 将相机放置一个圆的中点处
+		/**将相机放置一个圆的中点处
+		*/
 		NViewDataSet NRealisticCamerasRing(size_t nviews, size_t npoints,
 			const NViewDatasetConfigurator
 			config = NViewDatasetConfigurator());
 
-		/// 将相机放置一个心形的中点处
+		/**将相机放置一个心形的中点处
+		*/
 		NViewDataSet NRealisticCamerasCardioid(size_t nviews, size_t npoints,
 			const NViewDatasetConfigurator
 			config = NViewDatasetConfigurator());
+
 	}// namespace multiview
 } // namespace fblib
 

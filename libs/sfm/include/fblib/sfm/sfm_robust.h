@@ -88,7 +88,7 @@ bool robustEssential(
  * @param[out] R estimated rotation
  * @param[out] t estimated translation
  */
-bool EstimateRtFromE(const Mat3 & K1, const Mat3 & K2,
+bool estimateRtFromE(const Mat3 & K1, const Mat3 & K2,
   const Mat & x1, const Mat & x2,
   const Mat3 & E, const std::vector<size_t> & vec_inliers,
   Mat3 * R, Vec3 * t)

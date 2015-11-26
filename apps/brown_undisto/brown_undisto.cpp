@@ -151,10 +151,10 @@ int main(int argc, char **argv)
 	ControlProgressDisplay my_progress_bar(file_names.size());
 	for (size_t j = 0; j < file_names.size(); ++j, ++my_progress_bar)
 	{
-		ReadImage((sPath + "/" + file_names[j]).c_str(), &image);
+		readImage((sPath + "/" + file_names[j]).c_str(), &image);
 		imageU = undistortImage(image, distoModel);
 		string sOutFileName = fblib::utils::create_filespec(sOutPath, fblib::utils::basename_part(file_names[j]), "JPG");
-		WriteImage(sOutFileName.c_str(), imageU);
+		writeImage(sOutFileName.c_str(), imageU);
 	}
 
 	return EXIT_SUCCESS;

@@ -1,11 +1,12 @@
 
 #include "testing.h"
 #include "fblib/utils/notify.h"
-#include "fblib/multiview/projection.h"
+#include "fblib/camera/projection.h"
 #include "fblib/multiview/homography.h"
 
 using namespace fblib::multiview;
 using namespace fblib::utils;
+using namespace fblib::camera;
 
 // Check whether homography transform M actually transforms
 // given vectors x1 to x2. Used to check validness of a reconstructed

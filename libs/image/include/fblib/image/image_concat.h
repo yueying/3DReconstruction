@@ -15,7 +15,7 @@ namespace fblib{
 		 * \param [in,out]	out_image	输出的图像
 		 */
 		template < class Image >
-		void ConcatHorizontal(const Image &left_image, const Image &right_image, Image &out_image)
+		void concatHorizontal(const Image &left_image, const Image &right_image, Image &out_image)
 		{
 			// 计算新的图像维度 // |left_image|+|right_image|
 			int left_add_right_width = left_image.Width() + right_image.Width();

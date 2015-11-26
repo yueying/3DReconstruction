@@ -33,8 +33,8 @@ int main() {
     + "/data/imageData/StanfordMobileVisualSearch/Ace_1.png";
 
   Image<unsigned char> left_image, right_image;
-  ReadImage(left_image_name.c_str(), &left_image);
-  ReadImage(right_image_name.c_str(), &right_image);
+  readImage(left_image_name.c_str(), &left_image);
+  readImage(right_image_name.c_str(), &right_image);
 
   // 定义使用的描述子(SIFT : 128 float类型值)
   typedef float descType;
@@ -52,15 +52,15 @@ int main() {
   // 将左右图像合并显示进行对比
   {
     Image<unsigned char> concat;
-    ConcatHorizontal(left_image, right_image, concat);
+    concatHorizontal(left_image, right_image, concat);
     string out_filename = "01_concat.jpg";
-    WriteImage(out_filename.c_str(), concat);
+    writeImage(out_filename.c_str(), concat);
   }
 
   // 画出左右两幅图像的特征
   {
     Image<unsigned char> concat;
-    ConcatHorizontal(left_image, right_image, concat);
+    concatHorizontal(left_image, right_image, concat);
 
 	// 画出特征 :
     for (size_t i=0; i < left_features.size(); ++i )  {
@@ -72,7 +72,7 @@ int main() {
       DrawCircle(right_img.x()+left_image.Width(), right_img.y(), right_img.scale(), 255, &concat);
     }
     string out_filename = "02_features.jpg";
-    WriteImage(out_filename.c_str(), concat);
+    writeImage(out_filename.c_str(), concat);
   }
 
   std::vector<IndexedMatch> vec_putative_matches;
@@ -186,14 +186,14 @@ int main() {
       // Warp the images to fit the reference view
       //---------------------------------------
       // reread right image that will be warped to fit left image
-      ReadImage(right_image_name.c_str(), &image);
-      WriteImage("query.png", image);
+      readImage(right_image_name.c_str(), &image);
+      writeImage("query.png", image);
 
       // Create and fill the output image
       Image<RGBColor> imaOut(left_image.Width(), left_image.Height());
       fblib::image::Warp(image, H, imaOut);
       std::string imageNameOut = "query_warped.png";
-      WriteImage(imageNameOut.c_str(), imaOut);
+      writeImage(imageNameOut.c_str(), imaOut);
 
 
     }

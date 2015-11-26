@@ -209,6 +209,6 @@ TEST(ImageDrawing, DrawLine_PointOutsideTheImage) {
     int y1 = int(sin(i) * radius + 0.5);
     DrawLine( x, y, x+x1, y+y1, 255, &image);
   }
-  //WriteImage( image, "toto.png");
+  //writeImage( image, "toto.png");
 }
 
