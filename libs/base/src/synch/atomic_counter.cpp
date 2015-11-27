@@ -9,11 +9,11 @@
 ********************************************************************************/
 #include "base_precomp.h"
 
-#include <fblib/synch/atomic_counter.h>
+#include <mvg/synch/atomic_counter.h>
 
 #include <windows.h>
 
-using namespace fblib::synch;
+using namespace mvg::synch;
 
 void AtomicCounter::operator++()
 {

@@ -1,10 +1,10 @@
-#include "fblib/tracking/brute_region_tracker.h"
-#include "fblib/image/image.h"
-#include "fblib/utils/notify.h"
+#include "mvg/tracking/brute_region_tracker.h"
+#include "mvg/image/image.h"
+#include "mvg/utils/notify.h"
 #include "testing.h"
 
-using namespace fblib::image;
-using namespace fblib::tracking;
+using namespace mvg::image;
+using namespace mvg::tracking;
 
 TEST(BruteKltRegionTracker, Track) {
   Image<float> image1(51, 51);

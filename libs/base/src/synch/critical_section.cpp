@@ -10,11 +10,11 @@
 
 #include "base_precomp.h"  // 预编译头
 
-#include <fblib/synch/critical_section.h>
+#include <mvg/synch/critical_section.h>
 #include <windows.h>
-#include <fblib/utils/fblib_macros.h>
+#include <mvg/utils/mvg_macros.h>
 
-using namespace fblib::synch;
+using namespace mvg::synch;
 
 /**	定义临界区
  */

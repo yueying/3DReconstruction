@@ -1,10 +1,10 @@
-#include "fblib/tracking/pyramid_region_tracker.h"
-#include "fblib/tracking/klt_region_tracker.h"
-#include "fblib/image/image.h"
+#include "mvg/tracking/pyramid_region_tracker.h"
+#include "mvg/tracking/klt_region_tracker.h"
+#include "mvg/image/image.h"
 #include "testing.h"
 
-using namespace fblib::image;
-using namespace fblib::tracking;
+using namespace mvg::image;
+using namespace mvg::tracking;
 
 TEST(PyramidKltRegionTracker, Track) {
   Image<float> image1(100, 100);

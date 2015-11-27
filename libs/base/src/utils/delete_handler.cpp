@@ -1,8 +1,8 @@
 ﻿#include "base_precomp.h"
-#include <fblib/utils/delete_handler.h>
-#include <fblib/utils/notify.h>
+#include <mvg/utils/delete_handler.h>
+#include <mvg/utils/notify.h>
 
-namespace fblib
+namespace mvg
 {
 	namespace utils{
 		DeleteHandler::DeleteHandler(int numberOfFramesToRetainObjects) :
@@ -18,14 +18,14 @@ namespace fblib
 
 		void DeleteHandler::flush()
 		{
-			typedef std::list<const fblib::utils::Referenced*> DeletionList;
+			typedef std::list<const mvg::utils::Referenced*> DeletionList;
 			DeletionList deletionList;
 
 			{
 				// gather all the objects to delete whilst holding the mutex to the _objectsToDelete
 				// list, but delete the objects outside this scoped lock so that if any objects deleted
 				// unref their children then no deadlock happens.
-				fblib::threads::ScopedLock<fblib::threads::Mutex> lock(_mutex);
+				mvg::threads::ScopedLock<mvg::threads::Mutex> lock(_mutex);
 				unsigned int frameNumberToClearTo = _currentFrameNumber - _numFramesToRetainObjects;
 
 				ObjectsToDeleteList::iterator itr;
@@ -57,14 +57,14 @@ namespace fblib
 			unsigned int temp_numFramesToRetainObjects = _numFramesToRetainObjects;
 			_numFramesToRetainObjects = 0;
 
-			typedef std::list<const fblib::utils::Referenced*> DeletionList;
+			typedef std::list<const mvg::utils::Referenced*> DeletionList;
 			DeletionList deletionList;
 
 			{
 				// gather all the objects to delete whilst holding the mutex to the _objectsToDelete
 				// list, but delete the objects outside this scoped lock so that if any objects deleted
 				// unref their children then no deadlock happens.
-				fblib::threads::ScopedLock<fblib::threads::Mutex> lock(_mutex);
+				mvg::threads::ScopedLock<mvg::threads::Mutex> lock(_mutex);
 				ObjectsToDeleteList::iterator itr;
 				for (itr = _objectsToDelete.begin();
 					itr != _objectsToDelete.end();
@@ -87,14 +87,14 @@ namespace fblib
 			_numFramesToRetainObjects = temp_numFramesToRetainObjects;
 		}
 
-		void DeleteHandler::requestDelete(const fblib::utils::Referenced* object)
+		void DeleteHandler::requestDelete(const mvg::utils::Referenced* object)
 		{
 			if (_numFramesToRetainObjects == 0) doDelete(object);
 			else
 			{
-				fblib::threads::ScopedLock<fblib::threads::Mutex> lock(_mutex);
+				mvg::threads::ScopedLock<mvg::threads::Mutex> lock(_mutex);
 				_objectsToDelete.push_back(FrameNumberObjectPair(_currentFrameNumber, object));
 			}
 		}
 	}
-} // end of namespace fblib
+} // end of namespace mvg

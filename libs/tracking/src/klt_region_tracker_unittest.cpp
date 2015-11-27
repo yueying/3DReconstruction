@@ -1,9 +1,9 @@
-#include "fblib/tracking/klt_region_tracker.h"
-#include "fblib/image/image.h"
+#include "mvg/tracking/klt_region_tracker.h"
+#include "mvg/image/image.h"
 #include "testing.h"
 
-using namespace fblib::image;
-using namespace fblib::tracking;
+using namespace mvg::image;
+using namespace mvg::tracking;
 
 TEST(KltRegionTracker, Track) {
   Image<float> image1(51, 51);

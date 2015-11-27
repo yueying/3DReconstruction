@@ -1,25 +1,25 @@
-﻿#include "fblib/camera/pinhole_camera.h"
-#include "fblib/image/image.h"
-#include "fblib/feature/features.h"
-#include "fblib/feature/matcher_brute_force.h"
-#include "fblib/feature/indexed_match_decorator.h"
-#include "fblib/camera/projection.h"
-#include "fblib/multiview/triangulation.h"
-#include "fblib/multiview/essential_estimation.h"
-#include "fblib/feature/sift.hpp"
-#include "fblib/feature/two_view_matches.h"
+﻿#include "mvg/camera/pinhole_camera.h"
+#include "mvg/image/image.h"
+#include "mvg/feature/features.h"
+#include "mvg/feature/matcher_brute_force.h"
+#include "mvg/feature/indexed_match_decorator.h"
+#include "mvg/camera/projection.h"
+#include "mvg/multiview/triangulation.h"
+#include "mvg/multiview/essential_estimation.h"
+#include "mvg/feature/sift.hpp"
+#include "mvg/feature/two_view_matches.h"
 
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/svg_drawer.h"
 
 #include <string>
 #include <iostream>
 
-using namespace fblib::utils;
-using namespace fblib::feature;
-using namespace fblib::camera;
-using namespace fblib::math;
-using namespace fblib::multiview;
+using namespace mvg::utils;
+using namespace mvg::feature;
+using namespace mvg::camera;
+using namespace mvg::math;
+using namespace mvg::multiview;
 
 
 /**	从(ASCII)文件中读取相机内参
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
   {
 	  Mat3 camera_matrix;
 	  //读取相机内参矩阵
-	  if (!readIntrinsic(fblib::utils::create_filespec(input_dir, "camera_matrix", "txt"), camera_matrix))
+	  if (!readIntrinsic(mvg::utils::create_filespec(input_dir, "camera_matrix", "txt"), camera_matrix))
 	  {
 		  std::cerr << "Cannot read intrinsic parameters." << std::endl;
 		  return EXIT_FAILURE;

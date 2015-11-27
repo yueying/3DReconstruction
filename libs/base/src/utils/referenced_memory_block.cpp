@@ -8,9 +8,9 @@
  *
 ********************************************************************************/
 #include "base_precomp.h"
-#include <fblib/utils/referenced_memory_block.h>
+#include <mvg/utils/referenced_memory_block.h>
 
-using namespace fblib::utils;
+using namespace mvg::utils;
 
 /**	构造函数
  */

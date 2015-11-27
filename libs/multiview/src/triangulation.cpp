@@ -1,10 +1,10 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/camera/projection.h"
-#include "fblib/multiview/triangulation.h"
+#include "mvg/camera/projection.h"
+#include "mvg/multiview/triangulation.h"
 
-using fblib::camera::HomogeneousToEuclidean;
+using mvg::camera::HomogeneousToEuclidean;
 
-namespace fblib {
+namespace mvg {
 	namespace multiview{
 		
 		void TriangulateDLT(const Mat34 &P1, const Vec2 &x1,
@@ -28,4 +28,4 @@ namespace fblib {
 			HomogeneousToEuclidean(X_homogeneous, X_euclidean);
 		}
 	}// namespace multiview
-}  // namespace fblib
+}  // namespace mvg

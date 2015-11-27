@@ -9,10 +9,10 @@
 ********************************************************************************/
 #include "base_precomp.h"  // 预编译头
 
-#include <fblib/system/os.h>
+#include <mvg/system/os.h>
 #include <windows.h>
 
-unsigned int fblib::system::getNumberOfProcessors()
+unsigned int mvg::system::getNumberOfProcessors()
 {
 	static unsigned int ret = 0;
 
@@ -28,7 +28,7 @@ unsigned int fblib::system::getNumberOfProcessors()
 
 /**	格式化输出
 */
-int fblib::system::sprintf(char *buf, size_t bufSize, const char *format, ...) FBLIB_NO_THROWS
+int mvg::system::sprintf(char *buf, size_t bufSize, const char *format, ...) MVG_NO_THROWS
 {
 	int			result;
 	va_list		ap;

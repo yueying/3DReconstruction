@@ -6,8 +6,8 @@
 #  Usage:  INCLUDE(AssureCMakeRootFile)
 #
 
-IF(NOT FBLIB_SOURCE_DIR)
-	MESSAGE(FATAL_ERROR "ERROR: Do not use this directory as 'source directory' in CMake, but the ROOT directory of the FBLIB source tree.")
-ENDIF(NOT FBLIB_SOURCE_DIR)
+IF(NOT MVG_SOURCE_DIR)
+	MESSAGE(FATAL_ERROR "ERROR: Do not use this directory as 'source directory' in CMake, but the ROOT directory of the MVG source tree.")
+ENDIF(NOT MVG_SOURCE_DIR)
 
 

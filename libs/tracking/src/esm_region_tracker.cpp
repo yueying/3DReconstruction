@@ -3,19 +3,19 @@
 #include "tracking_precomp.h"
 #define _USE_MATH_DEFINES
 
-#include "fblib/tracking/esm_region_tracker.h"
+#include "mvg/tracking/esm_region_tracker.h"
 
-#include "fblib/utils/notify.h"
-#include "fblib/image/image.h"
-#include "fblib/image/sample.h"
-#include "fblib/math/numeric.h"
-#include "fblib/tracking/track_region.h"
+#include "mvg/utils/notify.h"
+#include "mvg/image/image.h"
+#include "mvg/image/sample.h"
+#include "mvg/math/numeric.h"
+#include "mvg/tracking/track_region.h"
 
-using namespace fblib::math;
-using namespace fblib::utils;
-using namespace fblib::image;
+using namespace mvg::math;
+using namespace mvg::utils;
+using namespace mvg::image;
 
-namespace fblib {
+namespace mvg {
 	namespace tracking{
 		// TODO(keir): Reduce duplication between here and the other region trackers.
 		static bool RegionIsInBounds(const Image<float> &image1,
@@ -287,4 +287,4 @@ namespace fblib {
 			return false;
 		}
 	}
-}  // namespace fblib
+}  // namespace mvg

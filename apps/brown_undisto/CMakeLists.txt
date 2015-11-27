@@ -1,7 +1,7 @@
 INCLUDE(../../cmake/AssureCMakeRootFile.cmake) # Avoid user mistake in CMake source directory
 
 #-----------------------------------------------------------------
-# CMake file for the FBLIB application:  brown_undisto
+# CMake file for the MVG application:  brown_undisto
 #
 #  Run with "cmake ." at the root directory
 #
@@ -17,19 +17,19 @@ PROJECT(brown_undisto)
 # Define the executable target:
 ADD_EXECUTABLE(brown_undisto
                brown_undisto.cpp
-			    ${FBLIB_VERSION_RC_FILE})
+			    ${MVG_VERSION_RC_FILE})
 
 SET(TMP_TARGET_NAME "brown_undisto")
 
 
 
 # Add the required libraries for linking:
-TARGET_LINK_LIBRARIES(${TMP_TARGET_NAME} ${FBLIB_LINKER_LIBS})
+TARGET_LINK_LIBRARIES(${TMP_TARGET_NAME} ${MVG_LINKER_LIBS})
 
-# Dependencies on FBLIB libraries:
+# Dependencies on MVG libraries:
 #  Just mention the top-level dependency, the rest will be detected automatically, 
 #  and all the needed #include<> dirs added (see the script DeclareAppDependencies.cmake for further details)
-DeclareAppDependencies(${TMP_TARGET_NAME} fblib_base fblib_image)
+DeclareAppDependencies(${TMP_TARGET_NAME} mvg_base mvg_image)
 
 DeclareAppForInstall(${TMP_TARGET_NAME})
 

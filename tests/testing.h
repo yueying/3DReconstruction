@@ -1,7 +1,7 @@
 #ifndef TESTS_TESTING_H_
 #define TESTS_TESTING_H_
 
-#include "fblib/math/numeric.h"
+#include "mvg/math/numeric.h"
 #include "gtest/gtest.h"
 
 #define EXPECT_MATRIX_NEAR(a, b, tolerance) \
@@ -62,7 +62,7 @@ do { \
 template<class TMat>
 double CosinusBetweenMatrices(const TMat &a, const TMat &b) {
   return (a.array() * b.array()).sum() / 
-      fblib::math::FrobeniusNorm(a) / fblib::math::FrobeniusNorm(b);
+      mvg::math::FrobeniusNorm(a) / mvg::math::FrobeniusNorm(b);
 }
 
 #endif  // TESTS_TESTING_H_

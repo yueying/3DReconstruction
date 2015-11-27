@@ -9,18 +9,18 @@
  ********************************************************************************/
 #include "base_precomp.h"
 
-#include <fblib/utils/string_utils.h>
-#include <fblib/synch/critical_section.h>
+#include <mvg/utils/string_utils.h>
+#include <mvg/synch/critical_section.h>
 
-namespace fblib
+namespace mvg
 {
 	namespace utils
 	{
 		void  tokenize(const std::string	&inString, const std::string	&inDelimiters,
-			std::deque<std::string>	&outTokens) FBLIB_NO_THROWS
+			std::deque<std::string>	&outTokens) MVG_NO_THROWS
 		{
-			static fblib::synch::CriticalSection cs;
-			fblib::synch::CriticalSectionLocker lock(&cs);
+			static mvg::synch::CriticalSection cs;
+			mvg::synch::CriticalSectionLocker lock(&cs);
 
 			char	*nextTok, *context;
 
@@ -40,10 +40,10 @@ namespace fblib
 
 
 			void  tokenize(const std::string &inString, const std::string &inDelimiters,
-			std::vector<std::string>	&outTokens) FBLIB_NO_THROWS
+			std::vector<std::string>	&outTokens) MVG_NO_THROWS
 		{
-			static fblib::synch::CriticalSection cs;
-			fblib::synch::CriticalSectionLocker lock(&cs);
+			static mvg::synch::CriticalSection cs;
+			mvg::synch::CriticalSectionLocker lock(&cs);
 
 
 			char	*nextTok, *context;

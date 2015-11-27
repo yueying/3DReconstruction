@@ -11,9 +11,9 @@
 //   Given that all shells perform wildcard matching, why don't the library writers put it in the C run-time????????
 
 ////////////////////////////////////////////////////////////////////////////////
-#include "fblib/utils/wildcard.h"
+#include "mvg/utils/wildcard.h"
 
-namespace fblib
+namespace mvg
 {
 	namespace utils{
 		// function for testing whether a character matches a set
@@ -161,4 +161,4 @@ namespace fblib
 			return match_remainder(wild, wild.begin(), match, match.begin());
 		}
 	}
-} // end namespace fblib
+} // end namespace mvg

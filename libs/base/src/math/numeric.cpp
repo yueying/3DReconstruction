@@ -1,11 +1,11 @@
 ﻿#include "base_precomp.h"
-#include "fblib/math/numeric.h"
+#include "mvg/math/numeric.h"
 
 #include <iostream>
 #include <fstream>
 #include <string>
 
-namespace fblib {
+namespace mvg {
 	namespace math{
 		/**	定义反对称矩阵，用于叉乘计算
 		 */
@@ -149,4 +149,4 @@ namespace fblib {
 			return is_ok;
 		}
 	}
-}  // namespace fblib
+}  // namespace mvg

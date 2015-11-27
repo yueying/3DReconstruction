@@ -1,4 +1,4 @@
-project(ALL_FBLIB_LIBS)
+project(ALL_MVG_LIBS)
 
 ADD_SUBDIRECTORY(base)
 ADD_SUBDIRECTORY(camera)

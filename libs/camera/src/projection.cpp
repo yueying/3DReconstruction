@@ -1,7 +1,7 @@
 ﻿#include "camera_precomp.h"
-#include "fblib/camera/projection.h"
+#include "mvg/camera/projection.h"
 
-namespace fblib {
+namespace mvg {
 	namespace camera{
 		
 		void P_From_KRt(const Mat3 &K, const Mat3 &R, const Vec3 &t, Mat34 *P) {
@@ -239,5 +239,5 @@ namespace fblib {
 			return dx.norm() / num_points;
 		}
 	}// namespace multiview
-} // namespace fblib
+} // namespace mvg
 

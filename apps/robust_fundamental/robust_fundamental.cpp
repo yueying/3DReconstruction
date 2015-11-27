@@ -1,26 +1,26 @@
-#include "fblib/camera/pinhole_camera.h"
-#include "fblib/image/image.h"
-#include "fblib/feature/features.h"
-#include "fblib/feature/matcher_brute_force.h"
-#include "fblib/feature/indexed_match_decorator.h"
-#include "fblib/camera/projection.h"
-#include "fblib/multiview/triangulation.h"
-#include "fblib/multiview/essential_estimation.h"
+#include "mvg/camera/pinhole_camera.h"
+#include "mvg/image/image.h"
+#include "mvg/feature/features.h"
+#include "mvg/feature/matcher_brute_force.h"
+#include "mvg/feature/indexed_match_decorator.h"
+#include "mvg/camera/projection.h"
+#include "mvg/multiview/triangulation.h"
+#include "mvg/multiview/essential_estimation.h"
 
-#include "fblib/feature/sift.hpp"
-#include "fblib/feature/two_view_matches.h"
+#include "mvg/feature/sift.hpp"
+#include "mvg/feature/two_view_matches.h"
 
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/svg_drawer.h"
 
 
 #include <string>
 #include <iostream>
 
-using namespace fblib::utils;
-using namespace fblib::feature;
-using namespace fblib::camera;
-using namespace fblib::multiview;
+using namespace mvg::utils;
+using namespace mvg::feature;
+using namespace mvg::camera;
+using namespace mvg::multiview;
 
 int main() {
 
@@ -118,8 +118,8 @@ int main() {
     //基础矩阵的鲁棒性估计
     std::vector<size_t> vec_inliers;
     typedef ACKernelAdaptor<
-		fblib::multiview::fundamental::SevenPointSolver,
-		fblib::multiview::fundamental::EpipolarDistanceError,
+		mvg::multiview::fundamental::SevenPointSolver,
+		mvg::multiview::fundamental::EpipolarDistanceError,
       UnnormalizerT,
       Mat3>
       KernelType;

@@ -1,9 +1,9 @@
 ﻿#include "base_precomp.h"
-#include <fblib/threads/condition.h>
-#include  <fblib/threads/thread.h>
-#include <fblib/threads/win_condition_private_data.h>
+#include <mvg/threads/condition.h>
+#include  <mvg/threads/thread.h>
+#include <mvg/threads/win_condition_private_data.h>
 
-namespace fblib
+namespace mvg
 {
 	namespace threads
 	{

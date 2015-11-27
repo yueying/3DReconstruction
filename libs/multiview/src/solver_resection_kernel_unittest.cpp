@@ -1,10 +1,10 @@
-﻿#include "fblib/multiview/nview_data_sets.h"
-#include "fblib/multiview/solver_resection_kernel.h"
-#include "fblib/multiview/solver_resection_p3p.h"
+﻿#include "mvg/multiview/nview_data_sets.h"
+#include "mvg/multiview/solver_resection_kernel.h"
+#include "mvg/multiview/solver_resection_p3p.h"
 #include "testing.h"
 #include <vector>
 
-using namespace fblib::multiview;
+using namespace mvg::multiview;
 
 TEST(Resection_Kernel, Multiview) {
 
@@ -19,7 +19,7 @@ TEST(Resection_Kernel, Multiview) {
   {
     Mat x = d.projected_points_[nResectionCameraIndex];
     Mat X = d.point_3d_;
-    fblib::multiview::resection::PoseResectionKernel kernel(x, X);
+    mvg::multiview::resection::PoseResectionKernel kernel(x, X);
 
     size_t samples_[6]={0,1,2,3,4,5};
 	std::vector<size_t> samples(samples_, samples_ + 6);
@@ -52,7 +52,7 @@ TEST(P3P_Kneip_CVPR11, Multiview) {
   {
     Mat x = d.projected_points_[nResectionCameraIndex];
     Mat X = d.point_3d_;
-    fblib::multiview::P3P_ResectionKernel_K kernel(x, X, d.camera_matrix_[0]);
+    mvg::multiview::P3P_ResectionKernel_K kernel(x, X, d.camera_matrix_[0]);
 
     size_t samples_[3]={0,1,2};
     std::vector<size_t> samples(samples_, samples_+3);
@@ -162,7 +162,7 @@ TEST(EuclideanResection, Points6AllRandomInput) {
 
 
   {
-    typedef fblib::multiview::euclidean::ResectionKernel_K Kernel;
+    typedef mvg::multiview::euclidean::ResectionKernel_K Kernel;
     Kernel kernel(x_image.block(0, 0, 2, 6), X_world, KK);
 
     size_t samples_[6]={0,1,2,3,4,5};

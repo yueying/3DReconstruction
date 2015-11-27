@@ -1,10 +1,10 @@
-﻿#include "fblib/image/image.h"
+﻿#include "mvg/image/image.h"
 #include "testing.h"
 
 #include <iostream>
 
 using namespace std;
-using namespace fblib::image;
+using namespace mvg::image;
 
 TEST(Image, Basis)
 {

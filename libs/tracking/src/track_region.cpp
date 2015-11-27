@@ -8,20 +8,20 @@
 #include "tracking_precomp.h"
 #define _USE_MATH_DEFINES
 
-#include "fblib/tracking/track_region.h"
+#include "mvg/tracking/track_region.h"
 
 #include <Eigen/SVD>
 #include <Eigen/QR>
 #include <iostream>
 #include "ceres/ceres.h"
-#include "fblib/utils/notify.h"
-#include "fblib/image/image.h"
-#include "fblib/image/sample.h"
-#include "fblib/image/convolve.h"
-#include "fblib/multiview/homography.h"
-#include "fblib/math/numeric.h"
-using namespace fblib::image;
-using namespace fblib::multiview;
+#include "mvg/utils/notify.h"
+#include "mvg/image/image.h"
+#include "mvg/image/sample.h"
+#include "mvg/image/convolve.h"
+#include "mvg/multiview/homography.h"
+#include "mvg/math/numeric.h"
+using namespace mvg::image;
+using namespace mvg::multiview;
 // Expand the Jet functionality of Ceres to allow mixed numeric/autodiff.
 //
 // TODO(keir): Push this (or something similar) into upstream Ceres.
@@ -105,7 +105,7 @@ namespace ceres {
 
 }  // namespace ceres
 
-namespace fblib {
+namespace mvg {
 	namespace tracking{
 		using ceres::Jet;
 		using ceres::JetOps;
@@ -196,7 +196,7 @@ namespace fblib {
 				}
 				// Ensure the corners are all in bounds.
 				if (!AllInBounds(image2_, x2, y2)) {
-					fblib::utils::notify(fblib::utils::INFO) << "Successful step fell outside of the pattern bounds; aborting.";
+					mvg::utils::notify(mvg::utils::INFO) << "Successful step fell outside of the pattern bounds; aborting.";
 					return ceres::SOLVER_ABORT;
 				}
 
@@ -219,11 +219,11 @@ namespace fblib {
 						}
 					}
 					max_change_pixels = sqrt(max_change_pixels);
-					fblib::utils::notify(fblib::utils::INFO) << "Max patch corner shift is " << max_change_pixels;
+					mvg::utils::notify(mvg::utils::INFO) << "Max patch corner shift is " << max_change_pixels;
 
 					// Bail if the shift is too small.
 					if (max_change_pixels < options_.minimum_corner_shift_tolerance_pixels) {
-						fblib::utils::notify(fblib::utils::INFO) << "Max patch corner shift is " << max_change_pixels
+						mvg::utils::notify(mvg::utils::INFO) << "Max patch corner shift is " << max_change_pixels
 							<< " from the last iteration; returning success.";
 						return ceres::SOLVER_TERMINATE_SUCCESSFULLY;
 					}
@@ -464,7 +464,7 @@ namespace fblib {
 					}
 				}
 				*dst_mean /= T(num_samples);
-				fblib::utils::notify(fblib::utils::INFO) << "Normalization for dst:" << *dst_mean;
+				mvg::utils::notify(mvg::utils::INFO) << "Normalization for dst:" << *dst_mean;
 			}
 
 			// TODO(keir): Consider also computing the cost here.
@@ -538,7 +538,7 @@ namespace fblib {
 				double covariance_xy = sXY - sX*sY;
 
 				double correlation = covariance_xy / sqrt(var_x * var_y);
-				fblib::utils::notify(fblib::utils::INFO) << "Covariance xy: " << covariance_xy
+				mvg::utils::notify(mvg::utils::INFO) << "Covariance xy: " << covariance_xy
 					<< ", var 1: " << var_x << ", var 2: " << var_y
 					<< ", correlation: " << correlation;
 				return correlation;
@@ -652,7 +652,7 @@ namespace fblib {
 
 			Mat3 H;
 			if (!Homography2DFromCorrespondencesLinear(canonical, xy1, &H, 1e-12)) {
-				fblib::utils::notify(fblib::utils::INFO) << "Couldn't construct homography.";
+				mvg::utils::notify(mvg::utils::INFO) << "Couldn't construct homography.";
 			}
 			return H;
 		}
@@ -785,9 +785,9 @@ namespace fblib {
 				Mat2 R = OrthogonalProcrustes(correlation_matrix);
 				parameters[2] = atan2(R(1, 0), R(0, 0));
 
-				fblib::utils::notify(fblib::utils::INFO) << "Correlation_matrix:\n" << correlation_matrix;
-				fblib::utils::notify(fblib::utils::INFO) << "R:\n" << R;
-				fblib::utils::notify(fblib::utils::INFO) << "Theta:" << parameters[2];
+				mvg::utils::notify(mvg::utils::INFO) << "Correlation_matrix:\n" << correlation_matrix;
+				mvg::utils::notify(mvg::utils::INFO) << "R:\n" << R;
+				mvg::utils::notify(mvg::utils::INFO) << "Theta:" << parameters[2];
 			}
 
 			// The strange way of parameterizing the translation and rotation is to make
@@ -853,9 +853,9 @@ namespace fblib {
 				Mat2 R = OrthogonalProcrustes(correlation_matrix);
 				parameters[3] = atan2(R(1, 0), R(0, 0));
 
-				fblib::utils::notify(fblib::utils::INFO) << "Correlation_matrix:\n" << correlation_matrix;
-				fblib::utils::notify(fblib::utils::INFO) << "R:\n" << R;
-				fblib::utils::notify(fblib::utils::INFO) << "Theta:" << parameters[3];
+				mvg::utils::notify(mvg::utils::INFO) << "Correlation_matrix:\n" << correlation_matrix;
+				mvg::utils::notify(mvg::utils::INFO) << "R:\n" << R;
+				mvg::utils::notify(mvg::utils::INFO) << "Theta:" << parameters[3];
 			}
 
 			// The strange way of parameterizing the translation and rotation is to make
@@ -936,8 +936,8 @@ namespace fblib {
 				parameters[4] = a[2];
 				parameters[5] = a[3];
 
-				fblib::utils::notify(fblib::utils::INFO) << "a:" << a.transpose();
-				fblib::utils::notify(fblib::utils::INFO) << "t:" << t.transpose();
+				mvg::utils::notify(mvg::utils::INFO) << "a:" << a.transpose();
+				mvg::utils::notify(mvg::utils::INFO) << "t:" << t.transpose();
 			}
 
 			// See comments in other parameterizations about why the centroid is used.
@@ -981,7 +981,7 @@ namespace fblib {
 
 				Mat3 H;
 				if (!Homography2DFromCorrespondencesLinear(quad1, quad2, &H, 1e-12)) {
-					fblib::utils::notify(fblib::utils::INFO) << "Couldn't construct homography.";
+					mvg::utils::notify(mvg::utils::INFO) << "Couldn't construct homography.";
 				}
 
 				// Assume H(2, 2) != 0, and fix scale at H(2, 2) == 1.0.
@@ -994,7 +994,7 @@ namespace fblib {
 				//CHECK_NE(H(2, 2), 0.0) << H;
 				for (int i = 0; i < 8; ++i) {
 					parameters[i] = H(i / 3, i % 3);
-					fblib::utils::notify(fblib::utils::INFO) << "Parameters[" << i << "]: " << parameters[i];
+					mvg::utils::notify(mvg::utils::INFO) << "Parameters[" << i << "]: " << parameters[i];
 				}
 			}
 
@@ -1054,7 +1054,7 @@ namespace fblib {
 				kScaleFactor * *std::max_element(x_dimensions, x_dimensions + 4));
 			*num_samples_y = static_cast<int>(
 				kScaleFactor * *std::max_element(y_dimensions, y_dimensions + 4));
-			fblib::utils::notify(fblib::utils::INFO) << "Automatic num_samples_x: " << *num_samples_x
+			mvg::utils::notify(mvg::utils::INFO) << "Automatic num_samples_x: " << *num_samples_x
 				<< ", num_samples_y: " << *num_samples_y;
 		}
 
@@ -1256,7 +1256,7 @@ namespace fblib {
 				return false;
 			}
 
-			fblib::utils::notify(fblib::utils::INFO) << "Brute force translation found a shift. "
+			mvg::utils::notify(mvg::utils::INFO) << "Brute force translation found a shift. "
 				<< "best_c: " << best_c << ", best_r: " << best_r << ", "
 				<< "origin_x: " << origin_x << ", origin_y: " << origin_y << ", "
 				<< "dc: " << (best_c - origin_x) << ", "
@@ -1290,7 +1290,7 @@ namespace fblib {
 			double *x2, double *y2,
 			TrackRegionResult *result) {
 			for (int i = 0; i < 4 + options.num_extra_points; ++i) {
-				fblib::utils::notify(fblib::utils::INFO) << "P" << i << ": (" << x1[i] << ", " << y1[i] << "); guess ("
+				mvg::utils::notify(mvg::utils::INFO) << "P" << i << ": (" << x1[i] << ", " << y1[i] << "); guess ("
 					<< x2[i] << ", " << y2[i] << "); (dx, dy): (" << (x2[i] - x1[i]) << ", "
 					<< (y2[i] - y1[i]) << ").";
 			}
@@ -1317,19 +1317,19 @@ namespace fblib {
 					result->termination == TrackRegionResult::SOURCE_OUT_OF_BOUNDS ||
 					result->termination == TrackRegionResult::DESTINATION_OUT_OF_BOUNDS ||
 					result->termination == TrackRegionResult::INSUFFICIENT_PATTERN_AREA) {
-					fblib::utils::notify(fblib::utils::INFO) << "Terminated with first try at refinement; no brute needed.";
+					mvg::utils::notify(mvg::utils::INFO) << "Terminated with first try at refinement; no brute needed.";
 					// TODO(keir): Also check correlation?
 					CopyQuad(x2_first_try, y2_first_try, x2, y2, options.num_extra_points);
-					fblib::utils::notify(fblib::utils::INFO) << "Early termination correlation: " << result->correlation;
+					mvg::utils::notify(mvg::utils::INFO) << "Early termination correlation: " << result->correlation;
 					return;
 				}
 				else {
-					fblib::utils::notify(fblib::utils::INFO) << "Initial eager-refinement failed; retrying normally.";
+					mvg::utils::notify(mvg::utils::INFO) << "Initial eager-refinement failed; retrying normally.";
 				}
 			}
 
 			if (options.use_normalized_intensities) {
-				fblib::utils::notify(fblib::utils::INFO) << "Using normalized intensities.";
+				mvg::utils::notify(mvg::utils::INFO) << "Using normalized intensities.";
 			}
 
 			// Bail early if the points are already outside.
@@ -1362,7 +1362,7 @@ namespace fblib {
 			// Possibly do a brute-force translation-only initialization.
 			if (SearchAreaTooBigForDescent(image2, x2, y2) &&
 				options.use_brute_initialization) {
-				fblib::utils::notify(fblib::utils::INFO) << "Running brute initialization...";
+				mvg::utils::notify(mvg::utils::INFO) << "Running brute initialization...";
 				bool found_any_alignment = BruteTranslationOnlyInitialize<Warp>(
 					image_and_gradient1,
 					options.image1_mask,
@@ -1371,13 +1371,13 @@ namespace fblib {
 					options.use_normalized_intensities,
 					x1, y1, x2, y2);
 				if (!found_any_alignment) {
-					fblib::utils::notify(fblib::utils::INFO) << "Brute failed to find an alignment; pattern too small. "
+					mvg::utils::notify(mvg::utils::INFO) << "Brute failed to find an alignment; pattern too small. "
 						<< "Failing entire track operation.";
 					result->termination = TrackRegionResult::INSUFFICIENT_PATTERN_AREA;
 					return;
 				}
 				for (int i = 0; i < 4; ++i) {
-					fblib::utils::notify(fblib::utils::INFO) << "P" << i << ": (" << x1[i] << ", " << y1[i] << "); brute ("
+					mvg::utils::notify(mvg::utils::INFO) << "P" << i << ": (" << x1[i] << ", " << y1[i] << "); brute ("
 						<< x2[i] << ", " << y2[i] << "); (dx, dy): (" << (x2[i] - x1[i])
 						<< ", " << (y2[i] - y1[i]) << ").";
 				}
@@ -1453,7 +1453,7 @@ namespace fblib {
 			ceres::Solver::Summary summary;
 			ceres::Solve(solver_options, &problem, &summary);
 
-			fblib::utils::notify(fblib::utils::INFO) << "Summary:\n" << summary.FullReport();
+			mvg::utils::notify(mvg::utils::INFO) << "Summary:\n" << summary.FullReport();
 
 			// Update the four points with the found solution; if the solver failed, then
 			// the warp parameters are the identity (so ignore failure).
@@ -1461,7 +1461,7 @@ namespace fblib {
 			// Also warp any extra points on the end of the array.
 			for (int i = 0; i < 4 + options.num_extra_points; ++i) {
 				warp.Forward(warp.parameters, x1[i], y1[i], x2 + i, y2 + i);
-				fblib::utils::notify(fblib::utils::INFO) << "Warped point " << i << ": (" << x1[i] << ", " << y1[i] << ") -> ("
+				mvg::utils::notify(mvg::utils::INFO) << "Warped point " << i << ": (" << x1[i] << ", " << y1[i] << ") -> ("
 					<< x2[i] << ", " << y2[i] << "); (dx, dy): (" << (x2[i] - x1[i]) << ", "
 					<< (y2[i] - y1[i]) << ").";
 			}
@@ -1488,7 +1488,7 @@ namespace fblib {
 				result->correlation = pixel_difference_cost_function->
 					PearsonProductMomentCorrelationCoefficient(warp.parameters);
 				if (result->correlation < options.minimum_correlation) {
-					fblib::utils::notify(fblib::utils::INFO) << "Failing with insufficient correlation.";
+					mvg::utils::notify(mvg::utils::INFO) << "Failing with insufficient correlation.";
 					result->termination = TrackRegionResult::INSUFFICIENT_CORRELATION;
 					return;
 				}
@@ -1541,7 +1541,7 @@ namespace fblib {
 			double *warped_position_x, double *warped_position_y) {
 			// Bail early if the points are outside the image.
 			if (!AllInBounds(image, xs, ys)) {
-				fblib::utils::notify(fblib::utils::INFO) << "Can't sample patch: out of bounds.";
+				mvg::utils::notify(mvg::utils::INFO) << "Can't sample patch: out of bounds.";
 				return false;
 			}
 
@@ -1580,4 +1580,4 @@ namespace fblib {
 			return true;
 		}
 	}
-}  // namespace fblib
+}  // namespace mvg

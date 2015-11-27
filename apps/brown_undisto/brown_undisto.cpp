@@ -1,19 +1,19 @@
-#include "fblib/image/image.h"
-#include "fblib/image/image_io.h"
-#include "fblib/image/pixel_types.h"
-#include "fblib/image/sample.h"
-#include "fblib/math/numeric.h"
+#include "mvg/image/image.h"
+#include "mvg/image/image_io.h"
+#include "mvg/image/pixel_types.h"
+#include "mvg/image/sample.h"
+#include "mvg/math/numeric.h"
 
-#include "fblib/utils/cmd_line.h"
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/progress.h"
+#include "mvg/utils/cmd_line.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/progress.h"
 
 #include <string>
 #include <iostream>
 
-using namespace fblib::math;
-using namespace fblib::utils;
-using namespace fblib::image;
+using namespace mvg::math;
+using namespace mvg::utils;
+using namespace mvg::image;
 using namespace std;
 
 // A simple container and undistort function for the Brown's distortion model [1]
@@ -131,8 +131,8 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-	if (!fblib::utils::folder_exists(sOutPath))
-		fblib::utils::folder_create(sOutPath);
+	if (!mvg::utils::folder_exists(sOutPath))
+		mvg::utils::folder_create(sOutPath);
 
 	BrownDistoModel distoModel;
 	distoModel.m_disto_center = Vec2(c(0), c(1));
@@ -145,7 +145,7 @@ int main(int argc, char **argv)
 		<< distoModel.m_radial_distortion.transpose() << "\n"
 		<< "  Distortion focal: " << distoModel.m_f << std::endl;
 
-	std::vector<std::string> file_names = fblib::utils::folder_wildcard(sPath, "*.JPG", false, true);
+	std::vector<std::string> file_names = mvg::utils::folder_wildcard(sPath, "*.JPG", false, true);
 
 	Image<RGBColor > image, imageU;
 	ControlProgressDisplay my_progress_bar(file_names.size());
@@ -153,7 +153,7 @@ int main(int argc, char **argv)
 	{
 		readImage((sPath + "/" + file_names[j]).c_str(), &image);
 		imageU = undistortImage(image, distoModel);
-		string sOutFileName = fblib::utils::create_filespec(sOutPath, fblib::utils::basename_part(file_names[j]), "JPG");
+		string sOutFileName = mvg::utils::create_filespec(sOutPath, mvg::utils::basename_part(file_names[j]), "JPG");
 		writeImage(sOutFileName.c_str(), imageU);
 	}
 

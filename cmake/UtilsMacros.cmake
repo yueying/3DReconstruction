@@ -18,16 +18,16 @@ ENDMACRO(STRING_APPEND)
 # ------------------------------------------------------------------------
 # For usage below. Checks whether we have to add the "general" prefix.
 # ------------------------------------------------------------------------
-MACRO(APPEND_FBLIB_LIBS )
+MACRO(APPEND_MVG_LIBS )
 	IF(NOT "${ARGV}" STREQUAL "")  # Do nothing for an empty string
 		IF(${ARGV0} STREQUAL "debug" OR ${ARGV0} STREQUAL "optimized")
 			set(_libs ${ARGV})
 		ELSE(${ARGV0} STREQUAL "debug" OR ${ARGV0} STREQUAL "optimized")
 			set(_libs general ${ARGV})
 		ENDIF(${ARGV0} STREQUAL "debug" OR ${ARGV0} STREQUAL "optimized")
-		LIST(APPEND FBLIB_LINKER_LIBS ${_libs})
+		LIST(APPEND MVG_LINKER_LIBS ${_libs})
 	ENDIF(NOT "${ARGV}" STREQUAL "")
-ENDMACRO(APPEND_FBLIB_LIBS)
+ENDMACRO(APPEND_MVG_LIBS)
 
 
 # Only if GNU GCC is used, add one "-isystem" flag for each include directory.

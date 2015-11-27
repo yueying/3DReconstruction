@@ -24,9 +24,9 @@ endif(ENABLE_SOLUTION_FOLDERS)
 # -----------------------------
 
 # Include gtest from embeded lib:
-IF (NOT CMAKE_FBLIB_HAS_GTEST_SYSTEM)
-	INCLUDE_DIRECTORIES("${CMAKE_FBLIB_GTEST_SRC_DIR}/include/")
-ENDIF(NOT CMAKE_FBLIB_HAS_GTEST_SYSTEM)
+IF (NOT CMAKE_MVG_HAS_GTEST_SYSTEM)
+	INCLUDE_DIRECTORIES("${CMAKE_MVG_GTEST_SRC_DIR}/include/")
+ENDIF(NOT CMAKE_MVG_HAS_GTEST_SYSTEM)
 
 # If using system library, add C++ flags:
 IF (NOT "${CMAKE_GTEST_CFLAGS}" STREQUAL "")
@@ -34,40 +34,40 @@ IF (NOT "${CMAKE_GTEST_CFLAGS}" STREQUAL "")
 ENDIF (NOT "${CMAKE_GTEST_CFLAGS}" STREQUAL "")
 
 
-get_property(LST_LIB_TESTS GLOBAL PROPERTY "FBLIB_TEST_LIBS")
+get_property(LST_LIB_TESTS GLOBAL PROPERTY "MVG_TEST_LIBS")
 FOREACH(_TSTLIB ${LST_LIB_TESTS})
-	STRING(REGEX REPLACE "fblib_(.*)" "fblib_\\1" _TSTLIB_DASH ${_TSTLIB})
+	STRING(REGEX REPLACE "mvg_(.*)" "mvg_\\1" _TSTLIB_DASH ${_TSTLIB})
 	get_property(lstfiles GLOBAL PROPERTY "${_TSTLIB}_UNIT_TEST_FILES")
 
 	#MESSAGE(STATUS "Generating tests for ${_TSTLIB} -> ${_TSTLIB_DASH}")
 	#MESSAGE(STATUS "  Files: ${lstfiles}")
 	#add other
-    INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/flann/src/cpp")
-	INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/lemon")
-	INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/ceres/include")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/ceres/internal")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/ceres/internal/ceres/miniglog")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/ceres/config")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/osi_clp/Clp/src/OsiClp")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/osi_clp/CoinUtils/src")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/osi_clp/Clp/src")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/osi_clp/Osi/src/Osi")
+    INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/flann/src/cpp")
+	INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/lemon")
+	INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/ceres/include")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/ceres/internal")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/ceres/internal/ceres/miniglog")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/ceres/config")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/osi_clp/Clp/src/OsiClp")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/osi_clp/CoinUtils/src")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/osi_clp/Clp/src")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/osi_clp/Osi/src/Osi")
 	# Test project:
-	INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/tests")
+	INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/tests")
 	ADD_EXECUTABLE( test_${_TSTLIB} testing.h test_main.cpp ${lstfiles})
 
 	# Add the required libraries for linking:
-IF (CMAKE_FBLIB_HAS_GTEST_SYSTEM)
+IF (CMAKE_MVG_HAS_GTEST_SYSTEM)
 	# System vesion:
-	TARGET_LINK_LIBRARIES(test_${_TSTLIB} ${FBLIB_LINKER_LIBS_RELorDEB} gtest)
-ELSE (CMAKE_FBLIB_HAS_GTEST_SYSTEM)
+	TARGET_LINK_LIBRARIES(test_${_TSTLIB} ${MVG_LINKER_LIBS_RELorDEB} gtest)
+ELSE (CMAKE_MVG_HAS_GTEST_SYSTEM)
 	# Own version:
-	TARGET_LINK_LIBRARIES(test_${_TSTLIB} ${FBLIB_LINKER_LIBS_RELorDEB} fblibgtest) 
-	ADD_DEPENDENCIES(test_${_TSTLIB} fblibgtest)  # Assure the FBLIB library is updated:
-ENDIF (CMAKE_FBLIB_HAS_GTEST_SYSTEM)
+	TARGET_LINK_LIBRARIES(test_${_TSTLIB} ${MVG_LINKER_LIBS_RELorDEB} mvggtest) 
+	ADD_DEPENDENCIES(test_${_TSTLIB} mvggtest)  # Assure the MVG library is updated:
+ENDIF (CMAKE_MVG_HAS_GTEST_SYSTEM)
 
 
-	set_target_properties(test_${_TSTLIB} PROPERTIES "COMPILE_DEFINITIONS" "FBLIB_TEST_LIB=${_TSTLIB}")
+	set_target_properties(test_${_TSTLIB} PROPERTIES "COMPILE_DEFINITIONS" "MVG_TEST_LIB=${_TSTLIB}")
 
 	# Deps:
 	
@@ -78,8 +78,8 @@ ENDIF (CMAKE_FBLIB_HAS_GTEST_SYSTEM)
 	set(lst_deps ${_TSTLIB_DASH} ${lst_deps}) # The order in this list is very important for linking!
 	FOREACH(_DEPLIB ${lst_deps})
 		# Include dirs:
-		STRING(REGEX REPLACE "fblib_(.*)" "\\1" _DEPLIB_DASH ${_DEPLIB})
-		include_directories("${FBLIB_LIBS_ROOT}/${_DEPLIB_DASH}/include")
+		STRING(REGEX REPLACE "mvg_(.*)" "\\1" _DEPLIB_DASH ${_DEPLIB})
+		include_directories("${MVG_LIBS_ROOT}/${_DEPLIB_DASH}/include")
 
 		# Deps:
 		ADD_DEPENDENCIES(test_${_TSTLIB} ${_DEPLIB})
@@ -94,7 +94,7 @@ ENDIF (CMAKE_FBLIB_HAS_GTEST_SYSTEM)
 	
 	# Run it:
 	GET_TARGET_PROPERTY(GENERATED_EXE test_${_TSTLIB} LOCATION)
-	ADD_CUSTOM_TARGET(run_tests_${_TSTLIB} COMMAND "${GENERATED_EXE}" "${FBLIB_SOURCE_DIR}")
+	ADD_CUSTOM_TARGET(run_tests_${_TSTLIB} COMMAND "${GENERATED_EXE}" "${MVG_SOURCE_DIR}")
 	ADD_DEPENDENCIES(run_tests_${_TSTLIB} test_${_TSTLIB})
 	ADD_DEPENDENCIES(test run_tests_${_TSTLIB})
 

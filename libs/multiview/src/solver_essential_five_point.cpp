@@ -1,8 +1,8 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/solver_essential_five_point.h"
-#include "fblib/multiview/solver_fundamental_kernel.h"
+#include "mvg/multiview/solver_essential_five_point.h"
+#include "mvg/multiview/solver_fundamental_kernel.h"
 #include <iostream>
-namespace fblib {
+namespace mvg {
 	namespace multiview{
 		Mat FivePointsNullspaceBasis(const Mat2X &x1, const Mat2X &x2) {
 			Eigen::Matrix<double, 9, 9> A;
@@ -222,5 +222,5 @@ namespace fblib {
 			}
 		}
 	}
-} // namespace fblib
+} // namespace mvg
 

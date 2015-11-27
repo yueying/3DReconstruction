@@ -1,12 +1,12 @@
 #include <cstdlib>
 
-#include "fblib/sfm/sfm_incremental_engine.h"
+#include "mvg/sfm/sfm_incremental_engine.h"
 
-#include "fblib/utils/cmd_line.h"
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/timer.h"
+#include "mvg/utils/cmd_line.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/timer.h"
 
-using namespace fblib::sfm;
+using namespace mvg::sfm;
 
 int main(int argc, char **argv)
 {
@@ -60,14 +60,14 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
-  if (!fblib::utils::folder_exists(out_dir))
-    fblib::utils::folder_create(out_dir);
+  if (!mvg::utils::folder_exists(out_dir))
+    mvg::utils::folder_create(out_dir);
 
   // 计时开始
-  fblib::utils::Timer timer;
+  mvg::utils::Timer timer;
   timer.Start();
 
-  fblib::sfm::IncrementalReconstructionEngine to_3d_engine(image_dir,
+  mvg::sfm::IncrementalReconstructionEngine to_3d_engine(image_dir,
                                             matches_dir,
                                             out_dir,
                                             true);
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
       to_3d_engine.ColorizeTracks(vec_tracks_color);
     }
     reconstructor_helper_ref.exportToPlyFile(
-      fblib::utils::create_filespec(out_dir, "FinalColorized", ".ply"),
+      mvg::utils::create_filespec(out_dir, "FinalColorized", ".ply"),
       is_colored_point_cloud ? &vec_tracks_color : NULL);
 
     // Export to openMVG format
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
       << " -- Point cloud color: " << (is_colored_point_cloud ? "ON" : "OFF") << std::endl;
 
     reconstructor_helper_ref.ExportToOpenMVGFormat(
-      fblib::utils::folder_append_separator(out_dir) + "SfM_output",
+      mvg::utils::folder_append_separator(out_dir) + "SfM_output",
       to_3d_engine.getFilenamesVector(),
       image_dir,
       to_3d_engine.getImagesSize(),
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
     if (is_pmvs_export)  {
       std::cout << std::endl << "Export 3D scene to PMVS format" << std::endl;
       reconstructor_helper_ref.exportToPMVSFormat(
-        fblib::utils::folder_append_separator(out_dir) + "PMVS",
+        mvg::utils::folder_append_separator(out_dir) + "PMVS",
         to_3d_engine.getFilenamesVector(),
         image_dir);
     }

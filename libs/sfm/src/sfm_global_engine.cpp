@@ -1,49 +1,49 @@
 ﻿#include "sfm_precomp.h"
-#include "fblib/feature/features.h"
-#include "fblib/image/image.h"
-#include "fblib/feature/indexed_match_utils.h"
+#include "mvg/feature/features.h"
+#include "mvg/image/image.h"
+#include "mvg/feature/indexed_match_utils.h"
 
-#include "fblib/multiview/triangulation_nview.h"
+#include "mvg/multiview/triangulation_nview.h"
 
-#include "fblib/sfm/indexed_image_graph.h"
-#include "fblib/sfm/indexed_image_graph_export.h"
-#include "fblib/sfm/sfm_global_engine.h"
-#include "fblib/feature/image_list_io_helper.h"
-#include "fblib/sfm/sfm_robust.h"
-#include "fblib/sfm/sfm_ply_helper.h"
+#include "mvg/sfm/indexed_image_graph.h"
+#include "mvg/sfm/indexed_image_graph_export.h"
+#include "mvg/sfm/sfm_global_engine.h"
+#include "mvg/feature/image_list_io_helper.h"
+#include "mvg/sfm/sfm_robust.h"
+#include "mvg/sfm/sfm_ply_helper.h"
 
-#include "fblib/sfm/connected_component.h"
+#include "mvg/sfm/connected_component.h"
 
-#include "fblib/sfm/sfm_global_tij_computation.h"
-#include "fblib/utils/indexed_sort.h"
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/svg_drawer.h"
-#include "fblib/utils/stl_map.h"
-#include "fblib/utils/histogram.h"
+#include "mvg/sfm/sfm_global_tij_computation.h"
+#include "mvg/utils/indexed_sort.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/svg_drawer.h"
+#include "mvg/utils/stl_map.h"
+#include "mvg/utils/histogram.h"
 
-#include "fblib/sfm/linear_programming_interface.h"
-#include "fblib/sfm/linear_programming_osi.h"
-#ifdef FBLIB_HAVE_MOSEK
-#include "fblib/sfm/linearProgrammingMOSEK.h"
+#include "mvg/sfm/linear_programming_interface.h"
+#include "mvg/sfm/linear_programming_osi.h"
+#ifdef MVG_HAVE_MOSEK
+#include "mvg/sfm/linearProgrammingMOSEK.h"
 #endif
 
-#include "fblib/feature/estimator_acransac.h"
-#include "fblib/feature/estimator_acransac_kernel_adaptator.h"
+#include "mvg/feature/estimator_acransac.h"
+#include "mvg/feature/estimator_acransac_kernel_adaptator.h"
 
 #undef DYNAMIC
-#include "fblib/sfm/problem_data_container.h"
-#include "fblib/sfm/pinhole_ceres_functor.h"
-#include "fblib/sfm/sfm_bundle_adjustment_helper_tonly.h"
+#include "mvg/sfm/problem_data_container.h"
+#include "mvg/sfm/pinhole_ceres_functor.h"
+#include "mvg/sfm/sfm_bundle_adjustment_helper_tonly.h"
 
-#include "fblib/sfm/sfm_global_engine_triplet_t_estimator.h"
+#include "mvg/sfm/sfm_global_engine_triplet_t_estimator.h"
 
 #include "lemon/list_graph.h"
 #include <lemon/connectivity.h>
 
 // Rotation averaging
-#include "fblib/multiview/rotation_averaging.h"
-#include "fblib/utils/progress.h"
-#include "fblib/utils/timer.h"
+#include "mvg/multiview/rotation_averaging.h"
+#include "mvg/utils/progress.h"
+#include "mvg/utils/timer.h"
 
 #include <numeric>
 #include <iomanip>
@@ -51,13 +51,13 @@
 #include <functional>
 #include <sstream>
 
-using namespace fblib::utils;
-using namespace fblib::sfm;
-using namespace fblib::feature;
+using namespace mvg::utils;
+using namespace mvg::sfm;
+using namespace mvg::feature;
 
-namespace fblib{
+namespace mvg{
 	namespace sfm{
-		typedef fblib::feature::ScalePointFeature FeatureT;
+		typedef mvg::feature::ScalePointFeature FeatureT;
 		typedef std::vector<FeatureT> featsT;
 
 		/// Return in radian the rotation amplitude of the given rotation matrix
@@ -75,8 +75,8 @@ namespace fblib{
 			: ReconstructionEngine(image_path, matches_path, out_dir)
 		{
 			is_html_report_ = is_html_report;
-			if (!fblib::utils::folder_exists(out_dir)) {
-				fblib::utils::folder_create(out_dir);
+			if (!mvg::utils::folder_exists(out_dir)) {
+				mvg::utils::folder_create(out_dir);
 			}
 			if (is_html_report_)
 			{
@@ -91,7 +91,7 @@ namespace fblib{
 
 		GlobalReconstructionEngine::~GlobalReconstructionEngine()
 		{
-			ofstream htmlFileStream(string(fblib::utils::folder_append_separator(out_dir_) +
+			ofstream htmlFileStream(string(mvg::utils::folder_append_separator(out_dir_) +
 				"Reconstruction_Report.html").c_str());
 			htmlFileStream << html_doc_stream_->getDoc();
 		}
@@ -99,7 +99,7 @@ namespace fblib{
 		void GlobalReconstructionEngine::RotationInference(
 			MapRelativeRT & map_relatives)
 		{
-			FBLIB_INFO
+			MVG_INFO
 				<< "---------------\n"
 				<< "-- INFERENCE on " << map_matches_fundamental_.size() << " EGs count.\n"
 				<< "---------------" << std::endl
@@ -142,7 +142,7 @@ namespace fblib{
 					for (MapRelativeRT::const_iterator iter = map_relatives.begin();
 						iter != map_relatives.end(); ++iter)
 					{
-						const fblib::sfm::RelativeInfo & rel = *iter;
+						const mvg::sfm::RelativeInfo & rel = *iter;
 						// Find the number of support point for this pair
 						PairWiseMatches::const_iterator iterMatches = map_matches_fundamental_.find(rel.first);
 						if (iterMatches != map_matches_fundamental_.end())
@@ -155,7 +155,7 @@ namespace fblib{
 					for (MapRelativeRT::const_iterator iter = map_relatives.begin();
 						iter != map_relatives.end(); ++iter)
 					{
-						const fblib::sfm::RelativeInfo & rel = *iter;
+						const mvg::sfm::RelativeInfo & rel = *iter;
 						float weight = 1.f; // the relative rotation correspondence point support
 						PairWiseMatches::const_iterator iterMatches = map_matches_fundamental_.find(rel.first);
 						if (iterMatches != map_matches_fundamental_.end())
@@ -173,7 +173,7 @@ namespace fblib{
 			for (MapRelativeRT::const_iterator iter = map_relatives.begin();
 				iter != map_relatives.end(); ++iter)
 			{
-				const fblib::sfm::RelativeInfo & rel = *iter;
+				const mvg::sfm::RelativeInfo & rel = *iter;
 				PairWiseMatches::const_iterator iterMatches = map_matches_fundamental_.find(rel.first);
 				if (iterMatches != map_matches_fundamental_.end())
 				{
@@ -200,7 +200,7 @@ namespace fblib{
 				break;
 			case ROTATION_AVERAGING_L1:
 			{
-				using namespace fblib::multiview::l1;
+				using namespace mvg::multiview::l1;
 
 				//- Solve the global rotation estimation problem:
 				size_t nMainViewID = 0;
@@ -208,9 +208,9 @@ namespace fblib{
 				bSuccess = multiview::l1::GlobalRotationsRobust(
 					vec_relativeRotEstimate, vec_globalR, nMainViewID, 0.0f, &vec_inliers);
 
-				FBLIB_INFO << "\ninliers : " << std::endl;
+				MVG_INFO << "\ninliers : " << std::endl;
 				std::copy(vec_inliers.begin(), vec_inliers.end(), ostream_iterator<bool>(std::cout, " "));
-				FBLIB_INFO << std::endl;
+				MVG_INFO << std::endl;
 			}
 				break;
 			default:
@@ -235,7 +235,7 @@ namespace fblib{
 		{
 			// 进行全局处理
 			if (!readInputData())  {
-				FBLIB_INFO << "\nError while parsing input data" << std::endl;
+				MVG_INFO << "\nError while parsing input data" << std::endl;
 				return false;
 			}
 
@@ -246,12 +246,12 @@ namespace fblib{
 
 	  // Save the graph before cleaning:
 	  exportToGraphvizData(
-		  fblib::utils::create_filespec(out_dir_, "input_graph"),
+		  mvg::utils::create_filespec(out_dir_, "input_graph"),
 		  putativeGraph.g);
   }
 
 
-			fblib::utils::Timer total_reconstruction_timer;
+			mvg::utils::Timer total_reconstruction_timer;
 			total_reconstruction_timer.Start();
 			//-------------------
 			// Only keep the largest biedge connected subgraph
@@ -276,7 +276,7 @@ namespace fblib{
 			//-- Putative triplets for relative translations computation
 			std::vector< Triplet > vec_triplets;
 			{
-				fblib::utils::Timer timer_Inference;
+				mvg::utils::Timer timer_Inference;
 				timer_Inference.Start();
 				RotationInference(map_relatives);
 
@@ -321,7 +321,7 @@ namespace fblib{
 					map_camera_node_to_camera_index[*iterSet] = std::distance(set_indeximage.begin(), iterSet);
 				}
 
-				FBLIB_INFO << "\n Remaining cameras after inference filter : \n"
+				MVG_INFO << "\n Remaining cameras after inference filter : \n"
 					<< map_camera_index_to_camera_node.size() << " from a total of " << vec_file_names_.size() << std::endl;
 
 				//-- Export statistics about the rotation inference step:
@@ -348,7 +348,7 @@ namespace fblib{
 
 			std::map<std::size_t, Mat3> map_globalR;
 			{
-				FBLIB_INFO << "\n-------------------------------" << "\n"
+				MVG_INFO << "\n-------------------------------" << "\n"
 					<< " Global rotations computation: " << "\n"
 					<< "   - Ready to compute " << map_camera_index_to_camera_node.size() << " global rotations." << "\n"
 					<< "     from " << map_relatives.size() << " relative rotations\n" << std::endl;
@@ -356,7 +356,7 @@ namespace fblib{
 				int iChoice = 0;
 				do
 				{
-					FBLIB_INFO
+					MVG_INFO
 						<< "-------------------------------" << "\n"
 						<< " Choose your rotation averaging method: " << "\n"
 						<< "   - 1 -> MST based rotation + L1 rotation averaging" << "\n"
@@ -378,20 +378,20 @@ namespace fblib{
 			//-------------------
 			// Relative translations estimation (Triplet based translation computation)
 			//-------------------
-			std::vector<fblib::sfm::RelativeInfo > vec_initialRijTijEstimates;
+			std::vector<mvg::sfm::RelativeInfo > vec_initialRijTijEstimates;
 			PairWiseMatches newpairMatches;
 			{
-				FBLIB_INFO << "\n-------------------------------" << "\n"
+				MVG_INFO << "\n-------------------------------" << "\n"
 					<< " Relative translations computation: " << "\n"
 					<< "-------------------------------" << std::endl;
 
 				// Compute putative translations with an edge coverage algorithm
 
-				fblib::utils::Timer timerLP_triplet;
+				mvg::utils::Timer timerLP_triplet;
 				timerLP_triplet.Start();
 				ComputePutativeTranslationEdgesCoverage(map_globalR, vec_triplets, vec_initialRijTijEstimates, newpairMatches);
 				double timeLP_triplet = timerLP_triplet.Stop();
-				FBLIB_INFO << "TRIPLET COVERAGE TIMING : " << timeLP_triplet << " seconds" << std::endl;
+				MVG_INFO << "TRIPLET COVERAGE TIMING : " << timeLP_triplet << " seconds" << std::endl;
 
 				//-- Export triplet statistics:
 				if (is_html_report_)
@@ -420,11 +420,11 @@ namespace fblib{
 	  std::set<size_t> set_representedImageIndex;
 	  for (size_t i = 0; i < vec_initialRijTijEstimates.size(); ++i)
 	  {
-		  const fblib::sfm::RelativeInfo & rel = vec_initialRijTijEstimates[i];
+		  const mvg::sfm::RelativeInfo & rel = vec_initialRijTijEstimates[i];
 		  set_representedImageIndex.insert(rel.first.first);
 		  set_representedImageIndex.insert(rel.first.second);
 	  }
-	  FBLIB_INFO << "\n\n"
+	  MVG_INFO << "\n\n"
 		  << "We targeting to estimates : " << map_globalR.size()
 		  << " and we have estimation for : " << set_representedImageIndex.size() << " images" << std::endl;
 
@@ -434,7 +434,7 @@ namespace fblib{
 	  {
 		  if (set_representedImageIndex.find(iter->first) == set_representedImageIndex.end())
 		  {
-			  FBLIB_INFO << "Missing image index: " << iter->first << std::endl;
+			  MVG_INFO << "Missing image index: " << iter->first << std::endl;
 			  map_globalR.erase(map_camera_index_to_camera_node[iter->first]);
 		  }
 	  }
@@ -449,7 +449,7 @@ namespace fblib{
 		  map_camera_node_to_camera_index[*iterSet] = std::distance(set_representedImageIndex.begin(), iterSet);
 	  }
 
-	  FBLIB_INFO << "\nRemaining cameras after inference filter : \n"
+	  MVG_INFO << "\nRemaining cameras after inference filter : \n"
 		  << map_camera_index_to_camera_node.size() << " from a total of " << vec_file_names_.size() << std::endl;
   }
 
@@ -460,7 +460,7 @@ namespace fblib{
   {
 	  const size_t iNview = map_camera_node_to_camera_index.size(); // The remaining camera nodes count in the graph
 
-	  FBLIB_INFO << "\n-------------------------------" << "\n"
+	  MVG_INFO << "\n-------------------------------" << "\n"
 		  << " Global translations computation: " << "\n"
 		  << "   - Ready to compute " << iNview << " global translations." << "\n"
 		  << "     from " << vec_initialRijTijEstimates.size() << " relative translations\n" << std::endl;
@@ -475,14 +475,14 @@ namespace fblib{
 		  rel.first = newPair;
 	  }
 
-	  fblib::utils::Timer timerLP_translation;
+	  mvg::utils::Timer timerLP_translation;
 	  timerLP_translation.Start();
 	  double gamma = -1.0;
 	  std::vector<double> vec_solution;
 	  {
 		  vec_solution.resize(iNview * 3 + vec_initialRijTijEstimates.size() / 3 + 1);
-		  using namespace fblib::sfm;
-#ifdef FBLIB_HAVE_MOSEK
+		  using namespace mvg::sfm;
+#ifdef MVG_HAVE_MOSEK
 		  MOSEK_SolveWrapper solverLP(vec_solution.size());
 #else
 		  OSI_CLP_SolverWrapper solverLP(vec_solution.size());
@@ -497,7 +497,7 @@ namespace fblib{
 		  //--
 		  // Solving
 		  bool bFeasible = solverLP.solve();
-		  FBLIB_INFO << " \n Feasibility " << bFeasible << std::endl;
+		  MVG_INFO << " \n Feasibility " << bFeasible << std::endl;
 		  //--
 		  if (bFeasible)
 		  {
@@ -525,16 +525,16 @@ namespace fblib{
 		  html_doc_stream_->pushInfo(os.str());
 	  }
 
-	  FBLIB_INFO << "Found solution:\n";
+	  MVG_INFO << "Found solution:\n";
 	  std::copy(vec_solution.begin(), vec_solution.end(), std::ostream_iterator<double>(std::cout, " "));
 
 	  std::vector<double> vec_camTranslation(iNview * 3, 0);
 	  std::copy(&vec_solution[0], &vec_solution[iNview * 3], &vec_camTranslation[0]);
 
 	  std::vector<double> vec_camRelLambdas(&vec_solution[iNview * 3], &vec_solution[iNview * 3 + vec_initialRijTijEstimates.size() / 3]);
-	  FBLIB_INFO << "\ncam position: " << std::endl;
+	  MVG_INFO << "\ncam position: " << std::endl;
 	  std::copy(vec_camTranslation.begin(), vec_camTranslation.end(), std::ostream_iterator<double>(std::cout, " "));
-	  FBLIB_INFO << "\ncam Lambdas: " << std::endl;
+	  MVG_INFO << "\ncam Lambdas: " << std::endl;
 	  std::copy(vec_camRelLambdas.begin(), vec_camRelLambdas.end(), std::ostream_iterator<double>(std::cout, " "));
 
 	  // Build a Pinhole camera for each considered Id
@@ -549,7 +549,7 @@ namespace fblib{
 		  //-- Export camera center
 		  vec_C.push_back(map_camera_[camNodeId].camera_center_);
 	  }
-	  exportToPly(vec_C, fblib::utils::create_filespec(out_dir_, "cameraPath", "ply"));
+	  exportToPly(vec_C, mvg::utils::create_filespec(out_dir_, "cameraPath", "ply"));
   }
 
 			//-------------------
@@ -565,7 +565,7 @@ namespace fblib{
 		  tracks_builder.Filter(3);
 		  tracks_builder.ExportToSTL(map_selected_tracks_);
 
-		  FBLIB_INFO << std::endl << "Track stats" << std::endl;
+		  MVG_INFO << std::endl << "Track stats" << std::endl;
 		  {
 			  std::ostringstream osTrack;
 			  //-- Display stats :
@@ -590,7 +590,7 @@ namespace fblib{
 				  osTrack << "\t" << iter->first << "\t" << iter->second << "\n";
 			  }
 			  osTrack << "\n";
-			  FBLIB_INFO << osTrack.str();
+			  MVG_INFO << osTrack.str();
 		  }
 	  }
 
@@ -667,27 +667,27 @@ namespace fblib{
 		  {
 			  map_selected_tracks_.erase(*iter);
 		  }
-		  FBLIB_INFO << "\n Tracks have been removed : " << set_idx_to_remove.size() << std::endl;
+		  MVG_INFO << "\n Tracks have been removed : " << set_idx_to_remove.size() << std::endl;
 	  }
-		  exportToPly(vec_all_scenes_, fblib::utils::create_filespec(out_dir_, "raw_pointCloud_LP", "ply"));
+		  exportToPly(vec_all_scenes_, mvg::utils::create_filespec(out_dir_, "raw_pointCloud_LP", "ply"));
 
 		  {
 			  // Display some statistics of reprojection errors
-			  FBLIB_INFO << "\n\nResidual statistics:\n" << std::endl;
+			  MVG_INFO << "\n\nResidual statistics:\n" << std::endl;
 			  MinMaxMeanMedian<double>(vec_residuals.begin(), vec_residuals.end());
 			  double min, max, mean, median;
 			  MinMaxMeanMedian<double>(vec_residuals.begin(), vec_residuals.end(), min, max, mean, median);
 
 			  Histogram<float> histo(0.f, *max_element(vec_residuals.begin(), vec_residuals.end())*1.1f);
 			  histo.Add(vec_residuals.begin(), vec_residuals.end());
-			  FBLIB_INFO << std::endl << "Residual Error pixels : " << std::endl << histo.ToString() << std::endl;
+			  MVG_INFO << std::endl << "Residual Error pixels : " << std::endl << histo.ToString() << std::endl;
 
 			  // Histogram between 0 and 10 pixels
 			  {
-				  FBLIB_INFO << "\n Histogram between 0 and 10 pixels: \n";
+				  MVG_INFO << "\n Histogram between 0 and 10 pixels: \n";
 				  Histogram<float> histo(0.f, 10.f, 20);
 				  histo.Add(vec_residuals.begin(), vec_residuals.end());
-				  FBLIB_INFO << std::endl << "Residual Error pixels : " << std::endl << histo.ToString() << std::endl;
+				  MVG_INFO << std::endl << "Residual Error pixels : " << std::endl << histo.ToString() << std::endl;
 			  }
 
 			  //-- Export initial triangulation statistics
@@ -736,7 +736,7 @@ namespace fblib{
 				html_doc_stream_->pushInfo(os.str());
 			}
 
-			FBLIB_INFO << std::endl
+			MVG_INFO << std::endl
 				<< "-------------------------------" << "\n"
 				<< "-- Have calibrated: " << map_camera_.size() << " from "
 				<< vec_file_names_.size() << " input images.\n"
@@ -783,9 +783,9 @@ namespace fblib{
 
 		bool GlobalReconstructionEngine::readInputData()
 		{
-			if (!fblib::utils::is_folder(image_path_) ||
-				!fblib::utils::is_folder(matches_path_) ||
-				!fblib::utils::is_folder(out_dir_))
+			if (!mvg::utils::is_folder(image_path_) ||
+				!mvg::utils::is_folder(matches_path_) ||
+				!mvg::utils::is_folder(out_dir_))
 			{
 				std::cerr << std::endl
 					<< "One of the required directory is not a valid directory" << std::endl;
@@ -793,10 +793,10 @@ namespace fblib{
 			}
 
 			// a. Read images names
-			std::string lists_file = fblib::utils::create_filespec(matches_path_, "lists", "txt");
-			std::string sComputedMatchesFile_E = fblib::utils::create_filespec(matches_path_, "matches.e", "txt");
-			if (!fblib::utils::is_file(lists_file) ||
-				!fblib::utils::is_file(sComputedMatchesFile_E))
+			std::string lists_file = mvg::utils::create_filespec(matches_path_, "lists", "txt");
+			std::string sComputedMatchesFile_E = mvg::utils::create_filespec(matches_path_, "matches.e", "txt");
+			if (!mvg::utils::is_file(lists_file) ||
+				!mvg::utils::is_file(sComputedMatchesFile_E))
 			{
 				std::cerr << std::endl
 					<< "One of the input required file is not a present (lists.txt, matches.e.txt)" << std::endl;
@@ -805,7 +805,7 @@ namespace fblib{
 
 			// a. Read images names
   {
-	  if (!fblib::feature::loadImageList(
+	  if (!mvg::feature::loadImageList(
 		  lists_file, vec_camera_image_names_,
 		  vec_intrinsic_groups_
 		  ))
@@ -816,7 +816,7 @@ namespace fblib{
 	  else
 	  {
 		  // Check there is only one intrinsic group
-		  std::vector<fblib::feature::IntrinsicCameraInfo>::iterator iterF =
+		  std::vector<mvg::feature::IntrinsicCameraInfo>::iterator iterF =
 			  std::unique(vec_intrinsic_groups_.begin(), vec_intrinsic_groups_.end(), testIntrinsicsEquality);
 		  vec_intrinsic_groups_.resize(std::distance(vec_intrinsic_groups_.begin(), iterF));
 		  if (vec_intrinsic_groups_.size() == 1)
@@ -826,7 +826,7 @@ namespace fblib{
 		  }
 		  else
 		  {
-			  FBLIB_INFO << "There is more than one focal group in the lists.txt file." << std::endl
+			  MVG_INFO << "There is more than one focal group in the lists.txt file." << std::endl
 				  << "Only one focal group is supported for the global calibration chain" << std::endl;
 			  return false;
 		  }
@@ -848,7 +848,7 @@ namespace fblib{
 			for (size_t i = 0; i < vec_file_names_.size(); ++i)  {
 				const size_t camIndex = i;
 				if (!LoadFeatsFromFile(
-					fblib::utils::create_filespec(matches_path_, fblib::utils::basename_part(vec_file_names_[camIndex]), ".feat"),
+					mvg::utils::create_filespec(matches_path_, mvg::utils::basename_part(vec_file_names_[camIndex]), ".feat"),
 					map_features_[camIndex])) {
 					std::cerr << "Bad reading of feature files" << std::endl;
 					return false;
@@ -868,7 +868,7 @@ namespace fblib{
 
 			// Save the graph before cleaning:
 			exportToGraphvizData(
-				fblib::utils::create_filespec(out_dir_, "initialGraph"),
+				mvg::utils::create_filespec(out_dir_, "initialGraph"),
 				putativeGraph.g);
 
 			// Remove not bi-edge connected edges
@@ -891,7 +891,7 @@ namespace fblib{
 			// Keep only the largest one
 			PairWiseMatches matches_filtered;
 			int connected_component_count = lemon::countConnectedComponents(putativeGraph.g);
-			FBLIB_INFO << "\n"
+			MVG_INFO << "\n"
 				<< "GlobalReconstructionEngine::CleanGraph() :: => connected Component : "
 				<< connected_component_count << std::endl;
 			if (connected_component_count > 1)
@@ -910,7 +910,7 @@ namespace fblib{
 						count = iter->second.size();
 						iterLargestCC = iter;
 					}
-					FBLIB_INFO << "Connected component of size : " << iter->second.size() << std::endl;
+					MVG_INFO << "Connected component of size : " << iter->second.size() << std::endl;
 				}
 
 				//-- Remove all nodes that are not listed in the largest CC
@@ -964,10 +964,10 @@ namespace fblib{
 
 			// Save the graph after cleaning:
 			exportToGraphvizData(
-				fblib::utils::create_filespec(out_dir_, "cleanedGraph"),
+				mvg::utils::create_filespec(out_dir_, "cleanedGraph"),
 				putativeGraph.g);
 
-			FBLIB_INFO << "\n"
+			MVG_INFO << "\n"
 				<< "Cardinal of nodes: " << lemon::countNodes(putativeGraph.g) << "\n"
 				<< "Cardinal of edges: " << lemon::countEdges(putativeGraph.g) << std::endl
 				<< std::endl;
@@ -1034,7 +1034,7 @@ namespace fblib{
 					Vec3 t;
 					if (!estimateRtFromE(K, K, x1, x2, E, vec_inliers, &R, &t))
 					{
-						FBLIB_INFO << " /!\\ Failed to compute initial R|t for the initial pair"
+						MVG_INFO << " /!\\ Failed to compute initial R|t for the initial pair"
 							<< std::endl;
 						continue;
 					}
@@ -1327,7 +1327,7 @@ namespace fblib{
 			map_relatives = map_relatives_validated;
 
 			// Display statistics about rotation triplets error:
-			FBLIB_INFO << "\nStatistics about rotation triplets:" << std::endl;
+			MVG_INFO << "\nStatistics about rotation triplets:" << std::endl;
 			MinMaxMeanMedian<float>(vec_errToIdentityPerTriplet.begin(), vec_errToIdentityPerTriplet.end());
 
 			std::sort(vec_errToIdentityPerTriplet.begin(), vec_errToIdentityPerTriplet.end());
@@ -1338,7 +1338,7 @@ namespace fblib{
 			SvgHistogram histosvg;
 			histosvg.draw(histo.GetHist(),
 				std::pair<float, float>(0.0f, *max_element(vec_errToIdentityPerTriplet.begin(), vec_errToIdentityPerTriplet.end())),
-				fblib::utils::create_filespec(this->out_dir_, "Triplet_Rotation_Residual_180.svg"),
+				mvg::utils::create_filespec(this->out_dir_, "Triplet_Rotation_Residual_180.svg"),
 				600, 300);
 
 			histo = Histogram<float>(0.0f, *max_element(vec_errToIdentityPerTriplet.begin(), vec_errToIdentityPerTriplet.end()), 20);
@@ -1346,7 +1346,7 @@ namespace fblib{
 
 			histosvg.draw(histo.GetHist(),
 				std::pair<float, float>(0.0f, *max_element(vec_errToIdentityPerTriplet.begin(), vec_errToIdentityPerTriplet.end())),
-				fblib::utils::create_filespec(this->out_dir_, "Triplet_Rotation_Residual_20.svg"),
+				mvg::utils::create_filespec(this->out_dir_, "Triplet_Rotation_Residual_20.svg"),
 				600, 300);
 
 			typedef lemon::ListGraph Graph;
@@ -1376,14 +1376,14 @@ namespace fblib{
 			}
 
 			exportToGraphvizData(
-				fblib::utils::create_filespec(out_dir_, "cleanedGraphTripletRotation"),
+				mvg::utils::create_filespec(out_dir_, "cleanedGraphTripletRotation"),
 				sg);
 
 			{
-				FBLIB_INFO << "\nTriplets filtering based on error on cycles \n";
-				FBLIB_INFO << "Before : " << vec_triplets.size() << " triplets \n"
+				MVG_INFO << "\nTriplets filtering based on error on cycles \n";
+				MVG_INFO << "Before : " << vec_triplets.size() << " triplets \n"
 					<< "After : " << vec_triplets_validated.size() << std::endl;
-				FBLIB_INFO << "There is " << lemon::countConnectedComponents(sg)
+				MVG_INFO << "There is " << lemon::countConnectedComponents(sg)
 					<< " Connected Component in the filtered graph" << std::endl;
 			}
 
@@ -1432,7 +1432,7 @@ namespace fblib{
 				}
 			}
 
-			FBLIB_INFO << "\n Relatives edges removed by triplet checking : " << removedEdgesCount << std::endl;
+			MVG_INFO << "\n Relatives edges removed by triplet checking : " << removedEdgesCount << std::endl;
 		}
 
 		void GlobalReconstructionEngine::bundleAdjustment_t_Xi(
@@ -1592,7 +1592,7 @@ namespace fblib{
 			// Solve BA
 			ceres::Solver::Summary summary;
 			ceres::Solve(options, &problem, &summary);
-			FBLIB_INFO << summary.FullReport() << std::endl;
+			MVG_INFO << summary.FullReport() << std::endl;
 
 			// If no error, get back refined parameters
 			if (summary.IsSolutionUsable())
@@ -1606,7 +1606,7 @@ namespace fblib{
 					Vec3 & point_3d = *iter;
 					point_3d = Vec3(pt[0], pt[1], pt[2]);
 				}
-				exportToPly(vec_all_scenes, fblib::utils::create_filespec(out_dir_, "raw_pointCloud_BA_T_Xi", "ply"));
+				exportToPly(vec_all_scenes, mvg::utils::create_filespec(out_dir_, "raw_pointCloud_BA_T_Xi", "ply"));
 
 				// Get back camera
 				i = 0;
@@ -1800,7 +1800,7 @@ namespace fblib{
 			// Solve BA
 			ceres::Solver::Summary summary;
 			ceres::Solve(options, &problem, &summary);
-			FBLIB_INFO << summary.FullReport() << std::endl;
+			MVG_INFO << summary.FullReport() << std::endl;
 
 			// If no error, get back refined parameters
 			if (summary.IsSolutionUsable())
@@ -1814,7 +1814,7 @@ namespace fblib{
 					Vec3 & point_3d = *iter;
 					point_3d = Vec3(pt[0], pt[1], pt[2]);
 				}
-				exportToPly(vec_all_scenes, fblib::utils::create_filespec(out_dir_, "raw_pointCloud_BA_RT_Xi", "ply"));
+				exportToPly(vec_all_scenes, mvg::utils::create_filespec(out_dir_, "raw_pointCloud_BA_RT_Xi", "ply"));
 
 				// Get back camera
 				i = 0;
@@ -1853,7 +1853,7 @@ namespace fblib{
 			html_doc_stream_->pushInfo(os.str());
 		}
 
-		FBLIB_INFO << "\n"
+		MVG_INFO << "\n"
 			<< "-------------------------------" << "\n"
 			<< "-- #tracks: " << map_tracks_selected.size() << ".\n"
 			<< "-- #observation: " << ba_problem.num_observations_ << ".\n"
@@ -1883,14 +1883,14 @@ namespace fblib{
 				//Build a list of contiguous index for the trackIds
 				std::map<size_t, size_t> trackIds_to_contiguousIndexes;
 				size_t cpt = 0;
-				for (fblib::tracking::MapTracks::const_iterator it = map_tracks.begin();
+				for (mvg::tracking::MapTracks::const_iterator it = map_tracks.begin();
 					it != map_tracks.end(); ++it, ++cpt)
 				{
 					trackIds_to_contiguousIndexes[it->first] = cpt;
 				}
 
 				// The track list that will be colored (point removed during the process)
-				fblib::tracking::MapTracks mapTrackToColor(map_tracks);
+				mvg::tracking::MapTracks mapTrackToColor(map_tracks);
 				while (!mapTrackToColor.empty())
 				{
 					// Find the most representative image
@@ -1898,7 +1898,7 @@ namespace fblib{
 					//  b. Sort to find the most representative image
 
 					std::map<size_t, size_t> map_IndexCardinal; // ImageIndex, Cardinal
-					for (fblib::tracking::MapTracks::const_iterator
+					for (mvg::tracking::MapTracks::const_iterator
 						iterT = mapTrackToColor.begin();
 						iterT != mapTrackToColor.end();
 					++iterT)
@@ -1922,23 +1922,23 @@ namespace fblib{
 						map_IndexCardinal.end(),
 						std::back_inserter(vec_cardinal),
 						RetrieveValue());
-					std::vector< fblib::utils::SortIndexPacketDescend< size_t, size_t> > packet_vec(vec_cardinal.size());
-					fblib::utils::SortIndexHelper(packet_vec, &vec_cardinal[0]);
+					std::vector< mvg::utils::SortIndexPacketDescend< size_t, size_t> > packet_vec(vec_cardinal.size());
+					mvg::utils::SortIndexHelper(packet_vec, &vec_cardinal[0]);
 
 					//First index is the image with the most of matches
 					std::map<size_t, size_t>::const_iterator iterTT = map_IndexCardinal.begin();
 					std::advance(iterTT, packet_vec[0].index);
 					const size_t indexImage = iterTT->first;
-					fblib::image::Image<fblib::image::RGBColor> image;
+					mvg::image::Image<mvg::image::RGBColor> image;
 					readImage(
-						fblib::utils::create_filespec(
+						mvg::utils::create_filespec(
 						image_path_,
-						fblib::utils::basename_part(vec_camera_image_names_[indexImage].image_name),
-						fblib::utils::extension_part(vec_camera_image_names_[indexImage].image_name)).c_str(), &image);
+						mvg::utils::basename_part(vec_camera_image_names_[indexImage].image_name),
+						mvg::utils::extension_part(vec_camera_image_names_[indexImage].image_name)).c_str(), &image);
 
 					// Iterate through the track
 					std::set<size_t> set_toRemove;
-					for (fblib::tracking::MapTracks::const_iterator
+					for (mvg::tracking::MapTracks::const_iterator
 						iterT = mapTrackToColor.begin();
 						iterT != mapTrackToColor.end();
 					++iterT)
@@ -1952,7 +1952,7 @@ namespace fblib{
 							// Color the track
 							const size_t featId = iterF->second;
 							const ScalePointFeature & feat = map_features_.find(indexImage)->second[featId];
-							const fblib::image::RGBColor color = image(feat.y(), feat.x());
+							const mvg::image::RGBColor color = image(feat.y(), feat.x());
 
 							vec_tracks_color[trackIds_to_contiguousIndexes[trackId]] = Vec3(color.r(), color.g(), color.b());
 							set_toRemove.insert(trackId);
@@ -1969,4 +1969,4 @@ namespace fblib{
 			}
 		}
 			}
-		} // namespace fblib
+		} // namespace mvg

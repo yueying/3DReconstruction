@@ -1,9 +1,9 @@
-#include "fblib/utils/notify.h"
-#include "fblib/multiview/homography_parameterization.h"
+#include "mvg/utils/notify.h"
+#include "mvg/multiview/homography_parameterization.h"
 #include "testing.h"
 
-using namespace fblib::multiview;
-using namespace fblib::math;
+using namespace mvg::multiview;
+using namespace mvg::math;
 
 TEST(Homography2DNormalizedParameterization, Roundtripping) {
 	Mat3 h, h_roundtrip;

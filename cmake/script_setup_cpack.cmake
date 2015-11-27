@@ -4,26 +4,26 @@
 SET(CMAKE_INSTALL_DEBUG_LIBRARIES 1)
 INCLUDE(InstallRequiredSystemLibraries)
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "3d reconstruction (FBLIB)")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "3d reconstruction (MVG)")
 SET(CPACK_PACKAGE_VENDOR "fengbing")
 SET(CPACK_PACKAGE_CONTACT "fengbing <fengbing@gmail.com>")
 
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 SET(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "FBLIB is a set of C++ libraries and applications for computer vision software development.")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "MVG is a set of C++ libraries and applications for computer vision software development.")
 FILE(READ ${CPACK_PACKAGE_DESCRIPTION_FILE} CPACK_DESCRIPTION_TEXT)
 STRING(REGEX REPLACE "\"" "" CPACK_DESCRIPTION_TEXT ${CPACK_DESCRIPTION_TEXT})  # It seems \" characters break NSIS.
 
-SET(CPACK_PACKAGE_VERSION_MAJOR "${CMAKE_FBLIB_VERSION_NUMBER_MAJOR}")
-SET(CPACK_PACKAGE_VERSION_MINOR "${CMAKE_FBLIB_VERSION_NUMBER_MINOR}")
-SET(CPACK_PACKAGE_VERSION_PATCH "${CMAKE_FBLIB_VERSION_NUMBER_PATCH}")
+SET(CPACK_PACKAGE_VERSION_MAJOR "${CMAKE_MVG_VERSION_NUMBER_MAJOR}")
+SET(CPACK_PACKAGE_VERSION_MINOR "${CMAKE_MVG_VERSION_NUMBER_MINOR}")
+SET(CPACK_PACKAGE_VERSION_PATCH "${CMAKE_MVG_VERSION_NUMBER_PATCH}")
 
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/doc/COPYING")
 SET(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 
 SET(CPACK_SOURCE_GENERATOR "TGZ")
 
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "fblib_${CMAKE_FBLIB_VERSION_NUMBER_MAJOR}.${CMAKE_FBLIB_VERSION_NUMBER_MINOR}.${CMAKE_FBLIB_VERSION_NUMBER_PATCH}" CACHE STRING "Name of the install directory")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "mvg_${CMAKE_MVG_VERSION_NUMBER_MAJOR}.${CMAKE_MVG_VERSION_NUMBER_MINOR}.${CMAKE_MVG_VERSION_NUMBER_PATCH}" CACHE STRING "Name of the install directory")
 MARK_AS_ADVANCED(CPACK_PACKAGE_INSTALL_DIRECTORY)
 
 SET(PACKAGE_INCLUDES_SOURCES ON CACHE BOOL "Include all sources while building packages")
@@ -37,17 +37,17 @@ IF(WIN32)
 	
 	# There is a bug in NSI that does not handle full unix paths properly. Make
 	# sure there is at least one set of four (4) backlasshes.
-	SET(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/share/pixmaps\\\\fblib_icon.ico")
-	SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/share/pixmaps\\\\fblib_icon.ico")
-	SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/apps/wx-common\\\\fblib_logo.png")
+	SET(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/share/pixmaps\\\\mvg_icon.ico")
+	SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/share/pixmaps\\\\mvg_icon.ico")
+	SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/apps/wx-common\\\\mvg_logo.png")
 
-	SET(CPACK_NSIS_INSTALLED_ICON_NAME "${CMAKE_CURRENT_SOURCE_DIR}/share/pixmaps\\\\fblib_icon.ico")
+	SET(CPACK_NSIS_INSTALLED_ICON_NAME "${CMAKE_CURRENT_SOURCE_DIR}/share/pixmaps\\\\mvg_icon.ico")
 
-	SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.fblib.org")
-	SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.fblib.org")
+	SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.mvg.org")
+	SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.mvg.org")
 	SET(CPACK_NSIS_CONTACT "fengbing123@gmail.com")
 
-	# Add fblib/bin dir to system PATH
+	# Add mvg/bin dir to system PATH
 	SET(CPACK_NSIS_MODIFY_PATH ON)
 
 	# Install header and source files:
@@ -73,11 +73,11 @@ IF(WIN32)
 		version_prefix.txt
 	DESTINATION .)
 
-	get_property(_str GLOBAL PROPERTY "FBLIB_CPACK_PACKAGE_EXECUTABLES")
+	get_property(_str GLOBAL PROPERTY "MVG_CPACK_PACKAGE_EXECUTABLES")
 	SET(CPACK_PACKAGE_EXECUTABLES ${_str}) # --> Set in each apps/*/CMakeLists.txt file
 
 	SET(CPACK_NSIS_MENU_LINKS
-	    "doc;Documentation directory;bin;Directory of executables (bin);doc/chm/libFBLIB-@CMAKE_FBLIB_VERSION_NUMBER_MAJOR@.@CMAKE_FBLIB_VERSION_NUMBER_MINOR@.@CMAKE_FBLIB_VERSION_NUMBER_PATCH@.chm;FBLIB libraries reference (CHM);http://www.fblib.org/;Online help;doc/fblib_book.pdf;The FBLIB book (PDF);doc/srba-guide.pdf;The SRBA programming guide (PDF)")
+	    "doc;Documentation directory;bin;Directory of executables (bin);doc/chm/libMVG-@CMAKE_MVG_VERSION_NUMBER_MAJOR@.@CMAKE_MVG_VERSION_NUMBER_MINOR@.@CMAKE_MVG_VERSION_NUMBER_PATCH@.chm;MVG libraries reference (CHM);http://www.mvg.org/;Online help;doc/mvg_book.pdf;The MVG book (PDF);doc/srba-guide.pdf;The SRBA programming guide (PDF)")
 
 	# Force usage of our custom NSIS template:
 	SET(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/parse-files/")

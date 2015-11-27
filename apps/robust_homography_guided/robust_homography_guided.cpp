@@ -1,29 +1,29 @@
-#include "fblib/camera/pinhole_camera.h"
-#include "fblib/image/image.h"
-#include "fblib/feature/features.h"
-#include "fblib/feature/matcher_brute_force.h"
-#include "fblib/feature/indexed_match_decorator.h"
-#include "fblib/feature/estimator_acransac_kernel_adaptator.h"
-#include "fblib/camera/projection.h"
-#include "fblib/multiview/triangulation.h"
-#include "fblib/multiview/essential_estimation.h"
-#include "fblib/multiview/solver_affine.h"
+#include "mvg/camera/pinhole_camera.h"
+#include "mvg/image/image.h"
+#include "mvg/feature/features.h"
+#include "mvg/feature/matcher_brute_force.h"
+#include "mvg/feature/indexed_match_decorator.h"
+#include "mvg/feature/estimator_acransac_kernel_adaptator.h"
+#include "mvg/camera/projection.h"
+#include "mvg/multiview/triangulation.h"
+#include "mvg/multiview/essential_estimation.h"
+#include "mvg/multiview/solver_affine.h"
 
-#include "fblib/feature/sift.hpp"
-#include "fblib/feature/two_view_matches.h"
+#include "mvg/feature/sift.hpp"
+#include "mvg/feature/two_view_matches.h"
 
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/svg_drawer.h"
-#include "fblib/math/numeric.h"
-#include "fblib/multiview/solver_homography_kernel.h"
-#include "fblib/feature/guided_matching.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/svg_drawer.h"
+#include "mvg/math/numeric.h"
+#include "mvg/multiview/solver_homography_kernel.h"
+#include "mvg/feature/guided_matching.h"
 #include <string>
 #include <iostream>
 
-using namespace fblib::utils;
-using namespace fblib::feature;
-using namespace fblib::camera;
-using namespace fblib::multiview;
+using namespace mvg::utils;
+using namespace mvg::feature;
+using namespace mvg::camera;
+using namespace mvg::multiview;
 
 int main() {
 
@@ -121,8 +121,8 @@ int main() {
     //单应矩阵 鲁棒性估计
     std::vector<size_t> vec_inliers;
     typedef ACKernelAdaptor<
-      fblib::multiview::homography::FourPointSolver,
-	  fblib::multiview::homography::AsymmetricError,
+      mvg::multiview::homography::FourPointSolver,
+	  mvg::multiview::homography::AsymmetricError,
       UnnormalizerI,
       Mat3>
       KernelType;
@@ -191,7 +191,7 @@ int main() {
       PointsToMat(left_features, left_points);
       PointsToMat(right_features, right_points);
       std::vector<IndexedMatch> vec_corresponding_index;
-      GuidedMatching<fblib::math::Mat3, fblib::multiview::homography::AsymmetricError>(
+      GuidedMatching<mvg::math::Mat3, mvg::multiview::homography::AsymmetricError>(
         H, left_points, right_points, Square(thresholdH), vec_corresponding_index);
 
       std::cout << "\nGuided homography matching found "

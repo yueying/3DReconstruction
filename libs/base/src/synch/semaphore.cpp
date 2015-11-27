@@ -8,11 +8,11 @@
  *
 ********************************************************************************/
 #include "base_precomp.h"  // 预编译头
-#include <fblib/synch/Semaphore.h>
+#include <mvg/synch/Semaphore.h>
 #include <windows.h>
-#include <fblib/utils/fblib_macros.h>
+#include <mvg/utils/mvg_macros.h>
 
-using namespace fblib::synch;
+using namespace mvg::synch;
 
 /*---------------------------------------------------------------
 						Semaphore
@@ -24,7 +24,7 @@ Semaphore::Semaphore(
     :
     m_name(name)
 {
-	FBLIB_START
+	MVG_START
 
 	HANDLE hSem = CreateSemaphoreA(
 		NULL,			// 表示安全控制，一般直接传入NULL
@@ -38,7 +38,7 @@ Semaphore::Semaphore(
 
 	* m_data.getAs<HANDLE*>() = hSem;
 
-	FBLIB_END
+	MVG_END
 }
 
 /*---------------------------------------------------------------
@@ -59,14 +59,14 @@ Semaphore::~Semaphore()
 ---------------------------------------------------------------*/
 bool Semaphore::waitForSignal( unsigned int timeout_ms )
 {
-	FBLIB_START
+	MVG_START
 
 	DWORD tim = (timeout_ms==0) ? INFINITE : timeout_ms;
 	DWORD ret = WaitForSingleObject( * m_data.getAs<HANDLE*>(), tim );
 
 	return (ret==WAIT_OBJECT_0);
 
-	FBLIB_END
+	MVG_END
 }
 
 /*---------------------------------------------------------------
@@ -74,7 +74,7 @@ bool Semaphore::waitForSignal( unsigned int timeout_ms )
 ---------------------------------------------------------------*/
 void Semaphore::release(unsigned int increaseCount )
 {
-	FBLIB_START
+	MVG_START
 
 	if (!ReleaseSemaphore(
 		*m_data.getAs<HANDLE*>(),		// 信号量的句柄
@@ -82,7 +82,7 @@ void Semaphore::release(unsigned int increaseCount )
 		NULL ))				// 可以用来传出先前的资源计数，设为NULL表示不需要传出
 	THROW_EXCEPTION("Error increasing semaphore count!");
 
-	FBLIB_END
+	MVG_END
 }
 
 

@@ -1,66 +1,66 @@
-#ifndef FBLIB_CONFIG_H
-#define FBLIB_CONFIG_H
+#ifndef MVG_CONFIG_H
+#define MVG_CONFIG_H
 
 
-/** A string with the 3 digits version number of FBLIB - This is intended for
+/** A string with the 3 digits version number of MVG - This is intended for
   *  autolinking pragmas only, such as they know the complete name of DLLs.
   * This is only for Windows. In Unix it should be an empty string.
-  * \sa FBLIB_VERSION in <fblib/version.h>
+  * \sa MVG_VERSION in <mvg/version.h>
   */
-#define FBLIB_VERSION_POSTFIX "${FBLIB_DLL_VERSION_POSTFIX}"
+#define MVG_VERSION_POSTFIX "${MVG_DLL_VERSION_POSTFIX}"
 
 
-/** If defined, security checks (ASSERT_'s) will be performed in many FBLIB classes even
+/** If defined, security checks (ASSERT_'s) will be performed in many MVG classes even
   *  if "_DEBUG" is not declared, which is then the default behavior.
   */
-#define FBLIB_ALWAYS_CHECKS_DEBUG                     ${CMAKE_FBLIB_ALWAYS_CHECKS_DEBUG}
-#define FBLIB_ALWAYS_CHECKS_DEBUG_MATRICES            ${CMAKE_FBLIB_ALWAYS_CHECKS_DEBUG_MATRICES}
+#define MVG_ALWAYS_CHECKS_DEBUG                     ${CMAKE_MVG_ALWAYS_CHECKS_DEBUG}
+#define MVG_ALWAYS_CHECKS_DEBUG_MATRICES            ${CMAKE_MVG_ALWAYS_CHECKS_DEBUG_MATRICES}
 
-/** FBLIB_BUILT_AS_DLL is defined only if FBLIB has been built
+/** MVG_BUILT_AS_DLL is defined only if MVG has been built
   *   as a shared library (.dll/.so) vs. a static library (.lib/.a).
-  *  Additionally, FBLIB_EXPORTS will be defined only when compiling
+  *  Additionally, MVG_EXPORTS will be defined only when compiling
   *   the DLLs, not when the user imports them.
   */
-${CMAKE_FBLIB_BUILD_SHARED_LIB}
+${CMAKE_MVG_BUILD_SHARED_LIB}
 
-/** Has FBLIB libjpeg? And whether it's in the system (Linux) or built-in (Windows, some rare cases in Linux). */
-#define FBLIB_HAS_JPEG             ${CMAKE_FBLIB_HAS_JPEG}
-#define FBLIB_HAS_JPEG_SYSTEM      ${CMAKE_FBLIB_HAS_JPEG_SYSTEM}
+/** Has MVG libjpeg? And whether it's in the system (Linux) or built-in (Windows, some rare cases in Linux). */
+#define MVG_HAS_JPEG             ${CMAKE_MVG_HAS_JPEG}
+#define MVG_HAS_JPEG_SYSTEM      ${CMAKE_MVG_HAS_JPEG_SYSTEM}
 
-/** Has FBLIB libpng? And whether it's in the system (Linux) or built-in (Windows, some rare cases in Linux). */
-#define FBLIB_HAS_PNG             ${CMAKE_FBLIB_HAS_PNG}
-#define FBLIB_HAS_PNG_SYSTEM      ${CMAKE_FBLIB_HAS_PNG_SYSTEM}
+/** Has MVG libpng? And whether it's in the system (Linux) or built-in (Windows, some rare cases in Linux). */
+#define MVG_HAS_PNG             ${CMAKE_MVG_HAS_PNG}
+#define MVG_HAS_PNG_SYSTEM      ${CMAKE_MVG_HAS_PNG_SYSTEM}
 
 /* Automatic definition of OS-macros */
 #if defined(_WIN32) || defined(_WIN32_)  || defined(WIN32) || defined(_WIN64)
-    #define FBLIB_OS_WINDOWS
+    #define MVG_OS_WINDOWS
 #elif defined(unix) || defined(__unix__) || defined(__unix)
-    #define FBLIB_OS_LINUX
+    #define MVG_OS_LINUX
 #elif defined(__APPLE__)
-    #define FBLIB_OS_APPLE
+    #define MVG_OS_APPLE
 #else
     #error Unsupported platform (Found neither _WIN32_, __unix__ or __APPLE__)
 #endif
 
 
-/** Set to 0 to disable FBLIB_TRY_START/FBLIB_TRY_END blocks. Not recommended but for intensively tested programs only. */
-#define FBLIB_HAS_STACKED_EXCEPTIONS ${CMAKE_FBLIB_HAS_STACKED_EXCEPTIONS}
+/** Set to 0 to disable MVG_TRY_START/MVG_TRY_END blocks. Not recommended but for intensively tested programs only. */
+#define MVG_HAS_STACKED_EXCEPTIONS ${CMAKE_MVG_HAS_STACKED_EXCEPTIONS}
 
 /** Set to 0 to disable ASSERT_ statements. Not recommended but for intensively tested programs only. */
-#define FBLIB_HAS_ASSERT ${CMAKE_FBLIB_HAS_ASSERT}
+#define MVG_HAS_ASSERT ${CMAKE_MVG_HAS_ASSERT}
 
 /** Only for Linux: the inotify kernel module has been found. Requires kernel 2.6.13.  */
-#define FBLIB_HAS_INOTIFY ${CMAKE_FBLIB_HAS_INOTIFY}
+#define MVG_HAS_INOTIFY ${CMAKE_MVG_HAS_INOTIFY}
 
 /** The architecture is 32 or 64 bit wordsize:  */
-#define FBLIB_WORD_SIZE	${CMAKE_FBLIB_WORD_SIZE}
+#define MVG_WORD_SIZE	${CMAKE_MVG_WORD_SIZE}
 
 /** Use optimized functions with the SSE2 machine instructions set */
 #if defined WIN32 && (!defined WIN64 || defined EM64T) && \
  (_MSC_VER >= 1400) || (defined __SSE2__ && defined __GNUC__ && __GNUC__ >= 4)
-	#define FBLIB_HAS_SSE2  ${CMAKE_FBLIB_HAS_SSE2}   // This value can be set to 0 from CMake with DISABLE_SSE2
+	#define MVG_HAS_SSE2  ${CMAKE_MVG_HAS_SSE2}   // This value can be set to 0 from CMake with DISABLE_SSE2
 #else
-	#define FBLIB_HAS_SSE2  0
+	#define MVG_HAS_SSE2  0
 #endif
 
 
@@ -68,27 +68,27 @@ ${CMAKE_FBLIB_BUILD_SHARED_LIB}
 /** Use optimized functions with the SSE3 machine instructions set */
 #if defined WIN32 && (!defined WIN64 || defined EM64T) && \
  (_MSC_VER >= 1500) || (defined __SSE3__ && defined __GNUC__ && __GNUC__ >= 4)
-	#define FBLIB_HAS_SSE3  ${CMAKE_FBLIB_HAS_SSE3}   // This value can be set to 0 from CMake with DISABLE_SSE3
+	#define MVG_HAS_SSE3  ${CMAKE_MVG_HAS_SSE3}   // This value can be set to 0 from CMake with DISABLE_SSE3
 #else
-	#define FBLIB_HAS_SSE3  0
+	#define MVG_HAS_SSE3  0
 #endif
 
 /** Use optimized functions with the SSE4 machine instructions set */
-#define FBLIB_HAS_SSE4_1  ${CMAKE_FBLIB_HAS_SSE4_1}   // This value can be set to 0 from CMake with DISABLE_SSE4_1
-#define FBLIB_HAS_SSE4_2  ${CMAKE_FBLIB_HAS_SSE4_2}   // This value can be set to 0 from CMake with DISABLE_SSE4_2
-#define FBLIB_HAS_SSE4_A  ${CMAKE_FBLIB_HAS_SSE4_A}   // This value can be set to 0 from CMake with DISABLE_SSE4_A
+#define MVG_HAS_SSE4_1  ${CMAKE_MVG_HAS_SSE4_1}   // This value can be set to 0 from CMake with DISABLE_SSE4_1
+#define MVG_HAS_SSE4_2  ${CMAKE_MVG_HAS_SSE4_2}   // This value can be set to 0 from CMake with DISABLE_SSE4_2
+#define MVG_HAS_SSE4_A  ${CMAKE_MVG_HAS_SSE4_A}   // This value can be set to 0 from CMake with DISABLE_SSE4_A
 
 
 /** Whether ZLIB is present.  */
-#define FBLIB_HAS_ZLIB ${CMAKE_FBLIB_HAS_ZLIB}
-#define FBLIB_HAS_ZLIB_SYSTEM ${CMAKE_FBLIB_HAS_ZLIB_SYSTEM}
+#define MVG_HAS_ZLIB ${CMAKE_MVG_HAS_ZLIB}
+#define MVG_HAS_ZLIB_SYSTEM ${CMAKE_MVG_HAS_ZLIB_SYSTEM}
 
 
 /** Are we in a big-endian system? (Intel, amd, etc.. are little-endian) */
-#define FBLIB_IS_BIG_ENDIAN ${CMAKE_FBLIB_IS_BIG_ENDIAN}
+#define MVG_IS_BIG_ENDIAN ${CMAKE_MVG_IS_BIG_ENDIAN}
 
-/** Use FBLIB global profiler? */
-#define FBLIB_ENABLE_EMBEDDED_GLOBAL_PROFILER ${CMAKE_FBLIB_ENABLE_EMBEDDED_GLOBAL_PROFILER}
+/** Use MVG global profiler? */
+#define MVG_ENABLE_EMBEDDED_GLOBAL_PROFILER ${CMAKE_MVG_ENABLE_EMBEDDED_GLOBAL_PROFILER}
 
 
 /** Standard headers */
@@ -180,18 +180,18 @@ ${CMAKE_FBLIB_BUILD_SHARED_LIB}
 #cmakedefine HAVE_LONG_DOUBLE
 #endif
 
-/* Backwards compatibility of FBLIB APIs: */
-#cmakedefine FBLIB_BACKCOMPATIB_08X 1
+/* Backwards compatibility of MVG APIs: */
+#cmakedefine MVG_BACKCOMPATIB_08X 1
 
-/* Defined only if FBLIB is being build/was built with precompiled
+/* Defined only if MVG is being build/was built with precompiled
     headers enabled */
-#cmakedefine FBLIB_ENABLE_PRECOMPILED_HDRS 1
+#cmakedefine MVG_ENABLE_PRECOMPILED_HDRS 1
 
 // -------------------------------
 //			Some checks:
 // -------------------------------
-#if !defined(FBLIB_OS_WINDOWS) && !defined(FBLIB_OS_LINUX) && !defined(FBLIB_OS_APPLE)
-#error Neither OS detected from FBLIB_OS_LINUX, FBLIB_OS_APPLE or FBLIB_OS_WINDOWS!
+#if !defined(MVG_OS_WINDOWS) && !defined(MVG_OS_LINUX) && !defined(MVG_OS_APPLE)
+#error Neither OS detected from MVG_OS_LINUX, MVG_OS_APPLE or MVG_OS_WINDOWS!
 #endif
 
 

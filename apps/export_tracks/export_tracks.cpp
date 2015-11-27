@@ -1,15 +1,15 @@
-#include "fblib/feature/indexed_match.h"
-#include "fblib/feature/indexed_match_utils.h"
-#include "fblib/image/image.h"
-#include "fblib/feature/features.h"
+#include "mvg/feature/indexed_match.h"
+#include "mvg/feature/indexed_match_utils.h"
+#include "mvg/image/image.h"
+#include "mvg/feature/features.h"
 
-#include "fblib/feature/image_list_io_helper.h"
-#include "fblib/utils/cmd_line.h"
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/progress.h"
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/feature/image_list_io_helper.h"
+#include "mvg/utils/cmd_line.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/progress.h"
+#include "mvg/utils/svg_drawer.h"
 
-#include "fblib/tracking/tracks.h"
+#include "mvg/tracking/tracks.h"
 
 #include <cstdlib>
 #include <string>
@@ -17,8 +17,8 @@
 #include <fstream>
 #include <map>
 
-using namespace fblib::utils;
-using namespace fblib::feature;
+using namespace mvg::utils;
+using namespace mvg::feature;
 
 int main(int argc, char ** argv)
 {
@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
 		cmd.process(argc, argv);
 	}
 	catch (const std::string& s) {
-		std::cerr << "Export pairwise fblib::tracking.\nUsage: " << argv[0] << "\n"
+		std::cerr << "Export pairwise mvg::tracking.\nUsage: " << argv[0] << "\n"
 			<< "[-i|--imadir path]\n"
 			<< "[-d|--matchdir path]\n"
 			<< "[-m|--match_file filename]\n"
@@ -56,10 +56,10 @@ int main(int argc, char ** argv)
 	}
 
 	// ∂¡»°ÕºœÒ√˚
-	std::vector<fblib::feature::CameraInfo> vec_camera_info;
-	std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-	if (!fblib::feature::loadImageList(
-		fblib::utils::create_filespec(matches_dir, "lists", "txt"),
+	std::vector<mvg::feature::CameraInfo> vec_camera_info;
+	std::vector<mvg::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
+	if (!mvg::feature::loadImageList(
+		mvg::utils::create_filespec(matches_dir, "lists", "txt"),
 		vec_camera_info,
 		vec_cameras_intrinsic
 		))
@@ -69,16 +69,16 @@ int main(int argc, char ** argv)
 	}
 
 	// ∂¡»°∆•≈‰
-	fblib::feature::PairWiseMatches map_matches;
+	mvg::feature::PairWiseMatches map_matches;
 	pairedIndexedMatchImport(match_file, map_matches);
 
-	fblib::tracking::TracksBuilder tracks_builder;
-	fblib::tracking::MapTracks map_tracks;
+	mvg::tracking::TracksBuilder tracks_builder;
+	mvg::tracking::MapTracks map_tracks;
 	{
 		tracks_builder.Build(map_matches);
 		tracks_builder.Filter();
 
-		//-- Build fblib::tracking with STL compliant type :
+		//-- Build mvg::tracking with STL compliant type :
 		tracks_builder.ExportToSTL(map_tracks);
 	}
 
@@ -86,33 +86,33 @@ int main(int argc, char ** argv)
 	// For each pair, export the matches
 	// ------------
 
-	fblib::utils::folder_create(out_dir);
-	std::cout << "\n Export pairwise fblib::tracking" << std::endl;
+	mvg::utils::folder_create(out_dir);
+	std::cout << "\n Export pairwise mvg::tracking" << std::endl;
 	ControlProgressDisplay my_progress_bar((vec_camera_info.size()*(vec_camera_info.size() - 1)) / 2.0);
 
 	for (size_t I = 0; I < vec_camera_info.size(); ++I) {
 		for (size_t J = I + 1; J < vec_camera_info.size(); ++J, ++my_progress_bar) {
 
-			std::vector<fblib::feature::CameraInfo>::const_iterator camInfoI = vec_camera_info.begin() + I;
-			std::vector<fblib::feature::CameraInfo>::const_iterator camInfoJ = vec_camera_info.begin() + J;
+			std::vector<mvg::feature::CameraInfo>::const_iterator camInfoI = vec_camera_info.begin() + I;
+			std::vector<mvg::feature::CameraInfo>::const_iterator camInfoJ = vec_camera_info.begin() + J;
 
 			const std::pair<size_t, size_t>
 				dimImage0 = std::make_pair(vec_cameras_intrinsic[camInfoI->intrinsic_id].width, vec_cameras_intrinsic[camInfoI->intrinsic_id].height),
 				dimImage1 = std::make_pair(vec_cameras_intrinsic[camInfoJ->intrinsic_id].width, vec_cameras_intrinsic[camInfoJ->intrinsic_id].height);
 
-			//Get common fblib::tracking between view I and J
-			fblib::tracking::MapTracks map_tracksCommon;
+			//Get common mvg::tracking between view I and J
+			mvg::tracking::MapTracks map_tracksCommon;
 			std::set<size_t> set_image_index;
 			set_image_index.insert(I);
 			set_image_index.insert(J);
-			fblib::tracking::TracksUtilsMap::GetTracksInImages(set_image_index, map_tracks, map_tracksCommon);
+			mvg::tracking::TracksUtilsMap::GetTracksInImages(set_image_index, map_tracks, map_tracksCommon);
 
 			if (!map_tracksCommon.empty()) {
 				SvgDrawer svg_stream(dimImage0.first + dimImage1.first, max(dimImage0.second, dimImage1.second));
-				svg_stream.drawImage(fblib::utils::create_filespec(image_dir, vec_camera_info[I].image_name),
+				svg_stream.drawImage(mvg::utils::create_filespec(image_dir, vec_camera_info[I].image_name),
 					dimImage0.first,
 					dimImage0.second);
-				svg_stream.drawImage(fblib::utils::create_filespec(image_dir, vec_camera_info[J].image_name),
+				svg_stream.drawImage(mvg::utils::create_filespec(image_dir, vec_camera_info[J].image_name),
 					dimImage1.first,
 					dimImage1.second, dimImage0.first);
 
@@ -120,17 +120,17 @@ int main(int argc, char ** argv)
 				// Load the features from the features files
 				std::vector<ScalePointFeature> vec_featI, vec_featJ;
 				LoadFeatsFromFile(
-					fblib::utils::create_filespec(matches_dir, fblib::utils::basename_part(vec_camera_info[I].image_name), ".feat"),
+					mvg::utils::create_filespec(matches_dir, mvg::utils::basename_part(vec_camera_info[I].image_name), ".feat"),
 					vec_featI);
 				LoadFeatsFromFile(
-					fblib::utils::create_filespec(matches_dir, fblib::utils::basename_part(vec_camera_info[J].image_name), ".feat"),
+					mvg::utils::create_filespec(matches_dir, mvg::utils::basename_part(vec_camera_info[J].image_name), ".feat"),
 					vec_featJ);
 
 				//-- Draw link between features :
-				for (fblib::tracking::MapTracks::const_iterator iterT = map_tracksCommon.begin();
+				for (mvg::tracking::MapTracks::const_iterator iterT = map_tracksCommon.begin();
 					iterT != map_tracksCommon.end(); ++iterT)  {
 
-					fblib::tracking::SubmapTrack::const_iterator iter = iterT->second.begin();
+					mvg::tracking::SubmapTrack::const_iterator iter = iterT->second.begin();
 					const ScalePointFeature & left_img = vec_featI[iter->second];  ++iter;
 					const ScalePointFeature & right_img = vec_featJ[iter->second];
 
@@ -140,10 +140,10 @@ int main(int argc, char ** argv)
 				}
 
 				//-- Draw features (in two loop, in order to have the features upper the link, svg layer order):
-				for (fblib::tracking::MapTracks::const_iterator iterT = map_tracksCommon.begin();
+				for (mvg::tracking::MapTracks::const_iterator iterT = map_tracksCommon.begin();
 					iterT != map_tracksCommon.end(); ++iterT)  {
 
-					fblib::tracking::SubmapTrack::const_iterator iter = iterT->second.begin();
+					mvg::tracking::SubmapTrack::const_iterator iter = iterT->second.begin();
 					const ScalePointFeature & left_img = vec_featI[iter->second];  ++iter;
 					const ScalePointFeature & right_img = vec_featJ[iter->second];
 
@@ -153,7 +153,7 @@ int main(int argc, char ** argv)
 						right_img.scale(), SvgStyle().stroke("yellow", 2.0));
 				}
 				std::ostringstream os;
-				os << fblib::utils::folder_append_separator(out_dir)
+				os << mvg::utils::folder_append_separator(out_dir)
 					<< I << "_" << J
 					<< "_" << map_tracksCommon.size() << "_.svg";
 				ofstream svg_file(os.str().c_str());

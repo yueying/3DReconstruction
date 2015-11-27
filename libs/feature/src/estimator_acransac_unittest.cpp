@@ -1,13 +1,13 @@
 ﻿#include <iterator>
 
-#include "fblib/feature/estimator_line_kernel.h"
-#include "fblib/feature/estimator_acransac.h"
+#include "mvg/feature/estimator_line_kernel.h"
+#include "mvg/feature/estimator_acransac.h"
 #include "testing.h"
 
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/utils/svg_drawer.h"
 
-using namespace fblib::utils;
-using namespace fblib::feature;
+using namespace mvg::utils;
+using namespace mvg::feature;
 using namespace std;
 
 // ACRANSAC的内核

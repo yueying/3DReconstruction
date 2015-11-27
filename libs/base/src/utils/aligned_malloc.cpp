@@ -1,6 +1,6 @@
 #include "base_precomp.h"
-#include "fblib/utils/aligned_malloc.h"
-#include "fblib/utils/notify.h"
+#include "mvg/utils/aligned_malloc.h"
+#include "mvg/utils/notify.h"
 
 #if !defined(__APPLE__) && !defined(__FreeBSD__) && !defined(__NetBSD__)
 // Needed for memalign on Linux and _aligned_alloc on Windows.
@@ -20,7 +20,7 @@
 #  include <cstdlib>
 #endif
 
-namespace fblib {
+namespace mvg {
 	namespace utils{
 		void *aligned_malloc(int size, int alignment) {
 #ifdef _WIN32
@@ -52,4 +52,4 @@ namespace fblib {
 #endif
 		}
 	}
-}  // namespace fblib
+}  // namespace mvg

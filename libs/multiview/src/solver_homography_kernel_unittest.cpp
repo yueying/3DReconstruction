@@ -1,10 +1,10 @@
 ﻿#include <vector>
-#include "fblib/multiview/solver_homography_kernel.h"
+#include "mvg/multiview/solver_homography_kernel.h"
 #include "testing.h"
 
 using namespace std;
-using namespace fblib::multiview;
-using namespace fblib::camera;
+using namespace mvg::multiview;
+using namespace mvg::camera;
 
 TEST(HomographyKernelTest, Fitting_Unnormalized) {
   // Define 3 knows homographies (Use as GT).

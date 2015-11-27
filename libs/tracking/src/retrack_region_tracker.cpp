@@ -1,11 +1,11 @@
 #include "tracking_precomp.h"
-#include "fblib/tracking/retrack_region_tracker.h"
+#include "mvg/tracking/retrack_region_tracker.h"
 
 #include <cmath>
 #include <vector>
-using namespace fblib::image;
-using namespace fblib::utils;
-namespace fblib {
+using namespace mvg::image;
+using namespace mvg::utils;
+namespace mvg {
 	namespace tracking{
 		bool RetrackRegionTracker::Track(const Image<float> &image1,
 			const Image<float> &image2,
@@ -26,4 +26,4 @@ namespace fblib {
 			return sqrt(dx * dx + dy * dy) < tolerance_;
 		}
 	}
-}  // namespace fblib
+}  // namespace mvg

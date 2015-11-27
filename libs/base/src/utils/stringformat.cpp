@@ -8,12 +8,12 @@
  *
 ********************************************************************************/
 #include "base_precomp.h"
-#include <fblib/utils/stringformat.h>
+#include <mvg/utils/stringformat.h>
 
 #include <cstdarg>
 #include <vector>
 
-std::string fblib::format(const char *fmt, ...)
+std::string mvg::format(const char *fmt, ...)
 {
 	if (!fmt) return std::string("");
 

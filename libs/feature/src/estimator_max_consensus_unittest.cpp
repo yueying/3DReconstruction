@@ -1,13 +1,13 @@
-﻿#include "fblib/feature/estimator_line_kernel.h"
-#include "fblib/feature/estimator_max_consensus.h"
-#include "fblib/feature/score_evaluator.h"
+﻿#include "mvg/feature/estimator_line_kernel.h"
+#include "mvg/feature/estimator_max_consensus.h"
+#include "mvg/feature/score_evaluator.h"
 
-#include "fblib/math/numeric.h"
+#include "mvg/math/numeric.h"
 
 #include "testing.h"
 
-using namespace fblib::feature;
-using namespace fblib::math;
+using namespace mvg::feature;
+using namespace mvg::math;
 
 // 没有outlier情况下得测试
 TEST(MaxConsensusLineFitter, OutlierFree) {

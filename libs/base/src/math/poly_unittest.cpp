@@ -1,8 +1,8 @@
-﻿#include "fblib/math/numeric.h"
-#include "fblib/math/poly.h"
+﻿#include "mvg/math/numeric.h"
+#include "mvg/math/poly.h"
 #include "testing.h"
 
-using namespace fblib::math;
+using namespace mvg::math;
 // 将方程展开成多项式的形式，找出对应系数
 //
 //   (x - a)(x - b)(x - c) == 0  展开为

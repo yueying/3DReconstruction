@@ -1,17 +1,17 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/nview_data_sets.h"
+#include "mvg/multiview/nview_data_sets.h"
 
 #include <cmath>
 #include <fstream>
 
-#include "fblib/math/numeric.h"
-#include "fblib/camera/projection.h"
+#include "mvg/math/numeric.h"
+#include "mvg/camera/projection.h"
 
-using fblib::camera::Project;
-using fblib::camera::P_From_KRt;
+using mvg::camera::Project;
+using mvg::camera::P_From_KRt;
 
 
-namespace fblib {
+namespace mvg {
 	namespace multiview{
 
 		NViewDatasetConfigurator::NViewDatasetConfigurator(int fx, int fy,
@@ -164,4 +164,4 @@ namespace fblib {
 			return d;
 		}
 	} // namespace multiview
-}  // namespace fblib
+}  // namespace mvg

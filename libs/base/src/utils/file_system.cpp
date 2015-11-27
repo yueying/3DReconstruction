@@ -17,15 +17,15 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include "base_precomp.h"
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/wildcard.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/wildcard.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <algorithm>
 #include <ctype.h>
 
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 #include <windows.h>
 #include <dos.h>
 #include <direct.h>
@@ -44,13 +44,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace fblib
+namespace mvg
 {
 	namespace utils{
 		////////////////////////////////////////////////////////////////////////////////
 		// definitions of separators
 
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 		static const char* separator_set = "\\/";
 		static const char preferred_separator = '\\';
 #else
@@ -71,7 +71,7 @@ namespace fblib
 		////////////////////////////////////////////////////////////////////////////////
 		// implement string comparison of paths - Unix is case-sensitive, Windoze is case-insensitive
 
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 
 		static std::string lowercase(const std::string& val)
 		{
@@ -85,7 +85,7 @@ namespace fblib
 
 		bool path_compare(const std::string& l, const std::string& r)
 		{
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 			return lowercase(l) == lowercase(r);
 #else
 			return l == r;
@@ -147,7 +147,7 @@ namespace fblib
 			m_path.clear();
 			m_filename.erase();
 			unsigned i = 0;
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 			// first split off the drive letter or UNC prefix on Windows
 			if (spec.size() >= 2 && isalpha(spec[0]) && spec[1] == ':')
 			{
@@ -217,7 +217,7 @@ namespace fblib
 			{
 				m_relative = false;
 				i++;
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 				// if there's no drive, fill it in on Windows since absolute paths must have a drive
 				if (m_drive.empty())
 				{
@@ -260,7 +260,7 @@ namespace fblib
 			{
 				if (is_separator(spec[i]))
 					break;
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 				// on windoze you can say a:fred.txt so the colon separates the path from the filename
 				else if (i == 1 && spec[i] == ':')
 					break;
@@ -435,7 +435,7 @@ namespace fblib
 		//   _S_IFCHR (S_IFCHR)  0x2000 character special
 		//   _S_IFIFO            0x1000 pipe
 
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 		// file type tests are not defined for some reason on Windows despite them providing the stat() function!
 #define R_OK 4
 #define W_OK 2
@@ -644,7 +644,7 @@ namespace fblib
 
 		bool folder_create(const std::string& directory)
 		{
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 			return mkdir(directory.c_str()) == 0;
 #else
 			return mkdir(directory.c_str(), 0777) == 0;
@@ -706,7 +706,7 @@ namespace fblib
 		{
 			std::string dir = directory.empty() ? std::string(".") : directory;
 			bool result = true;
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 			std::string wildcard = create_filespec(dir, "*.*");
 			intptr_t handle = -1;
 			_finddata_t fileinfo;
@@ -743,7 +743,7 @@ namespace fblib
 		{
 			if (!folder_exists(folder))
 				return false;
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 			// Windose implementation - this returns non-zero for success
 			return (SetCurrentDirectoryA(folder.c_str()) != 0);
 #else
@@ -761,7 +761,7 @@ namespace fblib
 		{
 			// It's not clear from the documentation whether the buffer for a path should be one byte longer
 			// than the maximum path length to allow for the null termination, so I have made it so anyway
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 			char abspath[MAX_PATH + 1];
 			return std::string(_fullpath(abspath, ".", MAX_PATH + 1));
 #else
@@ -813,7 +813,7 @@ namespace fblib
 		{
 			std::string dir = directory.empty() ? std::string(".") : directory;
 			std::vector<std::string> results;
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 			std::string wildcard = create_filespec(dir, wild);
 			intptr_t handle = -1;
 			_finddata_t fileinfo;
@@ -849,7 +849,7 @@ namespace fblib
 		{
 			if (getenv("HOME"))
 				return std::string(getenv("HOME"));
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 			if (getenv("HOMEDRIVE") || getenv("HOMEPATH"))
 				return std::string(getenv("HOMEDRIVE")) + std::string(getenv("HOMEPATH"));
 			return "C:\\";
@@ -1094,7 +1094,7 @@ namespace fblib
 					}
 				}
 			}
-#ifdef FBLIB_OS_WINDOWS
+#ifdef MVG_OS_WINDOWS
 			// if there is no extension, try recursing on each possible extension
 			// TODO iterate through PATHEXT
 			if (extension_part(command).empty())
@@ -1119,4 +1119,4 @@ namespace fblib
 
 		////////////////////////////////////////////////////////////////////////////////
 	}
-} // end namespace fblib
+} // end namespace mvg

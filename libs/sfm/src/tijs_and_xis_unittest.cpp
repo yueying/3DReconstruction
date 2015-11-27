@@ -1,23 +1,23 @@
-﻿#include "fblib/multiview/nview_data_sets.h"
-#include "fblib/math/numeric.h"
+﻿#include "mvg/multiview/nview_data_sets.h"
+#include "mvg/math/numeric.h"
 #include "testing.h"
 
-#include "fblib/camera/projection.h"
+#include "mvg/camera/projection.h"
 
-#include "fblib/sfm/linear_programming_interface.h"
-#include "fblib/sfm/linear_programming_osi.h"
+#include "mvg/sfm/linear_programming_interface.h"
+#include "mvg/sfm/linear_programming_osi.h"
 
-#include "fblib/sfm/bisection_linear_programming.h"
-#include "fblib/sfm/tijs_and_xis_from_xi_ri.h"
+#include "mvg/sfm/bisection_linear_programming.h"
+#include "mvg/sfm/tijs_and_xis_from_xi_ri.h"
 
 #include <iostream>
 #include <vector>
 
-using namespace fblib::math;
+using namespace mvg::math;
 
-using namespace fblib::multiview;
-using namespace fblib::sfm;
-using namespace fblib::camera;
+using namespace mvg::multiview;
+using namespace mvg::sfm;
+using namespace mvg::camera;
 TEST(Translation_Structure_L_Infinity, OSICLP_SOLVER) {
 
   const size_t kViewNum = 3;

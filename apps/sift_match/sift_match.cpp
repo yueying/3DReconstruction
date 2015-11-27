@@ -1,42 +1,42 @@
-#include "fblib/image/image.h"
-#include "fblib/image/image_io.h"
-#include "fblib/image/image_concat.h"
-#include "fblib/image/image_drawing.h"
-#include "fblib/image/image_converter.h"
-#include "fblib/feature/feature.h"
-#include "fblib/feature/matcher_brute_force.h"
-#include "fblib/feature/matcher_kdtree_flann.h"
-#include "fblib/feature/matching_filters.h"
-#include "fblib/feature/metric.h"
-#include "fblib/feature/indexed_match.h"
-#include "fblib/feature/two_view_matches.h"
+#include "mvg/image/image.h"
+#include "mvg/image/image_io.h"
+#include "mvg/image/image_concat.h"
+#include "mvg/image/image_drawing.h"
+#include "mvg/image/image_converter.h"
+#include "mvg/feature/feature.h"
+#include "mvg/feature/matcher_brute_force.h"
+#include "mvg/feature/matcher_kdtree_flann.h"
+#include "mvg/feature/matching_filters.h"
+#include "mvg/feature/metric.h"
+#include "mvg/feature/indexed_match.h"
+#include "mvg/feature/two_view_matches.h"
 
-#include "fblib/feature/sift.hpp"
-#include "fblib/utils/file_system.h"
+#include "mvg/feature/sift.hpp"
+#include "mvg/utils/file_system.h"
 
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/utils/svg_drawer.h"
 
 #include <string>
 #include <iostream>
 #include <vector>
 
 
-using namespace fblib::feature;
-using namespace fblib::image;
+using namespace mvg::feature;
+using namespace mvg::image;
 using namespace std;
 
-namespace fblib {
+namespace mvg {
 	namespace utils {
-		std::string FBLIB_GLOBAL_SRC_DIR;
+		std::string MVG_GLOBAL_SRC_DIR;
 	}
 }
-using namespace fblib::utils;
+using namespace mvg::utils;
 int main() {
 
 	Image<RGBColor> image;
-	string left_image_name = FBLIB_GLOBAL_SRC_DIR
+	string left_image_name = MVG_GLOBAL_SRC_DIR
 		+ "/imageData/StanfordMobileVisualSearch/Ace_0.png";
-	string right_image_name = FBLIB_GLOBAL_SRC_DIR
+	string right_image_name = MVG_GLOBAL_SRC_DIR
 		+ "/imageData/StanfordMobileVisualSearch/Ace_1.png";
 
 	Image<unsigned char> left_image, right_image;

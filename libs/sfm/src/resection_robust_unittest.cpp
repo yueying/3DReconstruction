@@ -2,16 +2,16 @@
 #include <vector>
 #include "testing.h"
 
-#include "fblib/feature/estimator_max_consensus.h"
-#include "fblib/feature/score_evaluator.h"
-#include "fblib/sfm/resection_kernel.h"
+#include "mvg/feature/estimator_max_consensus.h"
+#include "mvg/feature/score_evaluator.h"
+#include "mvg/sfm/resection_kernel.h"
 
-#include "fblib/camera/projection.h"
-#include "fblib/multiview/nview_data_sets.h"
+#include "mvg/camera/projection.h"
+#include "mvg/multiview/nview_data_sets.h"
 
-using namespace fblib::feature;
-using namespace fblib::multiview;
-using namespace fblib::camera;
+using namespace mvg::feature;
+using namespace mvg::multiview;
+using namespace mvg::camera;
 
 TEST(Resection_L_Infinity, Robust_OutlierFree) {
 
@@ -29,7 +29,7 @@ TEST(Resection_L_Infinity, Robust_OutlierFree) {
   d2.translation_vector_[kResectionCameraIndex] = Vec3::Zero();
 
   {
-    typedef  fblib::sfm::l1PoseResectionKernel KernelType;
+    typedef  mvg::sfm::l1PoseResectionKernel KernelType;
     const Mat & point_2d = d2.projected_points_[kResectionCameraIndex];
     const Mat & point_3d = d2.point_3d_;
     KernelType kernel(point_2d, point_3d);
@@ -83,7 +83,7 @@ TEST(Resection_L_Infinity, Robust_OneOutlier) {
 
   // Solve the problem and check that fitted value are good enough
   {
-    typedef  fblib::sfm::l1PoseResectionKernel KernelType;
+    typedef  mvg::sfm::l1PoseResectionKernel KernelType;
     const Mat & point_2d = d2.projected_points_[kResectionCameraIndex];
     const Mat & point_3d = d2.point_3d_;
     KernelType kernel(point_2d, point_3d);

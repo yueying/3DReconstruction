@@ -1,15 +1,15 @@
 #include "tracking_precomp.h"
-#include "fblib/tracking/klt_region_tracker.h"
+#include "mvg/tracking/klt_region_tracker.h"
 
-#include "fblib/utils/notify.h"
-#include "fblib/image/image.h"
-#include "fblib/image/convolve.h"
-#include "fblib/image/sample.h"
+#include "mvg/utils/notify.h"
+#include "mvg/image/image.h"
+#include "mvg/image/convolve.h"
+#include "mvg/image/sample.h"
 
-using namespace fblib::image;
-using namespace fblib::utils;
+using namespace mvg::image;
+using namespace mvg::utils;
 
-namespace fblib {
+namespace mvg {
 	namespace tracking{
 		// Compute the gradient matrix noted by Z and the error vector e. See Good
 		// Features to Track.
@@ -143,4 +143,4 @@ namespace fblib {
 			return false;
 		}
 	}
-}  // namespace fblib
+}  // namespace mvg

@@ -1,8 +1,8 @@
-﻿#include "fblib/feature/estimator_line_kernel.h"
+﻿#include "mvg/feature/estimator_line_kernel.h"
 #include "testing.h"
 #include <vector>
-using namespace fblib::math;
-using namespace fblib::feature;
+using namespace mvg::math;
+using namespace mvg::feature;
 
 // 测试线性模型计算线性模型系数
 TEST(LineFitter, ItWorks) {

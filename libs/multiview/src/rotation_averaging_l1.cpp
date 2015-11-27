@@ -1,5 +1,5 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/rotation_averaging_l1.h"
+#include "mvg/multiview/rotation_averaging_l1.h"
 #include <stdint.h>
 
 #include <map>
@@ -14,10 +14,10 @@
 #include "ceres/ceres.h"
 #include "ceres/rotation.h"
 
-#include "fblib/math/numeric.h"
+#include "mvg/math/numeric.h"
 using namespace lemon;
 
-namespace fblib   {
+namespace mvg   {
 	namespace multiview  {
 		namespace l1  {
 
@@ -294,7 +294,7 @@ namespace fblib   {
 
 			/////////////////////////
 
-			typedef fblib::math::Mat3 Matrix3x3;
+			typedef mvg::math::Mat3 Matrix3x3;
 			typedef std::vector<size_t> IndexArr;
 
 			// find the shortest cycle for the given graph and starting vertex
@@ -536,9 +536,9 @@ namespace fblib   {
 					const Matrix3x3& Rj = Rs[relR.j];
 					const Matrix3x3& Rij = relR.Rij;
 					const Mat3 eRij(Rj.transpose()*Rij*Ri);
-					const fblib::math::Vec3 erij;
+					const mvg::math::Vec3 erij;
 					ceres::RotationMatrixToAngleAxis((const double*)eRij.data(), (double*)erij.data());
-					b.block<3, 1>(3 * r, 0) = fblib::math::Vec3(erij*relR.weight);
+					b.block<3, 1>(3 * r, 0) = mvg::math::Vec3(erij*relR.weight);
 				}
 			}
 
@@ -553,7 +553,7 @@ namespace fblib   {
 						continue;
 					Matrix3x3& Ri = Rs[r];
 					const size_t i = (r < nMainViewID ? r : r - 1);
-					fblib::math::Vec3 eRid = fblib::math::Vec3(x.block<3, 1>(3 * i, 0));
+					mvg::math::Vec3 eRid = mvg::math::Vec3(x.block<3, 1>(3 * i, 0));
 					const Mat3 eRi;
 					ceres::AngleAxisToRotationMatrix((const double*)eRid.data(), (double*)eRi.data());
 					Ri = Ri*eRi;
@@ -634,5 +634,5 @@ namespace fblib   {
 
 		} // namespace l1
 	} // namespace multiview
-} // namespace fblib
+} // namespace mvg
 

@@ -18,13 +18,13 @@ using std::size_t;
 
 #pragma warning( disable : 4996 )
 
-#include <fblib/threads/win_thread_private_data.h>
+#include <mvg/threads/win_thread_private_data.h>
 
 struct Win32ThreadCanceled{};
 
-using namespace fblib::threads;
+using namespace mvg::threads;
 
-DWORD fblib::threads::cooperativeWait(HANDLE waitHandle, unsigned long timeout){
+DWORD mvg::threads::cooperativeWait(HANDLE waitHandle, unsigned long timeout){
     Thread* current = Thread::CurrentThread();
     DWORD dwResult ;
     if(current)
@@ -59,7 +59,7 @@ bool Thread::s_isInitialized = false;
 // Class to support some static methods necessary for pthread's to work
 // correctly.
 //
-namespace fblib 
+namespace mvg 
 {
 	namespace threads
 	{
@@ -664,7 +664,7 @@ int Thread::microSleep(unsigned int microsec)
 
 /**	得到处理器的个数
  */
-int fblib::threads::GetNumberOfProcessors()
+int mvg::threads::GetNumberOfProcessors()
 {
     SYSTEM_INFO sysInfo;
     GetSystemInfo(&sysInfo);
@@ -672,7 +672,7 @@ int fblib::threads::GetNumberOfProcessors()
     return sysInfo.dwNumberOfProcessors;
 }
 
-int fblib::threads::SetProcessorAffinityOfCurrentThread(unsigned int cpunum)
+int mvg::threads::SetProcessorAffinityOfCurrentThread(unsigned int cpunum)
 {
     Thread::Init();
 

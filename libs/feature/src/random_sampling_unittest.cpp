@@ -1,8 +1,8 @@
-﻿#include "fblib/feature/random_sampling.h"
+﻿#include "mvg/feature/random_sampling.h"
 #include "testing.h"
 #include <set>
 
-using namespace fblib::feature;
+using namespace mvg::feature;
 
 // 通过验证随机取出所有的数据，无重复的方式来进行验证
 TEST(UniformSampleTest, NoRepetions) {

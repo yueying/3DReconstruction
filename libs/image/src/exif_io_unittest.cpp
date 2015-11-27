@@ -1,23 +1,23 @@
-﻿#include "fblib/image/exif_simple.h"
+﻿#include "mvg/image/exif_simple.h"
 #include "testing.h"
 
 #include <iostream>
 #include <memory>
 
 using namespace std;
-using namespace fblib::image;
+using namespace mvg::image;
 
-namespace fblib {
+namespace mvg {
 	namespace utils {
-		extern std::string FBLIB_GLOBAL_SRC_DIR;
+		extern std::string MVG_GLOBAL_SRC_DIR;
 	}
 }
-using namespace fblib::utils;
+using namespace mvg::utils;
 namespace {
 
 	TEST(Image, Exif_IO_easyexif_ReadData)
 	{
-		string exif_filename = FBLIB_GLOBAL_SRC_DIR + "/data/image_test/exif.jpg";
+		string exif_filename = MVG_GLOBAL_SRC_DIR + "/data/image_test/exif.jpg";
 		EXIFSimple exif_io(exif_filename);
 
 		EXPECT_TRUE(exif_io.doesHaveExifInfo());

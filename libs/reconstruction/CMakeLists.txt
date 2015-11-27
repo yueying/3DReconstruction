@@ -1,15 +1,15 @@
 #---------------------------------------------
-# Macro declared in "DeclareFBLIBLib.cmake":
+# Macro declared in "DeclareMVGLib.cmake":
 #---------------------------------------------
-define_fblib_lib(
+define_mvg_lib(
 	# Lib name
 	reconstruction 		
 	# Dependencies
-	fblib_base
-	fblib_image
-	fblib_feature
-	fblib_multiview
-	fblib_camera
+	mvg_base
+	mvg_image
+	mvg_feature
+	mvg_multiview
+	mvg_camera
 	)
 
 

@@ -4,18 +4,18 @@
 #include <vector>
 #include "testing.h"
 
-#include "fblib/sfm/linear_programming_interface.h"
-#include "fblib/sfm/linear_programming_osi.h"
-#include "fblib/sfm/global_translations_from_triplets.h"
-#include "fblib/sfm/triplet_finder.h"
-#include "fblib/multiview/essential.h"
-#include "fblib/multiview/nview_data_sets.h"
+#include "mvg/sfm/linear_programming_interface.h"
+#include "mvg/sfm/linear_programming_osi.h"
+#include "mvg/sfm/global_translations_from_triplets.h"
+#include "mvg/sfm/triplet_finder.h"
+#include "mvg/multiview/essential.h"
+#include "mvg/multiview/nview_data_sets.h"
 
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/utils/svg_drawer.h"
 
-using namespace fblib::utils;
-using namespace fblib::sfm;
-using namespace fblib::multiview;
+using namespace mvg::utils;
+using namespace mvg::sfm;
+using namespace mvg::multiview;
 using namespace std;
 
 int modifiedMod(int number, int modulus)
@@ -95,7 +95,7 @@ TEST(translation_averaging, globalTi_from_tijs_Triplets) {
   }
 
   //- For each triplet compute relative translations and rotations motions
-  std::vector<fblib::sfm::RelativeInfo > vec_initial_estimates;
+  std::vector<mvg::sfm::RelativeInfo > vec_initial_estimates;
 
   for (size_t i = 0; i < vec_triplets.size(); ++i)
   {

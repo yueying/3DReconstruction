@@ -1,8 +1,8 @@
 
-#include "fblib/utils/scoped_ptr.h"
+#include "mvg/utils/scoped_ptr.h"
 #include "testing.h"
 
-namespace fblib {
+namespace mvg {
 	namespace utils{
 
 		struct FreeMe {
@@ -57,4 +57,4 @@ namespace fblib {
 		}
 
 	}  // namespace
-}  // namespace fblib
+}  // namespace mvg

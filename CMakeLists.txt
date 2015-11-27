@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
-# Root CMake file for the FBLIB libraries and applications
+# Root CMake file for the MVG libraries and applications
 #
 #  Run with "cmake ." at the root directory to build the makefiles for
-#   the FBLIB C++ library, the samples, and the applications. Some scripts
+#   the MVG C++ library, the samples, and the applications. Some scripts
 #   for generating the documentation, etc. are also updated.
 #
 #  2014-2015, fengbing <fengbing123@gmail.com>
@@ -10,7 +10,7 @@
 #  NOTE: CMake can be obtained at http://www.cmake.org/
 # ----------------------------------------------------------------------------
 
-PROJECT(FBLIB)
+PROJECT(MVG)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
 
@@ -40,16 +40,16 @@ endif()
 # -------------------------
 
 
-include(cmake/script_version_number.cmake REQUIRED)	#  Loads FBLIB version number
+include(cmake/script_version_number.cmake REQUIRED)	#  Loads MVG version number
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake") # Directory for CMake scripts
 
-# The root directory for all FBLIB libraries/modules:
-SET(FBLIB_LIBS_ROOT "${CMAKE_SOURCE_DIR}/libs" CACHE INTERNAL "")  # This emulates global vars
+# The root directory for all MVG libraries/modules:
+SET(MVG_LIBS_ROOT "${CMAKE_SOURCE_DIR}/libs" CACHE INTERNAL "")  # This emulates global vars
 
-SET(FBLIB_SOURCE_DIR  ${CMAKE_CURRENT_SOURCE_DIR})
-SET(FBLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-SET(FBLIB_BINARY_DIR  ${PROJECT_BINARY_DIR})
+SET(MVG_SOURCE_DIR  ${CMAKE_CURRENT_SOURCE_DIR})
+SET(MVG_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+SET(MVG_BINARY_DIR  ${PROJECT_BINARY_DIR})
 
 # Windows default: lib. Debian pkgs: set from outside rules script
 IF(NOT DEFINED CMAKE_INSTALL_LIBDIR)
@@ -58,17 +58,17 @@ ENDIF(NOT DEFINED CMAKE_INSTALL_LIBDIR)
 
 # ---------------------------------------------------------------------------
 # Create the minimum list of libraries required by an application that
-#  uses the FBLIB C++ library. This must be passed to "TARGET_LINK_LIBRARIES"
+#  uses the MVG C++ library. This must be passed to "TARGET_LINK_LIBRARIES"
 # NOTE: For the compilers MSVC* & Borland most of the libraries are
 #        automatically included through "#pragma"'s ;-)
 # ---------------------------------------------------------------------------
-SET(FBLIB_LINKER_LIBS "")
+SET(MVG_LINKER_LIBS "")
 
 # ----- Useful macros ------
 include(cmake/UtilsMacros.cmake REQUIRED)
 include(cmake/FilterFileLists.cmake REQUIRED)
-include(cmake/FBLIBPCHSupport.cmake REQUIRED)
-include(cmake/DeclareFBLIBLib.cmake REQUIRED)
+include(cmake/MVGPCHSupport.cmake REQUIRED)
+include(cmake/DeclareMVGLib.cmake REQUIRED)
 include(cmake/DeclareAppDependencies.cmake REQUIRED)
 #INCLUDE(cmake/Installation.cmake REQUIRED)
 # --------------------------
@@ -79,12 +79,12 @@ include(cmake/script_detect_clang.cmake REQUIRED)     # Detect clang compiler ve
 
 
 # ------------------------------------------
-# We want libraries to be named "fblib_XXX010.lib" 
-#  and "fblib_XXX010d.lib" in all compilers:
+# We want libraries to be named "mvg_XXX010.lib" 
+#  and "mvg_XXX010d.lib" in all compilers:
 # ------------------------------------------
 set(CMAKE_DEBUG_POSTFIX  "d")
 IF(MSVC)
-	set(FBLIB_LIB_PREFIX "")
+	set(MVG_LIB_PREFIX "")
 ENDIF(MSVC)
 
 # In case of Makefiles if the user does not setup CMAKE_BUILD_TYPE, assume it's Release:
@@ -103,9 +103,9 @@ endif()
 # Detect wordsize:
 # -------------------------------------------
 IF(CMAKE_SIZEOF_VOID_P EQUAL 8)  # Size in bytes!
-	SET(CMAKE_FBLIB_WORD_SIZE 64)
+	SET(CMAKE_MVG_WORD_SIZE 64)
 ELSE(CMAKE_SIZEOF_VOID_P EQUAL 8)  # Size in bytes!
-	SET(CMAKE_FBLIB_WORD_SIZE 32)
+	SET(CMAKE_MVG_WORD_SIZE 32)
 ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 
 # Build static or dynamic libs?
@@ -113,11 +113,11 @@ ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 # Default: static libraries:
 SET(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)")
 IF(BUILD_SHARED_LIBS)
-	SET(CMAKE_FBLIB_BUILD_SHARED_LIB "#define FBLIB_BUILT_AS_DLL")
-	SET(CMAKE_FBLIB_BUILD_SHARED_LIB_ONOFF 1)
+	SET(CMAKE_MVG_BUILD_SHARED_LIB "#define MVG_BUILT_AS_DLL")
+	SET(CMAKE_MVG_BUILD_SHARED_LIB_ONOFF 1)
 ELSE(BUILD_SHARED_LIBS)
-	SET(CMAKE_FBLIB_BUILD_SHARED_LIB "/* #define FBLIB_BUILT_AS_DLL */")
-	SET(CMAKE_FBLIB_BUILD_SHARED_LIB_ONOFF 0)
+	SET(CMAKE_MVG_BUILD_SHARED_LIB "/* #define MVG_BUILT_AS_DLL */")
+	SET(CMAKE_MVG_BUILD_SHARED_LIB_ONOFF 0)
 ENDIF(BUILD_SHARED_LIBS)
 
 # Only for Unix: use pkg-config to find libraries
@@ -145,7 +145,7 @@ endif (ENABLE_SOLUTION_FOLDERS)
 # ===================================================
 IF(CMAKE_COMPILER_IS_GNUCXX)
 	# Enable libstdc++ parallel mode?
-	SET(FBLIB_ENABLE_LIBSTD_PARALLEL_MODE OFF CACHE BOOL "Enable parallel mode in libstdc++ (requires GCC 4.2.2+)")
+	SET(MVG_ENABLE_LIBSTD_PARALLEL_MODE OFF CACHE BOOL "Enable parallel mode in libstdc++ (requires GCC 4.2.2+)")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 # Enable precompiled headers:
@@ -156,25 +156,25 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 #	SET(DEFAULT_VAL_PRECOMP_HDR OFF)
 #ENDIF(MSVC)
 
-#SET(FBLIB_ENABLE_PRECOMPILED_HDRS ${DEFAULT_VAL_PRECOMP_HDR} CACHE BOOL "Enable precompiled headers (thru 'fblib/LIB.h')")
-SET(FBLIB_ENABLE_PRECOMPILED_HDRS OFF CACHE BOOL "Enable precompiled headers (thru 'fblib/LIB.h')")
-#MARK_AS_ADVANCED(FBLIB_ENABLE_PRECOMPILED_HDRS)
+#SET(MVG_ENABLE_PRECOMPILED_HDRS ${DEFAULT_VAL_PRECOMP_HDR} CACHE BOOL "Enable precompiled headers (thru 'mvg/LIB.h')")
+SET(MVG_ENABLE_PRECOMPILED_HDRS OFF CACHE BOOL "Enable precompiled headers (thru 'mvg/LIB.h')")
+#MARK_AS_ADVANCED(MVG_ENABLE_PRECOMPILED_HDRS)
 
 # Eigen library plugins:
 # ===================================================
 include(cmake/script_eigen.cmake REQUIRED)
 
-# FBLIB_TRY_START/END blocks
+# MVG_TRY_START/END blocks
 # ===================================================
-SET(FBLIB_HAS_STACKED_EXCEPTIONS ON CACHE BOOL "Enable FBLIB_TRY_START/END blocks (disable it for speed up).")
+SET(MVG_HAS_STACKED_EXCEPTIONS ON CACHE BOOL "Enable MVG_TRY_START/END blocks (disable it for speed up).")
 
-# Optional FBLIB embedded profiler:
+# Optional MVG embedded profiler:
 # ===================================================
-SET(FBLIB_ENABLE_EMBEDDED_GLOBAL_PROFILER OFF CACHE BOOL "Enable FBLIB embedded profiler.")
+SET(MVG_ENABLE_EMBEDDED_GLOBAL_PROFILER OFF CACHE BOOL "Enable MVG embedded profiler.")
 
 # ASSERT_ blocks
 # ===================================================
-SET(FBLIB_HAS_ASSERT ON CACHE BOOL "Enable ASSERT_ statements (disable it for speed up).")
+SET(MVG_HAS_ASSERT ON CACHE BOOL "Enable ASSERT_ statements (disable it for speed up).")
 
 #   "Clasic" function & headers detection:
 include(cmake/script_detect_functions_headers.cmake REQUIRED)
@@ -188,7 +188,7 @@ ENDIF(MSVC)
 
 # ----------------------------------------------------------------------------
 #   Uninstall target, for "make uninstall"
-# Must be invoked *before* other embedded projects so FBLIB's target "uninstall" exists first
+# Must be invoked *before* other embedded projects so MVG's target "uninstall" exists first
 # ----------------------------------------------------------------------------
 CONFIGURE_FILE(
   "${CMAKE_CURRENT_SOURCE_DIR}/parse-files/cmake_uninstall.cmake.in"
@@ -220,12 +220,12 @@ include(cmake/script_ssba.cmake REQUIRED)        # ssba lib
 #			OPTIONS
 #The options for the user when using "cmakesetup" or "ccmake":
 # ---------------------------------------------------------------------------
-OPTION(FBLIB_ALWAYS_CHECKS_DEBUG "Additional checks even in Release" "OFF")
-OPTION(FBLIB_ALWAYS_CHECKS_DEBUG_MATRICES "Additional checks even in Release (Only in matrix classes)" "OFF")
+OPTION(MVG_ALWAYS_CHECKS_DEBUG "Additional checks even in Release" "OFF")
+OPTION(MVG_ALWAYS_CHECKS_DEBUG_MATRICES "Additional checks even in Release (Only in matrix classes)" "OFF")
 
 # ---------------------------------------------------------------------------
 # Create the minimum list of libraries required by an application that
-#  uses the FBLIB C++ library. This must be passed to "TARGET_LINK_LIBRARIES"
+#  uses the MVG C++ library. This must be passed to "TARGET_LINK_LIBRARIES"
 # NOTE: For the compilers MSVC* & Borland most of the libraries are
 #        automatically included through "#pragma"'s ;-)
 # ---------------------------------------------------------------------------
@@ -234,46 +234,46 @@ IF(NOT MSVC)
 	# Jerome Monceaux : 2011/03/08
 	# exclude rt from apple osx linking
 	IF(UNIX AND NOT APPLE)
-		APPEND_FBLIB_LIBS(rt)
+		APPEND_MVG_LIBS(rt)
 	ENDIF(UNIX AND NOT APPLE)
 
 	# In Windows, link against ole32 & uuid & oleaut32, etc...
 	IF(MINGW)
-		APPEND_FBLIB_LIBS(ole32 uuid oleaut32 gdi32 winmm setupapi ws2_32)
+		APPEND_MVG_LIBS(ole32 uuid oleaut32 gdi32 winmm setupapi ws2_32)
 	ENDIF(MINGW)
 ENDIF(NOT MSVC)
 
 
-SET(CMAKE_FBLIB_HAS_GZ_STREAMS ${CMAKE_FBLIB_HAS_ZLIB})   # We have gz-streams is we have zlib:
+SET(CMAKE_MVG_HAS_GZ_STREAMS ${CMAKE_MVG_HAS_ZLIB})   # We have gz-streams is we have zlib:
 
 include(cmake/script_png.cmake REQUIRED)  # support png image
 
-# Save the basic list of libraries (without FBLIB-libs):
+# Save the basic list of libraries (without MVG-libs):
 # -------------------------------------------------------------------------------------
-SET(FBLIBLIB_LINKER_LIBS ${FBLIB_LINKER_LIBS} ${FBLIB_FFMPEG_LIBS_TO_LINK})
+SET(MVGLIB_LINKER_LIBS ${MVG_LINKER_LIBS} ${MVG_FFMPEG_LIBS_TO_LINK})
 IF($ENV{VERBOSE})
-	MESSAGE(STATUS "FBLIBLIB_LINKER_LIBS: ${FBLIBLIB_LINKER_LIBS}")
+	MESSAGE(STATUS "MVGLIB_LINKER_LIBS: ${MVGLIB_LINKER_LIBS}")
 ENDIF($ENV{VERBOSE})
 
 # If we are building .so libs, don't link every program to all the libs:
 IF(BUILD_SHARED_LIBS)
-	SET(FBLIB_LINKER_LIBS "")
+	SET(MVG_LINKER_LIBS "")
 ENDIF(BUILD_SHARED_LIBS)
 
 # Save the list of libraries according to the current debug/release build (gcc only)
 # -------------------------------------------------------------------------------------
-SET(FBLIB_LINKER_LIBS_RELorDEB ${FBLIB_LINKER_LIBS})
+SET(MVG_LINKER_LIBS_RELorDEB ${MVG_LINKER_LIBS})
 
 IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
-	SET(FBLIB_LINKER_LIBS_POSTFIX "${FBLIB_DEBUG_POSTFIX}")
+	SET(MVG_LINKER_LIBS_POSTFIX "${MVG_DEBUG_POSTFIX}")
 ELSE(CMAKE_BUILD_TYPE STREQUAL "Debug")
-	SET(FBLIB_LINKER_LIBS_POSTFIX "")
+	SET(MVG_LINKER_LIBS_POSTFIX "")
 ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-# Include Asian fonts in utils::CFBLIBCanvas ?
-SET( FBLIB_HAS_ASIAN_FONTS ON CACHE BOOL "Enable Asian fonts in utils::CFBLIBCanvas (increases library size).")
+# Include Asian fonts in utils::CMVGCanvas ?
+SET( MVG_HAS_ASIAN_FONTS ON CACHE BOOL "Enable Asian fonts in utils::CMVGCanvas (increases library size).")
 
-include(cmake/script_declare_defines.cmake REQUIRED)  # Transform the variables FBLIB_XXX="ON/OFF" to CMAKE_FBLIB_XXX="1/0"
+include(cmake/script_declare_defines.cmake REQUIRED)  # Transform the variables MVG_XXX="ON/OFF" to CMAKE_MVG_XXX="1/0"
 
 include(cmake/script_create_config_h.cmake REQUIRED)   # Build config.h
 include(cmake/script_create_version_h.cmake REQUIRED)  # Build version.h
@@ -291,29 +291,29 @@ SET(USER_EXTRA_CPP_FLAGS "" CACHE STRING "Put extra compiler options here if des
 # ----------------------------------------------------------------------------
 # 			Set the maximum level of warnings:
 # ----------------------------------------------------------------------------
-SET( FBLIB_EXTRA_WARNINGS OFF CACHE BOOL "Enable extra warnings apart from -Wall")
-MARK_AS_ADVANCED(FBLIB_EXTRA_WARNINGS)
+SET( MVG_EXTRA_WARNINGS OFF CACHE BOOL "Enable extra warnings apart from -Wall")
+MARK_AS_ADVANCED(MVG_EXTRA_WARNINGS)
 
 # Should be set to true for development
-SET( FBLIB_WARNINGS_ARE_ERRORS OFF CACHE BOOL "Treat warnings as errors")
-MARK_AS_ADVANCED(FBLIB_WARNINGS_ARE_ERRORS)
+SET( MVG_WARNINGS_ARE_ERRORS OFF CACHE BOOL "Treat warnings as errors")
+MARK_AS_ADVANCED(MVG_WARNINGS_ARE_ERRORS)
 
 # Whole program optimization?
-SET( FBLIB_WHOLE_PROGRAM_OPTIMIZATION OFF CACHE BOOL "Flags for whole program optimization.")
-MARK_AS_ADVANCED(FBLIB_WHOLE_PROGRAM_OPTIMIZATION)
+SET( MVG_WHOLE_PROGRAM_OPTIMIZATION OFF CACHE BOOL "Flags for whole program optimization.")
+MARK_AS_ADVANCED(MVG_WHOLE_PROGRAM_OPTIMIZATION)
 
 # Even more warnings for different compilers
-IF(FBLIB_EXTRA_WARNINGS)
+IF(MVG_EXTRA_WARNINGS)
    #TODO - Add options for MSVC
    IF (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
       SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreturn-type -Wextra") # -Wold-style-cast  -Woverloaded-virtual
    ELSEIF(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 	ENDIF()
-ENDIF(FBLIB_EXTRA_WARNINGS)
+ENDIF(MVG_EXTRA_WARNINGS)
 
 # Enable profiling?
-SET(FBLIB_ENABLE_PROFILING OFF CACHE BOOL "Enable profiling (add -g -pg in GCC/CLANG, /PROFILE in Visual C++)")
+SET(MVG_ENABLE_PROFILING OFF CACHE BOOL "Enable profiling (add -g -pg in GCC/CLANG, /PROFILE in Visual C++)")
 
 IF(MSVC)
 	SET(EXTRA_CPP_FLAGS "/W3 /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE")
@@ -330,23 +330,23 @@ IF(MSVC)
 	#endif(MSVC_VERSION LESS 1700)
 
 	# Whole program optimization
-	IF(FBLIB_WHOLE_PROGRAM_OPTIMIZATION)
+	IF(MVG_WHOLE_PROGRAM_OPTIMIZATION)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} /GL")
 		SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LTCG ")
 		#SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG ")
 		SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /LTCG ")
 		#SET(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} /LTCG ")
 		SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LTCG ")
-	ENDIF(FBLIB_WHOLE_PROGRAM_OPTIMIZATION)
+	ENDIF(MVG_WHOLE_PROGRAM_OPTIMIZATION)
 
 	# Remove unreferenced functions: function level linking
 	SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} /Gy")
 	SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W3 ")
 
 	# SSE2 for MSVC?
-	IF (CMAKE_FBLIB_HAS_SSE2 AND NOT CMAKE_FBLIB_WORD_SIZE EQUAL 64)
+	IF (CMAKE_MVG_HAS_SSE2 AND NOT CMAKE_MVG_WORD_SIZE EQUAL 64)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} /arch:SSE2")
-	ENDIF(CMAKE_FBLIB_HAS_SSE2 AND NOT CMAKE_FBLIB_WORD_SIZE EQUAL 64)
+	ENDIF(CMAKE_MVG_HAS_SSE2 AND NOT CMAKE_MVG_WORD_SIZE EQUAL 64)
 
 	# SSE3: any flag needed? 
 
@@ -354,26 +354,26 @@ IF(MSVC)
 	#SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} /fp:fast")
 	
 	# Profiling?
-	IF(FBLIB_ENABLE_PROFILING)
+	IF(MVG_ENABLE_PROFILING)
 		SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /PROFILE ")
 		SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /PROFILE ")
-	ENDIF(FBLIB_ENABLE_PROFILING)
+	ENDIF(MVG_ENABLE_PROFILING)
 ENDIF(MSVC)
 
 # GNU GCC options ================================
 IF(CMAKE_COMPILER_IS_GNUCXX)
 	# Wall & pedantic?
 	IF(APPLE)
-		SET(FBLIB_BUILD_GCC_PEDANTIC_DEFAULT "OFF")
+		SET(MVG_BUILD_GCC_PEDANTIC_DEFAULT "OFF")
 	ELSE(APPLE)
-		SET(FBLIB_BUILD_GCC_PEDANTIC_DEFAULT "ON")
+		SET(MVG_BUILD_GCC_PEDANTIC_DEFAULT "ON")
 
 
     
 	ENDIF(APPLE)
 
-	SET( FBLIB_BUILD_GCC_PEDANTIC ${FBLIB_BUILD_GCC_PEDANTIC_DEFAULT} CACHE BOOL "Enable pedantic error detection (with GCC only)")
-	MARK_AS_ADVANCED(FBLIB_BUILD_GCC_PEDANTIC)
+	SET( MVG_BUILD_GCC_PEDANTIC ${MVG_BUILD_GCC_PEDANTIC_DEFAULT} CACHE BOOL "Enable pedantic error detection (with GCC only)")
+	MARK_AS_ADVANCED(MVG_BUILD_GCC_PEDANTIC)
 
 	# High level of warnings.
 	# The -Wno-long-long is required in 64bit systems when including sytem headers.
@@ -389,26 +389,26 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
  	SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 
 
-	IF(FBLIB_BUILD_GCC_PEDANTIC)
+	IF(MVG_BUILD_GCC_PEDANTIC)
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
  		SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic")
-	ENDIF(FBLIB_BUILD_GCC_PEDANTIC)
+	ENDIF(MVG_BUILD_GCC_PEDANTIC)
 
 	# Enable C++11 features in GCC 4.7+
-	IF (NOT CMAKE_FBLIB_GCC_VERSION LESS 47)
+	IF (NOT CMAKE_MVG_GCC_VERSION LESS 47)
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-	ENDIF (NOT CMAKE_FBLIB_GCC_VERSION LESS 47)
+	ENDIF (NOT CMAKE_MVG_GCC_VERSION LESS 47)
 
 	# Parallel stdlibc++?
-	IF(FBLIB_ENABLE_LIBSTD_PARALLEL_MODE)
+	IF(MVG_ENABLE_LIBSTD_PARALLEL_MODE)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -D_GLIBCXX_PARALLEL -fopenmp")
-	ENDIF(FBLIB_ENABLE_LIBSTD_PARALLEL_MODE)
+	ENDIF(MVG_ENABLE_LIBSTD_PARALLEL_MODE)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 # CLang options ================================
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-	SET( FBLIB_BUILD_CLANG_PEDANTIC OFF CACHE BOOL "Enable pedantic error detection (clang)")
-	MARK_AS_ADVANCED(FBLIB_BUILD_CLANG_PEDANTIC)
+	SET( MVG_BUILD_CLANG_PEDANTIC OFF CACHE BOOL "Enable pedantic error detection (clang)")
+	MARK_AS_ADVANCED(MVG_BUILD_CLANG_PEDANTIC)
 
 	# High level of warnings.
 	# no-unused-private-field: clang seems to complain in templates without reason.
@@ -436,10 +436,10 @@ endif()
 # Shared options between GCC and CLANG:
 # ======================================
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
-	IF(FBLIB_WARNINGS_ARE_ERRORS)
+	IF(MVG_WARNINGS_ARE_ERRORS)
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 		SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
-	ENDIF(FBLIB_WARNINGS_ARE_ERRORS)
+	ENDIF(MVG_WARNINGS_ARE_ERRORS)
 
 	# We need pthread's
 	IF (UNIX AND NOT APPLE)
@@ -453,72 +453,72 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
 	ENDIF(CMAKE_BUILD_TYPE MATCHES "Debug")
 
 	# Profiling?
-	IF(FBLIB_ENABLE_PROFILING)
+	IF(MVG_ENABLE_PROFILING)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -pg -g")
-	ELSEIF(FBLIB_ENABLE_PROFILING)
+	ELSEIF(MVG_ENABLE_PROFILING)
 		# Remove unreferenced functions: function level linking
         # Remove unreferenced functions: function level linking
         if(NOT APPLE)
 			SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffunction-sections")
         endif(NOT APPLE)
-	ENDIF(FBLIB_ENABLE_PROFILING)
+	ENDIF(MVG_ENABLE_PROFILING)
 
 	# Whole program optimization
-	IF(FBLIB_WHOLE_PROGRAM_OPTIMIZATION)
+	IF(MVG_WHOLE_PROGRAM_OPTIMIZATION)
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --combine")
-		SET(FBLIB_EXES_CXX_FLAGS "${FBLIB_EXES_CXX_FLAGS} -fwhole-program --combine")
-	ENDIF(FBLIB_WHOLE_PROGRAM_OPTIMIZATION)
+		SET(MVG_EXES_CXX_FLAGS "${MVG_EXES_CXX_FLAGS} -fwhole-program --combine")
+	ENDIF(MVG_WHOLE_PROGRAM_OPTIMIZATION)
 
 
 	# "-mtune=native" generates code optimized for the detected current processor.
-	if (WIN32 OR "${CMAKE_FBLIB_ARCH}" MATCHES ".*86" OR "${CMAKE_FBLIB_ARCH}" MATCHES "amd64")
+	if (WIN32 OR "${CMAKE_MVG_ARCH}" MATCHES ".*86" OR "${CMAKE_MVG_ARCH}" MATCHES "amd64")
 		set(opt_native_def ON)
-	endif (WIN32 OR "${CMAKE_FBLIB_ARCH}" MATCHES ".*86" OR "${CMAKE_FBLIB_ARCH}" MATCHES "amd64")
+	endif (WIN32 OR "${CMAKE_MVG_ARCH}" MATCHES ".*86" OR "${CMAKE_MVG_ARCH}" MATCHES "amd64")
 
-	SET( FBLIB_OPTIMIZE_NATIVE ${opt_native_def} CACHE BOOL "GCC/clang optimizations for current processor (-mtune=native). Requires GCC 4.2+")
+	SET( MVG_OPTIMIZE_NATIVE ${opt_native_def} CACHE BOOL "GCC/clang optimizations for current processor (-mtune=native). Requires GCC 4.2+")
 
 	IF(CMAKE_BUILD_TYPE STREQUAL "Debug")  # Not in debug!
-		SET(FBLIB_OPTIMIZE_NATIVE OFF)
+		SET(MVG_OPTIMIZE_NATIVE OFF)
 	ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-	IF(CMAKE_FBLIB_USE_DEB_POSTFIXS OR CMAKE_FBLIB_IS_RPM_PACKAGE)
+	IF(CMAKE_MVG_USE_DEB_POSTFIXS OR CMAKE_MVG_IS_RPM_PACKAGE)
 		# If we're building a Debian package, just DO NOT use -mtune=native
 		SET(EXTRA_CPP_FLAGS ${CFLAGS})
-	ELSE(CMAKE_FBLIB_USE_DEB_POSTFIXS OR CMAKE_FBLIB_IS_RPM_PACKAGE)
-		IF(FBLIB_OPTIMIZE_NATIVE AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+	ELSE(CMAKE_MVG_USE_DEB_POSTFIXS OR CMAKE_MVG_IS_RPM_PACKAGE)
+		IF(MVG_OPTIMIZE_NATIVE AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 			SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -O3 -mtune=native ")
-		ENDIF(FBLIB_OPTIMIZE_NATIVE AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-	ENDIF(CMAKE_FBLIB_USE_DEB_POSTFIXS OR CMAKE_FBLIB_IS_RPM_PACKAGE)
+		ENDIF(MVG_OPTIMIZE_NATIVE AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+	ENDIF(CMAKE_MVG_USE_DEB_POSTFIXS OR CMAKE_MVG_IS_RPM_PACKAGE)
 
 	# "-ffast-math"
-	SET( FBLIB_OPTIMIZE_FFAST-MATH OFF CACHE BOOL "GCC/clang optimization for floating math (-ffast-math).")
-	IF(FBLIB_OPTIMIZE_FFAST-MATH)
+	SET( MVG_OPTIMIZE_FFAST-MATH OFF CACHE BOOL "GCC/clang optimization for floating math (-ffast-math).")
+	IF(MVG_OPTIMIZE_FFAST-MATH)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -ffast-math")
-	ENDIF(FBLIB_OPTIMIZE_FFAST-MATH)
+	ENDIF(MVG_OPTIMIZE_FFAST-MATH)
 
 	# SSE2?
-	IF (CMAKE_FBLIB_HAS_SSE2)
+	IF (CMAKE_MVG_HAS_SSE2)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -msse2 -funroll-loops")
 		IF (CMAKE_COMPILER_IS_GNUCXX)
 			SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -mfpmath=sse")
 		ENDIF(CMAKE_COMPILER_IS_GNUCXX)
-	ENDIF(CMAKE_FBLIB_HAS_SSE2)
+	ENDIF(CMAKE_MVG_HAS_SSE2)
 
 	# SSE3?
-	IF (CMAKE_FBLIB_HAS_SSE3)
+	IF (CMAKE_MVG_HAS_SSE3)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -msse3 -mssse3")
-	ENDIF(CMAKE_FBLIB_HAS_SSE3)
+	ENDIF(CMAKE_MVG_HAS_SSE3)
 
 	# SSE4*?
-	IF (CMAKE_FBLIB_HAS_SSE4_1)
+	IF (CMAKE_MVG_HAS_SSE4_1)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -msse4.1")
-	ENDIF(CMAKE_FBLIB_HAS_SSE4_1)
-	IF (CMAKE_FBLIB_HAS_SSE4_2)
+	ENDIF(CMAKE_MVG_HAS_SSE4_1)
+	IF (CMAKE_MVG_HAS_SSE4_2)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -msse4.2")
-	ENDIF(CMAKE_FBLIB_HAS_SSE4_2)
-	IF (CMAKE_FBLIB_HAS_SSE4_A)
+	ENDIF(CMAKE_MVG_HAS_SSE4_2)
+	IF (CMAKE_MVG_HAS_SSE4_A)
 		SET(EXTRA_CPP_FLAGS "${EXTRA_CPP_FLAGS} -msse4a")
-	ENDIF(CMAKE_FBLIB_HAS_SSE4_A)
+	ENDIF(CMAKE_MVG_HAS_SSE4_A)
 
 endif ()
 
@@ -553,38 +553,38 @@ IF($ENV{VERBOSE})
 	MESSAGE(STATUS "Final CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 	MESSAGE(STATUS "Final CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 	MESSAGE(STATUS "Final CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}")
-	MESSAGE(STATUS "Final FBLIBLIB_LINKER_LIBS: ${FBLIBLIB_LINKER_LIBS}")
+	MESSAGE(STATUS "Final MVGLIB_LINKER_LIBS: ${MVGLIB_LINKER_LIBS}")
 ENDIF($ENV{VERBOSE})
 
 # Save libs and executables in the same place
-SET( LIBRARY_OUTPUT_PATH ${FBLIB_BINARY_DIR}/lib CACHE PATH "Output directory for libraries" )
-SET( EXECUTABLE_OUTPUT_PATH ${FBLIB_BINARY_DIR}/bin CACHE PATH "Output directory for applications" )
+SET( LIBRARY_OUTPUT_PATH ${MVG_BINARY_DIR}/lib CACHE PATH "Output directory for libraries" )
+SET( EXECUTABLE_OUTPUT_PATH ${MVG_BINARY_DIR}/bin CACHE PATH "Output directory for applications" )
 
 #--------------------------------------------------------------
 # If we are building the final step of the Debian package,
 #  save each library files in the corresponding directories:
 #--------------------------------------------------------------
-IF(CMAKE_FBLIB_USE_DEB_POSTFIXS)
+IF(CMAKE_MVG_USE_DEB_POSTFIXS)
 	# Values when building a Debian package ---------------
-	MESSAGE(STATUS "** fblib cmake: Using Debian post-fix for install directories **")
+	MESSAGE(STATUS "** mvg cmake: Using Debian post-fix for install directories **")
 	IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
 		# Debug packages
-		SET(libfblib_dev_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/libfblib_dbg/usr/")
+		SET(libmvg_dev_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/libmvg_dbg/usr/")
 	ELSE(CMAKE_BUILD_TYPE STREQUAL "Debug")
 		# Normal packages
-		SET(libfblib_dev_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/libfblib_dev/usr/")
+		SET(libmvg_dev_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/libmvg_dev/usr/")
 	ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-	SET(fblib_apps_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/fblib_apps/usr/")
-	SET(fblib_doc_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/fblib_doc/usr/")
-	SET(fblib_pkgconfig_INSTALL_PREFIX "/usr")	# Values when building a Debian package
-ELSE(CMAKE_FBLIB_USE_DEB_POSTFIXS)
+	SET(mvg_apps_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/mvg_apps/usr/")
+	SET(mvg_doc_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/mvg_doc/usr/")
+	SET(mvg_pkgconfig_INSTALL_PREFIX "/usr")	# Values when building a Debian package
+ELSE(CMAKE_MVG_USE_DEB_POSTFIXS)
 	# Values under normal conditions -----------------------
-	SET(libfblib_dev_INSTALL_PREFIX "")
-	SET(fblib_apps_INSTALL_PREFIX "")
-	SET(fblib_doc_INSTALL_PREFIX "")
-	SET(fblib_pkgconfig_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}") 	# Values under normal conditions
-ENDIF(CMAKE_FBLIB_USE_DEB_POSTFIXS)
+	SET(libmvg_dev_INSTALL_PREFIX "")
+	SET(mvg_apps_INSTALL_PREFIX "")
+	SET(mvg_doc_INSTALL_PREFIX "")
+	SET(mvg_pkgconfig_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}") 	# Values under normal conditions
+ENDIF(CMAKE_MVG_USE_DEB_POSTFIXS)
 
 # Remove /STACK:10000000 set by CMake. This value for stack size
 # is very high, limiting the number of threads we can spawn.
@@ -595,26 +595,26 @@ STRING(REGEX REPLACE "/STACK:[0-9]+" "/STACK:1000000" CMAKE_SHARED_LINKER_FLAGS 
 
 
 # This will become a list with all libraries to be built, and their
-#  dependencies stored in "fblib_${name}_LIB_DEPS"
-SET(ALL_FBLIB_LIBS "" CACHE INTERNAL "")  # This emulates global vars
+#  dependencies stored in "mvg_${name}_LIB_DEPS"
+SET(ALL_MVG_LIBS "" CACHE INTERNAL "")  # This emulates global vars
 
 # ----------------------------------------------------------------------------
 #      					PROCESS SUBDIRECTORIES:
 # ----------------------------------------------------------------------------
 add_subdirectory(3rdparty)   # The third-party libraries
-add_subdirectory(libs)        # The FBLIB C++ libraries:
+add_subdirectory(libs)        # The MVG C++ libraries:
 
-SET( BUILD_APPLICATIONS ON CACHE BOOL "If you only want the FBLIB libraries, disable this.")
+SET( BUILD_APPLICATIONS ON CACHE BOOL "If you only want the MVG libraries, disable this.")
 IF(BUILD_APPLICATIONS)
 	add_subdirectory(apps)    # The applications:
 ENDIF(BUILD_APPLICATIONS)
 
-# Documentation targets (must be AFTER "apps" because it uses the aux program "fblib_perfdata2html")
+# Documentation targets (must be AFTER "apps" because it uses the aux program "mvg_perfdata2html")
 add_subdirectory(doc)
 
 #   UNIT TESTS:
 # ----------------------------------------------------------------------------
-SET( BUILD_TESTING ON CACHE BOOL "Build FBLIB tests")
+SET( BUILD_TESTING ON CACHE BOOL "Build MVG tests")
 IF( BUILD_TESTING)
 	# Try using libgtest (Google testing library) from the system, if available
 	# Note: In gtest 1..0 things changed and there's no prebuilt system lib anymore.
@@ -622,11 +622,11 @@ IF( BUILD_TESTING)
 	IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" AND APPLE)
 		add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=1)
 	ENDIF()
-	#add_subdirectory(${CMAKE_FBLIB_GTEST_SRC_DIR})  # Build gtest from sources
+	#add_subdirectory(${CMAKE_MVG_GTEST_SRC_DIR})  # Build gtest from sources
 	add_subdirectory(tests)  # Build my tests
 ENDIF( BUILD_TESTING)
 
-include(cmake/script_create_FBLIBConfig.cmake REQUIRED)  # Generate the FBLIBConfig.cmake & configure files
+include(cmake/script_create_MVGConfig.cmake REQUIRED)  # Generate the MVGConfig.cmake & configure files
 
 # Prepare CPack params for building binary packages (has to be after the apps/)
 #include(cmake/script_setup_cpack.cmake REQUIRED)			
@@ -640,16 +640,16 @@ MARK_AS_ADVANCED(FORCE
 
 #-----------------------------------
 # The examples
-# *Note*: This must be AFTER the generation of the FBLIBConfig.cmake files
+# *Note*: This must be AFTER the generation of the MVGConfig.cmake files
 #-----------------------------------
-add_definitions(-DFBLIB_OPENCV_SRC_DIR="${FBLIB_OPENCV_SRC_DIR}")
-SET(FBLIB_DIR ${FBLIB_BINARY_DIR})
+add_definitions(-DMVG_OPENCV_SRC_DIR="${MVG_OPENCV_SRC_DIR}")
+SET(MVG_DIR ${MVG_BINARY_DIR})
 include(cmake/DefineExamples.cmake REQUIRED)
 
 SET(IS_DEBIAN_DBG_PKG 0)
-IF (CMAKE_FBLIB_USE_DEB_POSTFIXS AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+IF (CMAKE_MVG_USE_DEB_POSTFIXS AND CMAKE_BUILD_TYPE STREQUAL "Debug")
 	SET(IS_DEBIAN_DBG_PKG 1)
-ENDIF (CMAKE_FBLIB_USE_DEB_POSTFIXS AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+ENDIF (CMAKE_MVG_USE_DEB_POSTFIXS AND CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 # Build list of files to install, packages, etc.
 include(cmake/script_install_commands.cmake REQUIRED)  

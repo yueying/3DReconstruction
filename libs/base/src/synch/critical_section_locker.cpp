@@ -9,9 +9,9 @@
 ********************************************************************************/
 #include "base_precomp.h"  // 预编译头
 
-#include <fblib/synch/critical_section.h>
+#include <mvg/synch/critical_section.h>
 
-using namespace fblib::synch;
+using namespace mvg::synch;
 
 /*---------------------------------------------------------------
 				CriticalSectionLocker

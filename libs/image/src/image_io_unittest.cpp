@@ -2,22 +2,22 @@
 #include <iostream>
 #include <string>
 
-#include "fblib/image/image.h"
+#include "mvg/image/image.h"
 #include "testing.h"
 
-using namespace fblib::image;
+using namespace mvg::image;
 using std::string;
 
-namespace fblib {
+namespace mvg {
 	namespace utils {
-		extern std::string FBLIB_GLOBAL_SRC_DIR;
+		extern std::string MVG_GLOBAL_SRC_DIR;
 	}
 }
-using namespace fblib::utils;
+using namespace mvg::utils;
 
 TEST(ReadJpg, Jpg_Color) {
   Image<RGBColor> image;
-  string jpg_filename = FBLIB_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_color.jpg";
+  string jpg_filename = MVG_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_color.jpg";
   EXPECT_TRUE(readImage(jpg_filename.c_str(), &image));
   EXPECT_EQ(2, image.Width());
   EXPECT_EQ(1, image.Height());
@@ -28,7 +28,7 @@ TEST(ReadJpg, Jpg_Color) {
 
 TEST(ReadJpg, Jpg_Monochrome) {
   Image<unsigned char> image;
-  string jpg_filename = FBLIB_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_monochrome.jpg";
+  string jpg_filename = MVG_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_monochrome.jpg";
   EXPECT_TRUE(readImage(jpg_filename.c_str(), &image));
   EXPECT_EQ(2, image.Width());
   EXPECT_EQ(1, image.Height());
@@ -39,7 +39,7 @@ TEST(ReadJpg, Jpg_Monochrome) {
 
 TEST(ReadPng, Png_Color) {
   Image<RGBAColor> image;
-  string png_filename = FBLIB_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_color.png";
+  string png_filename = MVG_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_color.png";
   EXPECT_TRUE(readImage(png_filename.c_str(), &image));
   // Channels is 4 (RGBA by default)
   EXPECT_EQ(2, image.Width());
@@ -51,7 +51,7 @@ TEST(ReadPng, Png_Color) {
 
 TEST(ReadPng, Png_Monochrome) {
   Image<unsigned char> image;
-  string png_filename = FBLIB_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_monochrome.png";
+  string png_filename = MVG_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_monochrome.png";
   EXPECT_TRUE(readImage(png_filename.c_str(), &image));
   EXPECT_EQ(2, image.Width());
   EXPECT_EQ(1, image.Height());
@@ -61,15 +61,15 @@ TEST(ReadPng, Png_Monochrome) {
 }
 
 TEST(GetFormat, filenames) {
-  EXPECT_EQ(GetFormat("something.jpg"), fblib::image::Jpg);
-  EXPECT_EQ(GetFormat("something.png"), fblib::image::Png);
-  EXPECT_EQ(GetFormat("something.pnm"), fblib::image::Pnm);
-  EXPECT_EQ(GetFormat("/some/thing.JpG"), fblib::image::Jpg);
-  EXPECT_EQ(GetFormat("/some/thing.pNG"), fblib::image::Png);
-  EXPECT_EQ(GetFormat("some/thing.PNm"), fblib::image::Pnm);
-  EXPECT_EQ(GetFormat(".s/o.m/e.t/h.i/n.g.JPG"), fblib::image::Jpg);
-  EXPECT_EQ(GetFormat(".s/o.m/e.t/h.i/n.g.PNG"), fblib::image::Png);
-  EXPECT_EQ(GetFormat(".s/o.m/e.t/h.i/n.g.PNM"), fblib::image::Pnm);
+  EXPECT_EQ(GetFormat("something.jpg"), mvg::image::Jpg);
+  EXPECT_EQ(GetFormat("something.png"), mvg::image::Png);
+  EXPECT_EQ(GetFormat("something.pnm"), mvg::image::Pnm);
+  EXPECT_EQ(GetFormat("/some/thing.JpG"), mvg::image::Jpg);
+  EXPECT_EQ(GetFormat("/some/thing.pNG"), mvg::image::Png);
+  EXPECT_EQ(GetFormat("some/thing.PNm"), mvg::image::Pnm);
+  EXPECT_EQ(GetFormat(".s/o.m/e.t/h.i/n.g.JPG"), mvg::image::Jpg);
+  EXPECT_EQ(GetFormat(".s/o.m/e.t/h.i/n.g.PNG"), mvg::image::Png);
+  EXPECT_EQ(GetFormat(".s/o.m/e.t/h.i/n.g.PNM"), mvg::image::Pnm);
 }
 
 TEST(ImageIOTest, Png_Out) {
@@ -100,7 +100,7 @@ TEST(ImageIOTest, Png_Out_Color) {
 
 //TEST(ImageIOTest, InvalidFiles) {
 //  Image<unsigned char> image;
-//  string filename = FBLIB_GLOBAL_SRC_DIR + "/donotexist.jpg";
+//  string filename = MVG_GLOBAL_SRC_DIR + "/donotexist.jpg";
 //  EXPECT_FALSE(readImage(filename.c_str(), &image));
 //  EXPECT_FALSE(readImage("hopefully_unexisting_file", &image));
 //  remove(filename.c_str());
@@ -121,7 +121,7 @@ TEST(ImageIOTest, Jpg) {
 
 TEST(ReadPnm, Pgm) {
   Image<unsigned char> image;
-  string pgm_filename = FBLIB_GLOBAL_SRC_DIR + "/data/image_test/two_pixels.pgm";
+  string pgm_filename = MVG_GLOBAL_SRC_DIR + "/data/image_test/two_pixels.pgm";
   EXPECT_TRUE(readImage(pgm_filename.c_str(), &image));
   EXPECT_EQ(2, image.Width());
   EXPECT_EQ(1, image.Height());
@@ -132,7 +132,7 @@ TEST(ReadPnm, Pgm) {
 
 TEST(ReadPnm, PgmComments) {
   Image<unsigned char> image;
-  string pgm_filename = FBLIB_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_gray.pgm";
+  string pgm_filename = MVG_GLOBAL_SRC_DIR + "/data/image_test/two_pixels_gray.pgm";
   EXPECT_TRUE(readImage(pgm_filename.c_str(), &image));
   EXPECT_EQ(2, image.Width());
   EXPECT_EQ(1, image.Height());
@@ -157,7 +157,7 @@ TEST(ImageIOTest, Pgm) {
 
 TEST(ReadPnm, Ppm) {
   Image<RGBColor> image;
-  string ppm_filename = FBLIB_GLOBAL_SRC_DIR + "/data/image_test/two_pixels.ppm";
+  string ppm_filename = MVG_GLOBAL_SRC_DIR + "/data/image_test/two_pixels.ppm";
   EXPECT_TRUE(readImage(ppm_filename.c_str(), &image));
   EXPECT_EQ(2, image.Width());
   EXPECT_EQ(1, image.Height());

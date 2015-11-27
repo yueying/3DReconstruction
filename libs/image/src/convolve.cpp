@@ -1,11 +1,11 @@
-﻿#include "fblib/image/convolve.h"
+﻿#include "mvg/image/convolve.h"
 #include <cmath>
-#include "fblib/image/image.h"
-#include "fblib/math/numeric.h"
+#include "mvg/image/image.h"
+#include "mvg/math/numeric.h"
 
-using namespace fblib::math;
+using namespace mvg::math;
 
-namespace fblib {
+namespace mvg {
 	namespace image{
 		
 		void ComputeGaussianKernel(double sigma, Vec *kernel, Vec *derivative) {
@@ -324,4 +324,4 @@ default:
 		}
 
 	} //namespace image
-}  // namespace fblib
+}  // namespace mvg

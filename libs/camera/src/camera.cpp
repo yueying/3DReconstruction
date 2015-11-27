@@ -1,8 +1,8 @@
 ﻿#include "camera_precomp.h"
-#include "fblib/camera/camera.h"
+#include "mvg/camera/camera.h"
 
-namespace fblib {
+namespace mvg {
 	namespace camera{
 
 	} // namespace camera
-}  // namespace fblib
+}  // namespace mvg

@@ -1,0 +1,177 @@
+# =========================================================================
+#  MVG CMake configuration file
+#
+#             ** File generated automatically, do not modify **
+#
+#  Usage from an external project: 
+#   In your CMakeLists.txt, add these lines:
+#
+#    FIND_PACKAGE( MVG REQUIRED )  # Default: Use mvg_base & mvg_image
+#     or
+#    FIND_PACKAGE( MVG REQUIRED base image camera ... )
+#
+#    TARGET_LINK_LIBRARIES(MY_TARGET_NAME ${MVG_LIBS})
+#
+#   
+#   The libraries or "modules" which can be included are
+#     - base           --> mvg_base
+#     - image          --> mvg_image
+#     - camera         --> mvg_camera
+#     - feature        --> mvg_feature
+#
+#   This file will define the following variables:
+#    - MVG_LIBS: The list of libraries to links against.
+#    - MVG_VERSION: The MVG version (e.g. "1.0.0"). 
+#    - MVG_VERSION_{MAJOR,MINOR,PATCH}: 3 variables for the version parts
+#
+#   Optional input variables:
+#    - MVG_DONT_USE_DBG_LIBS: If defined at input, before the 
+#         "FIND_PACKAGE(MVG...)", and set to "1", the release libraries
+#         will be used even for linking against "Debug" CMake builds.
+#
+# =========================================================================
+
+# MVG version numbers:
+SET(MVG_VERSION @CMAKE_MVG_FULL_VERSION@)
+SET(MVG_VERSION_MAJOR @CMAKE_MVG_VERSION_NUMBER_MAJOR@)
+SET(MVG_VERSION_MINOR @CMAKE_MVG_VERSION_NUMBER_MINOR@)
+SET(MVG_VERSION_PATCH @CMAKE_MVG_VERSION_NUMBER_PATCH@)
+
+
+# Extract the directory where *this* file has been installed (determined at cmake run-time)
+get_filename_component(THIS_MVG_CONFIG_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+# MVG source dir
+SET(MVG_SOURCE_DIR "@THE_MVG_SOURCE_DIR@")
+SET(MVG_LIBS_INCL_DIR "@THE_MVG_LIBS_INCL_DIR@")
+
+# MVG binary dir
+SET(MVG_DIR "@THE_CMAKE_BINARY_DIR@")
+
+# MVG include directory for "config.h"
+SET(MVG_CONFIG_DIR "@THE_MVG_CONFIG_FILE_INCLUDE_DIR@")
+
+#MESSAGE(STATUS "MVG_FIND_COMPONENTS: ${MVG_FIND_COMPONENTS}")
+
+# ======================================================
+# Include directories where Eigen3 headers are... if 
+#  they are not embedded under mvg_base headers:
+# ======================================================
+IF (NOT @MVG_CONFIGFILE_IS_INSTALL@ OR NOT @EIGEN_USE_EMBEDDED_VERSION_BOOL@)
+	INCLUDE_DIRECTORIES("@MVG_EIGEN_INCLUDE_DIR@")
+ENDIF (NOT @MVG_CONFIGFILE_IS_INSTALL@ OR NOT @EIGEN_USE_EMBEDDED_VERSION_BOOL@)
+
+# If using GCC and -Wall, eigen3 headers raise some warnings: silent them:
+IF(CMAKE_COMPILER_IS_GNUCXX)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-long-long -Wno-variadic-macros")
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
+
+# ======================================================
+# Include directories to add to the user project:
+# ======================================================
+INCLUDE_DIRECTORIES(${MVG_CONFIG_DIR})
+
+# OpenCV library:
+IF(@CMAKE_MVG_HAS_OPENCV_SYSTEM@)    # CMAKE_MVG_HAS_OPENCV_SYSTEM
+	# Using system opencv lib: 
+	# Users must link against OpenCV only if MVG is not a dynamic library:
+	IF (NOT @CMAKE_MVG_BUILD_SHARED_LIB_ONOFF@)  # CMAKE_MVG_BUILD_SHARED_LIB
+		LINK_DIRECTORIES("@OPENCV_LIBDIR@")  # OPENCV_LIBDIR
+	ENDIF (NOT @CMAKE_MVG_BUILD_SHARED_LIB_ONOFF@)
+ENDIF(@CMAKE_MVG_HAS_OPENCV_SYSTEM@)
+
+
+# ==========================================================
+# Default "MVG_FIND_COMPONENTS" -> "camera" + "multiview",
+#  for backward compatibility (< MVG 0.9.0)
+# ==========================================================
+IF ("${MVG_FIND_COMPONENTS}" STREQUAL "")
+	SET(MVG_FIND_COMPONENTS camera multiview)
+ENDIF ("${MVG_FIND_COMPONENTS}" STREQUAL "")
+
+# ======================================================
+# The list of MVG libs/modules in this build
+# ======================================================
+SET(ALL_MVG_LIBS "@ALL_MVG_LIBS@")
+#  Start of DECLARE_LIBS_DEPS 
+@DECLARE_LIBS_DEPS@
+#  End of DECLARE_LIBS_DEPS 
+
+#  Start of DECLARE_LIBS_HDR_ONLY
+@DECLARE_LIBS_HDR_ONLY@
+#  End of DECLARE_LIBS_HDR_ONLY
+
+# Add hierarchical dependencies of MVG libraries,
+#  and replace "base"->"mvg_base", etc.
+# ================================================
+SET(FINAL_LIST_COMPONENTS "")
+FOREACH(_MOD ${MVG_FIND_COMPONENTS})
+	STRING(TOLOWER ${_MOD} _MOD)
+	SET(_NAM "mvg_${_MOD}")
+	get_property(_LIB_DEP GLOBAL PROPERTY "${_NAM}_LIB_DEPS")
+
+	# Add deps:
+	IF (NOT "${_LIB_DEP}" STREQUAL "")
+		#MESSAGE(STATUS "ADD: ${_LIB_DEP}")
+		LIST(APPEND FINAL_LIST_COMPONENTS ${_LIB_DEP})
+	ENDIF (NOT "${_LIB_DEP}" STREQUAL "")
+
+	# Add lib itself:
+	IF (NOT "${_NAM}" STREQUAL "mvg_core")
+		LIST(APPEND FINAL_LIST_COMPONENTS ${_NAM})
+	ENDIF (NOT "${_NAM}" STREQUAL "mvg_core")
+ENDFOREACH(_MOD)
+SET(MVG_FIND_COMPONENTS ${FINAL_LIST_COMPONENTS})
+list(REMOVE_DUPLICATES MVG_FIND_COMPONENTS)
+
+# ======================================================
+# Check:
+#  All libraries must exist in the MVG build. 
+#  Compare "MVG_FIND_COMPONENTS" against "ALL_MVG_LIBS":
+# ======================================================
+#MESSAGE(STATUS "LIBS: ${ALL_MVG_LIBS}")
+FOREACH(MVGLIB ${MVG_FIND_COMPONENTS})
+	list(FIND ALL_MVG_LIBS "${MVGLIB}" _LIB_IDX)
+	IF (_LIB_IDX EQUAL -1)
+		MESSAGE(FATAL_ERROR "ERROR: MVG_FIND_COMPONENTS contains '${MVGLIB}', not built in mvg (built ones: ${ALL_MVG_LIBS})")
+	ENDIF (_LIB_IDX EQUAL -1)
+ENDFOREACH(MVGLIB)
+#MESSAGE(STATUS "MVG_FIND_COMPONENTS: ${MVG_FIND_COMPONENTS}")
+
+
+# ======================================================
+#   MVG list of libraries the user should link against:
+# ======================================================
+SET(MVG_LIBS "@MVG_LINKER_LIBS@")
+
+SET(MVG_COMP_HWDRIVERS 0  INTERNAL)
+# Process the list:
+FOREACH(MVGLIB ${MVG_FIND_COMPONENTS})
+	STRING(TOLOWER ${MVGLIB} MVGLIB)
+	STRING(REGEX REPLACE "mvg_(.*)" "\\1" MVGLIB ${MVGLIB})
+
+	# The include dir:
+	INCLUDE_DIRECTORIES("${MVG_LIBS_INCL_DIR}/${MVGLIB}/include")
+
+	# List of link libs only needed in GCC. In MSVC we use pragma link libs.
+	IF(NOT MSVC AND NOT BORLAND)
+		# If the required lib is header-only, don't add to the list of libs to link!
+		get_property(_LIB_HDRONLY GLOBAL PROPERTY "mvg_${MVGLIB}_LIB_IS_HEADERS_ONLY")
+		IF(NOT _LIB_HDRONLY)
+			IF(NOT MVG_DONT_USE_DBG_LIBS)
+				LIST(APPEND MVG_LIBS  optimized mvg_${MVGLIB}@MVG_DLL_VERSION_POSTFIX@ debug mvg_${MVGLIB}@MVG_DLL_VERSION_POSTFIX@d)
+			ELSE(NOT MVG_DONT_USE_DBG_LIBS)
+				LIST(APPEND MVG_LIBS  mvg_${MVGLIB}@MVG_DLL_VERSION_POSTFIX@)
+			ENDIF(NOT MVG_DONT_USE_DBG_LIBS)
+		ENDIF(NOT _LIB_HDRONLY)
+	ENDIF(NOT MSVC AND NOT BORLAND)
+	
+ENDFOREACH(MVGLIB)
+
+
+# ======================================================
+# Link directories to add to the user project:
+# ======================================================
+LINK_DIRECTORIES(${MVG_DIR}/lib)
+

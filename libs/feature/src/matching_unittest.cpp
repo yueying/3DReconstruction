@@ -2,13 +2,13 @@
 #include <iostream>
 #include <vector>
 
-#include "fblib/math/numeric.h"
-#include "fblib/feature/matcher_brute_force.h"
-#include "fblib/feature/matcher_kdtree_flann.h"
+#include "mvg/math/numeric.h"
+#include "mvg/feature/matcher_brute_force.h"
+#include "mvg/feature/matcher_kdtree_flann.h"
 
 using namespace std;
 
-using namespace fblib::feature;
+using namespace mvg::feature;
 
 TEST(Matching, ArrayMatcherBruteForce_Simple_Dim1)
 {

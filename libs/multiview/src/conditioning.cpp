@@ -1,9 +1,9 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/conditioning.h"
+#include "mvg/multiview/conditioning.h"
 
-using namespace fblib::math;
+using namespace mvg::math;
 
-namespace fblib {
+namespace mvg {
 	namespace multiview{
 		// HZ 4.4.4 pag.109
 		void PreconditionerFromPoints(const Mat &points, Mat3 *T) {
@@ -102,4 +102,4 @@ namespace fblib {
 			*H = T2.inverse() * (*H) * T1;
 		}
 	}// namespace multiview
-} // namespace fblib
+} // namespace mvg

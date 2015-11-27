@@ -8,11 +8,11 @@
  *
 ********************************************************************************/
 #include "base_precomp.h"
-#include  <fblib/threads/barrier.h>
-#include  <fblib/threads/thread.h>
-#include  <fblib/threads/scoped_lock.h>
-#include <fblib/threads/win_barrier_private_data.h>
-using namespace fblib::threads;
+#include  <mvg/threads/barrier.h>
+#include  <mvg/threads/thread.h>
+#include  <mvg/threads/scoped_lock.h>
+#include <mvg/threads/win_barrier_private_data.h>
+using namespace mvg::threads;
 
 // so compiler can place it somewhere
 Win32BarrierPrivateData::~Win32BarrierPrivateData()

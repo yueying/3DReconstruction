@@ -1,10 +1,10 @@
 #-----------------------------------------------------------------------------------------------
-# CMake file for the FBLIB example:  @CMAKE_FBLIB_EXAMPLE_SCOPE_NAME@/@CMAKE_FBLIB_EXAMPLE_NAME@
+# CMake file for the MVG example:  @CMAKE_MVG_EXAMPLE_SCOPE_NAME@/@CMAKE_MVG_EXAMPLE_NAME@
 #
 #  Run with "ccmake ." at the root directory, or use it as a template for 
 #   starting your own programs
 #-----------------------------------------------------------------------------------------------
-SET(sampleName @CMAKE_FBLIB_EXAMPLE_NAME@)
+SET(sampleName @CMAKE_MVG_EXAMPLE_NAME@)
 SET(PRJ_NAME "EXAMPLE_${sampleName}")
 
 # ---------------------------------------
@@ -32,7 +32,7 @@ SET(EXECUTABLE_OUTPUT_PATH ".")
 #   The dependencies of a library are automatically added, so you only 
 #    need to specify the top-most libraries your code depend on.
 # --------------------------------------------------------------------------
-FIND_PACKAGE(FBLIB REQUIRED @CMAKE_EXAMPLE_DEPS_STRIP@)
+FIND_PACKAGE(MVG REQUIRED @CMAKE_EXAMPLE_DEPS_STRIP@)
 
 # ---------------------------------------------
 # TARGET:
@@ -53,7 +53,7 @@ ENDIF(MY_DEFS)
 
 # Add the required libraries for linking:
 TARGET_LINK_LIBRARIES(${sampleName} 
-	${FBLIB_LIBS}  # This is filled by FIND_PACKAGE(FBLIB ...)
+	${MVG_LIBS}  # This is filled by FIND_PACKAGE(MVG ...)
 	"@CMAKE_EXAMPLE_LINK_LIBS@"  # Optional extra libs...
 	)
 
@@ -65,10 +65,10 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
 
 # -------------------------------------------------------------------------
 # This part can be removed if you are compiling this program outside of 
-#  the FBLIB tree:
+#  the MVG tree:
 # -------------------------------------------------------------------------
-IF(${CMAKE_PROJECT_NAME} STREQUAL "FBLIB") # Fails if build outside of FBLIB project.
+IF(${CMAKE_PROJECT_NAME} STREQUAL "MVG") # Fails if build outside of MVG project.
 	DeclareAppDependencies(${sampleName} @CMAKE_EXAMPLE_DEPS@) # Dependencies
-ENDIF(${CMAKE_PROJECT_NAME} STREQUAL "FBLIB")
+ENDIF(${CMAKE_PROJECT_NAME} STREQUAL "MVG")
 # -------------------------------------------------------------------------
 

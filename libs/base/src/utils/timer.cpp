@@ -10,17 +10,17 @@
 
 #include "base_precomp.h"  // 预编译头
 
-#include <fblib/config.h>
-#include <fblib/utils/timer.h>
+#include <mvg/config.h>
+#include <mvg/utils/timer.h>
 
 #include <windows.h>
 
 #include <cstring>
 #include <cassert>
 
-#include <fblib/utils/fblib_macros.h>
+#include <mvg/utils/mvg_macros.h>
 
-using namespace fblib::utils;
+using namespace mvg::utils;
 
 // 通过宏来方便的将largeInts的地址给LARGE_INTEGER指针，本来largeInts所指向的值占64位，而LARGE_INTEGER占8位，这样就可以通过数组移位的形式保存值
 #define	LARGE_INTEGER_NUMS	reinterpret_cast<LARGE_INTEGER*>(largeInts)

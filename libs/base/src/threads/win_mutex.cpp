@@ -8,10 +8,10 @@
  *
 ********************************************************************************/
 #include "base_precomp.h"
-#include <fblib/threads/mutex.h>
-#include <fblib/threads/win_mutex_private_data.h>
+#include <mvg/threads/mutex.h>
+#include <mvg/threads/win_mutex_private_data.h>
 
-namespace fblib
+namespace mvg
 {
 	namespace threads
 	{

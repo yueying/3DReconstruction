@@ -1,7 +1,7 @@
 PROJECT(sift)
 
 include_directories(include)
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/sift/vl")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/sift/vl")
 
 file(GLOB include/sift/vl/*.h)
 

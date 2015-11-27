@@ -1,32 +1,32 @@
-#include "fblib/camera/pinhole_camera.h"
-#include "fblib/image/image.h"
-#include "fblib/feature/features.h"
-#include "fblib/feature/matcher_brute_force.h"
-#include "fblib/feature/indexed_match_decorator.h"
-#include "fblib/camera/projection.h"
-#include "fblib/multiview/triangulation.h"
-#include "fblib/multiview/essential_estimation.h"
+#include "mvg/camera/pinhole_camera.h"
+#include "mvg/image/image.h"
+#include "mvg/feature/features.h"
+#include "mvg/feature/matcher_brute_force.h"
+#include "mvg/feature/indexed_match_decorator.h"
+#include "mvg/camera/projection.h"
+#include "mvg/multiview/triangulation.h"
+#include "mvg/multiview/essential_estimation.h"
 
-#include "fblib/feature/sift.hpp"
-#include "fblib/feature/two_view_matches.h"
+#include "mvg/feature/sift.hpp"
+#include "mvg/feature/two_view_matches.h"
 
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/svg_drawer.h"
 
-#include "fblib/sfm/problem_data_container.h"
-#include "fblib/multiview/solver_resection_p3p.h"
-#include "fblib/sfm/pinhole_brown_rt_ceres_functor.h"
-#include "fblib/sfm/pinhole_ceres_functor.h"
+#include "mvg/sfm/problem_data_container.h"
+#include "mvg/multiview/solver_resection_p3p.h"
+#include "mvg/sfm/pinhole_brown_rt_ceres_functor.h"
+#include "mvg/sfm/pinhole_ceres_functor.h"
 #include "ceres/ceres.h"
 #include "ceres/rotation.h"
 #include <string>
 #include <iostream>
 
-using namespace fblib::utils;
-using namespace fblib::feature;
-using namespace fblib::camera;
-using namespace fblib::multiview;
-using namespace fblib::sfm;
+using namespace mvg::utils;
+using namespace mvg::feature;
+using namespace mvg::camera;
+using namespace mvg::multiview;
+using namespace mvg::sfm;
 
 /// Read intrinsic camera_matrix matrix from a file (ASCII)
 /// fundamental_matrix 0 ppx
@@ -170,7 +170,7 @@ int main() {
   {
     Mat3 camera_matrix;
 	//读取相机内参矩阵
-    if (!readIntrinsic(fblib::utils::create_filespec(input_dir,"camera_matrix","txt"), camera_matrix))
+    if (!readIntrinsic(mvg::utils::create_filespec(input_dir,"camera_matrix","txt"), camera_matrix))
     {
       std::cerr << "Cannot read intrinsic parameters." << std::endl;
       return EXIT_FAILURE;

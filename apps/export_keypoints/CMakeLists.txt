@@ -1,7 +1,7 @@
 INCLUDE(../../cmake/AssureCMakeRootFile.cmake) # Avoid user mistake in CMake source directory
 
 #-----------------------------------------------------------------
-# CMake file for the FBLIB application:  export_keypoints
+# CMake file for the MVG application:  export_keypoints
 #
 #  Run with "cmake ." at the root directory
 #
@@ -10,24 +10,24 @@ INCLUDE(../../cmake/AssureCMakeRootFile.cmake) # Avoid user mistake in CMake sou
 PROJECT(export_keypoints)
 
 #MESSAGE(STATUS "Makefile for application: /apps/export_keypoints ")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/apps/common/")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/apps/common/")
 # ---------------------------------------------
 # TARGET:
 # ---------------------------------------------
 # Define the executable target:
 ADD_EXECUTABLE(export_keypoints
                export_keypoints.cpp 
-			    ${FBLIB_VERSION_RC_FILE})
+			    ${MVG_VERSION_RC_FILE})
 
 SET(TMP_TARGET_NAME "export_keypoints")
 
 # Add the required libraries for linking:
-TARGET_LINK_LIBRARIES(${TMP_TARGET_NAME} ${FBLIB_LINKER_LIBS} sift flann)
+TARGET_LINK_LIBRARIES(${TMP_TARGET_NAME} ${MVG_LINKER_LIBS} sift flann)
 
-# Dependencies on FBLIB libraries:
+# Dependencies on MVG libraries:
 #  Just mention the top-level dependency, the rest will be detected automatically, 
 #  and all the needed #include<> dirs added (see the script DeclareAppDependencies.cmake for further details)
-DeclareAppDependencies(${TMP_TARGET_NAME} fblib_base fblib_image fblib_feature)
+DeclareAppDependencies(${TMP_TARGET_NAME} mvg_base mvg_image mvg_feature)
 
 DeclareAppForInstall(${TMP_TARGET_NAME})
 

@@ -1,8 +1,8 @@
-﻿#include "fblib/multiview/triangulation_nview.h"
-#include "fblib/multiview/nview_data_sets.h"
+﻿#include "mvg/multiview/triangulation_nview.h"
+#include "mvg/multiview/nview_data_sets.h"
 #include "testing.h"
 
-using namespace fblib::multiview;
+using namespace mvg::multiview;
 
 TEST(Triangulate_NView, FiveViews) {
   int nviews = 5;

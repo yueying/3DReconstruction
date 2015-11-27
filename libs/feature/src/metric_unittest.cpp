@@ -1,11 +1,11 @@
 ﻿#include "testing.h"
-#include "fblib/feature/metric.h"
+#include "mvg/feature/metric.h"
 #include "flann/algorithms/dist.h"
 #include <iostream>
 #include <bitset>
 #include <string>
 
-using namespace fblib::feature;
+using namespace mvg::feature;
 
 template<typename Metric>
 typename Metric::ResultType DistanceT()

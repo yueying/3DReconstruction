@@ -1,4 +1,4 @@
-PROJECT(fblibgtest)
+PROJECT(mvggtest)
 
 # Fix a "bug" in VS11 (MSVC 2012):
 if(MSVC)
@@ -6,11 +6,11 @@ if(MSVC)
 endif(MSVC)
 
 include_directories(include)
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/gtest/")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/gtest/")
 
 file(GLOB include/gtest/*.h include/gtest/internal/*.h src/*.h)
 
-ADD_LIBRARY(fblibgtest 
+ADD_LIBRARY(mvggtest 
 	STATIC
 	src/gtest.cc
              src/gtest-death-test.cc
@@ -27,9 +27,9 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX AND UNIX)
 
 
 if(ENABLE_SOLUTION_FOLDERS)
-	set_target_properties(fblibgtest PROPERTIES FOLDER "3rd party")
+	set_target_properties(mvggtest PROPERTIES FOLDER "3rd party")
 else(ENABLE_SOLUTION_FOLDERS)
-	SET_TARGET_PROPERTIES(fblibgtest  PROPERTIES PROJECT_LABEL "(TEST) fblibgtest")
+	SET_TARGET_PROPERTIES(mvggtest  PROPERTIES PROJECT_LABEL "(TEST) mvggtest")
 endif(ENABLE_SOLUTION_FOLDERS)
 
 

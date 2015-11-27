@@ -1,14 +1,14 @@
-#include "fblib/tracking/hybrid_region_tracker.h"
+#include "mvg/tracking/hybrid_region_tracker.h"
 
-#include "fblib/image/image.h"
-#include "fblib/image/convolve.h"
-#include "fblib/image/sample.h"
-#include "fblib/utils/notify.h"
+#include "mvg/image/image.h"
+#include "mvg/image/convolve.h"
+#include "mvg/image/sample.h"
+#include "mvg/utils/notify.h"
 
-using namespace fblib::image;
-using namespace fblib::utils;
+using namespace mvg::image;
+using namespace mvg::utils;
 
-namespace fblib {
+namespace mvg {
 	namespace tracking{
 		bool HybridRegionTracker::Track(const Image<float> &image1,
 			const Image<float> &image2,
@@ -47,4 +47,4 @@ namespace fblib {
 			return false;
 		}
 	}// namespace tracking
-}  // namespace fblib
+}  // namespace mvg

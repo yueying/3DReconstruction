@@ -1,14 +1,14 @@
 # ----------------------------------------------------------------------------
 # CMake file. Run with "cmake ." at the root directory.
 # ----------------------------------------------------------------------------
-project(ALL_FBLIB_APPS)
+project(ALL_MVG_APPS)
 
 INCLUDE(../cmake/AssureCMakeRootFile.cmake) # Avoid user mistake in CMake source directory
 
 # Enumerate all subdirs and process them:
-list_subdirectories(LIST_FBLIB_APP_DIRS "${FBLIB_SOURCE_DIR}/apps")
+list_subdirectories(LIST_MVG_APP_DIRS "${MVG_SOURCE_DIR}/apps")
 
-foreach(dir ${LIST_FBLIB_APP_DIRS})
+foreach(dir ${LIST_MVG_APP_DIRS})
 	SET(VAR_NAME "BUILD_APP_${dir}")
 	SET(${VAR_NAME} ON CACHE BOOL "Build the app ${dir}")
 	MARK_AS_ADVANCED(${VAR_NAME})

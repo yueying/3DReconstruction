@@ -1,5 +1,5 @@
 # Declares the dependencies of an application:
-# Usage: DeclareAppDependencies( appTargetName [fblib_xxx [fblib_yyy] ...] )
+# Usage: DeclareAppDependencies( appTargetName [mvg_xxx [mvg_yyy] ...] )
 #
 macro(DeclareAppDependencies name)
 	# Set app names:
@@ -17,11 +17,11 @@ macro(DeclareAppDependencies name)
 	ENDFOREACH(DEP)
 
 	FOREACH(DEP ${ARGN})
-		# Only for "fblib_XXX" libs:
-		IF (${DEP} MATCHES "fblib_")
+		# Only for "mvg_XXX" libs:
+		IF (${DEP} MATCHES "mvg_")
 			get_property(LIB_DEP GLOBAL PROPERTY "${DEP}_LIB_DEPS")
 			LIST(APPEND ALL_DEPS ${LIB_DEP})
-		ENDIF (${DEP} MATCHES "fblib_")
+		ENDIF (${DEP} MATCHES "mvg_")
 	ENDFOREACH(DEP)
 	
 	
@@ -39,21 +39,21 @@ macro(DeclareAppDependencies name)
 			IF(CMAKE_COMPILER_IS_GNUCXX OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 				get_property(_LIB_HDRONLY GLOBAL PROPERTY "${_DEP}_LIB_IS_HEADERS_ONLY")
 				if (NOT _LIB_HDRONLY)
-					TARGET_LINK_LIBRARIES(${name} ${_DEP}${FBLIB_LINKER_LIBS_POSTFIX})
+					TARGET_LINK_LIBRARIES(${name} ${_DEP}${MVG_LINKER_LIBS_POSTFIX})
 				endif (NOT _LIB_HDRONLY)
 			ENDIF()
 			
 			# Include:
-			STRING(REGEX REPLACE "fblib_(.*)" "\\1" DEP_FBLIB_NAME ${_DEP})
-			IF(NOT "${DEP_FBLIB_NAME}" STREQUAL "")
-				INCLUDE_DIRECTORIES("${FBLIB_LIBS_ROOT}/${DEP_FBLIB_NAME}/include/")
-			ENDIF(NOT "${DEP_FBLIB_NAME}" STREQUAL "")
+			STRING(REGEX REPLACE "mvg_(.*)" "\\1" DEP_MVG_NAME ${_DEP})
+			IF(NOT "${DEP_MVG_NAME}" STREQUAL "")
+				INCLUDE_DIRECTORIES("${MVG_LIBS_ROOT}/${DEP_MVG_NAME}/include/")
+			ENDIF(NOT "${DEP_MVG_NAME}" STREQUAL "")
 
 			# Check if all dependencies are to be build: 
-			if (${BUILD_fblib_${DEP_FBLIB_NAME}} STREQUAL "OFF")
+			if (${BUILD_mvg_${DEP_MVG_NAME}} STREQUAL "OFF")
 				SET(AUX_ALL_DEPS_BUILD 0)
-				MESSAGE(STATUS "*Warning*: App ${name} cannot be built because dependency fblib_${DEP_FBLIB_NAME} has been disabled!")
-			endif (${BUILD_fblib_${DEP_FBLIB_NAME}} STREQUAL "OFF")
+				MESSAGE(STATUS "*Warning*: App ${name} cannot be built because dependency mvg_${DEP_MVG_NAME} has been disabled!")
+			endif (${BUILD_mvg_${DEP_MVG_NAME}} STREQUAL "OFF")
 
 		ENDFOREACH (_DEP)
 	ENDIF ()
@@ -61,7 +61,7 @@ macro(DeclareAppDependencies name)
 	# Impossible to build? 
 	if (NOT AUX_ALL_DEPS_BUILD)
 		MESSAGE(STATUS "*Warning* ==> Forcing BUILD_APP_${name}=OFF for missing dependencies listed above (re-enable manually if needed).")
-		SET(BUILD_APP_${name} OFF CACHE BOOL "Build ${name}" FORCE) # this var is checked in [FBLIB]/app/CMakeLists.txt
+		SET(BUILD_APP_${name} OFF CACHE BOOL "Build ${name}" FORCE) # this var is checked in [MVG]/app/CMakeLists.txt
 		mark_as_advanced(CLEAR BUILD_APP_${name})
 	endif (NOT AUX_ALL_DEPS_BUILD)
 
@@ -69,15 +69,15 @@ endmacro(DeclareAppDependencies)
 
 # Macro for adding links to the Start menu folder (for binary packages in Windows)
 macro(AppStartMenuLink name title)
-	get_property(_str GLOBAL PROPERTY "FBLIB_CPACK_PACKAGE_EXECUTABLES")
-	set_property(GLOBAL PROPERTY "FBLIB_CPACK_PACKAGE_EXECUTABLES" "${_str}${name};${title};")
+	get_property(_str GLOBAL PROPERTY "MVG_CPACK_PACKAGE_EXECUTABLES")
+	set_property(GLOBAL PROPERTY "MVG_CPACK_PACKAGE_EXECUTABLES" "${_str}${name};${title};")
 endmacro(AppStartMenuLink)
 
 
 macro(DeclareAppForInstall name)
 INSTALL(TARGETS ${name}
-	RUNTIME DESTINATION ${fblib_apps_INSTALL_PREFIX}bin COMPONENT Apps
-	LIBRARY DESTINATION ${fblib_apps_INSTALL_PREFIX}lib${LIB_SUFFIX} COMPONENT Apps
-	ARCHIVE DESTINATION ${fblib_apps_INSTALL_PREFIX}lib${LIB_SUFFIX} COMPONENT Apps)
+	RUNTIME DESTINATION ${mvg_apps_INSTALL_PREFIX}bin COMPONENT Apps
+	LIBRARY DESTINATION ${mvg_apps_INSTALL_PREFIX}lib${LIB_SUFFIX} COMPONENT Apps
+	ARCHIVE DESTINATION ${mvg_apps_INSTALL_PREFIX}lib${LIB_SUFFIX} COMPONENT Apps)
 endmacro(DeclareAppForInstall)
 

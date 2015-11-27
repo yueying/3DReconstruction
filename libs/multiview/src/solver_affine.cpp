@@ -1,7 +1,7 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/solver_affine.h"
+#include "mvg/multiview/solver_affine.h"
 
-namespace fblib {
+namespace mvg {
 	namespace multiview{
 		
 		bool Affine2DFromCorrespondencesLinear(const Mat &x1, const Mat &x2,
@@ -93,4 +93,4 @@ namespace fblib {
 			}
 		}
 	}// namespace multiview
-} // namespace fblib
+} // namespace mvg

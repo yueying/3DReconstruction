@@ -1,14 +1,14 @@
 ﻿#include "sfm_precomp.h"
-#include "fblib/sfm/resection.h"
-#include "fblib/sfm/resection_kernel.h"
+#include "mvg/sfm/resection.h"
+#include "mvg/sfm/resection_kernel.h"
 
 #include <cassert>
 
-#include "fblib/sfm/linear_programming_interface.h"
-#include "fblib/sfm/linear_programming_osi.h"
-#include "fblib/sfm/bisection_linear_programming.h"
+#include "mvg/sfm/linear_programming_interface.h"
+#include "mvg/sfm/linear_programming_osi.h"
+#include "mvg/sfm/bisection_linear_programming.h"
 
-namespace fblib {
+namespace mvg {
 	namespace sfm {
 
 		/**	对输入点进行平移操作
@@ -59,4 +59,4 @@ namespace fblib {
 		}
 
 	}  // namespace sfm
-}  // namespace fblib
+}  // namespace mvg

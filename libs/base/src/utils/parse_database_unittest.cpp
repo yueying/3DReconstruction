@@ -1,22 +1,22 @@
 ﻿#include <string>
 #include "testing.h"
 
-#include "fblib/utils/parse_database.h"
-#include "fblib/utils/file_system.h"
+#include "mvg/utils/parse_database.h"
+#include "mvg/utils/file_system.h"
 
-namespace fblib {
+namespace mvg {
 	namespace utils {
-		extern std::string FBLIB_GLOBAL_SRC_DIR;
+		extern std::string MVG_GLOBAL_SRC_DIR;
 	}
 }
 
-using namespace fblib::utils;
+using namespace mvg::utils;
 
 TEST(Matching, ParseDatabaseSD900)
 {
 	std::vector<Datasheet> vec_database;
 	Datasheet datasheet;
-	std::string m_file_database = create_filespec(FBLIB_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
+	std::string m_file_database = create_filespec(MVG_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
 	std::string m_model = "Canon PowerShot SD900";
 	std::string m_brand = "Canon";
 
@@ -31,7 +31,7 @@ TEST(Matching, ParseDatabaseA710_IS)
 {
 	std::vector<Datasheet> vec_database;
 	Datasheet datasheet;
-	std::string m_file_database = create_filespec(FBLIB_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
+	std::string m_file_database = create_filespec(MVG_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
 	std::string m_model = "Canon PowerShot A710 IS";
 	std::string m_brand = "Canon";
 
@@ -46,7 +46,7 @@ TEST(Matching, ParseDatabaseNotExist)
 {
 	std::vector<Datasheet> vec_database;
 	Datasheet datasheet;
-	std::string m_file_database = create_filespec(FBLIB_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
+	std::string m_file_database = create_filespec(MVG_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
 	std::string m_model = "NotExistModel";
 	std::string m_brand = "NotExistBrand";
 
@@ -59,7 +59,7 @@ TEST(Matching, ParseDatabaseCanon_EOS_550D)
 {
 	std::vector<Datasheet> vec_database;
 	Datasheet datasheet;
-	std::string m_file_database = create_filespec(FBLIB_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
+	std::string m_file_database = create_filespec(MVG_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
 	std::string m_model = "Canon EOS 550D";
 	std::string m_brand = "Canon";
 
@@ -72,7 +72,7 @@ TEST(Matching, ParseDatabaseCanon_EOS_5D_Mark_II)
 {
 	std::vector<Datasheet> vec_database;
 	Datasheet datasheet;
-	std::string m_file_database = create_filespec(FBLIB_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
+	std::string m_file_database = create_filespec(MVG_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
 	std::string m_model = "Canon EOS 5D Mark II";
 	std::string m_brand = "Canon";
 
@@ -85,7 +85,7 @@ TEST(Matching, ParseDatabaseCanon_EOS_1100D)
 {
 	std::vector<Datasheet> vec_database;
 	Datasheet datasheet;
-	std::string m_file_database = create_filespec(FBLIB_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
+	std::string m_file_database = create_filespec(MVG_GLOBAL_SRC_DIR, "data/cameraGenerated.txt");
 	std::string m_model = "Canon EOS 1100D";
 	std::string m_brand = "Canon";
 

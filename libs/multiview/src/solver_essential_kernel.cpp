@@ -1,11 +1,11 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/solver_essential_kernel.h"
-#include "fblib/multiview/solver_fundamental_kernel.h"
-#include "fblib/math/poly.h"
-#include "fblib/multiview/solver_essential_five_point.h"
+#include "mvg/multiview/solver_essential_kernel.h"
+#include "mvg/multiview/solver_fundamental_kernel.h"
+#include "mvg/math/poly.h"
+#include "mvg/multiview/solver_essential_five_point.h"
 #include <cassert>
 
-namespace fblib {
+namespace mvg {
 	namespace multiview {
 		namespace essential {
 
@@ -46,4 +46,4 @@ namespace fblib {
 
 		}  // namespace essential
 	}  // namespace multiview
-}  // namespace fblib
+}  // namespace mvg

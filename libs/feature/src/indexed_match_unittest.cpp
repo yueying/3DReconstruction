@@ -1,7 +1,7 @@
 ﻿#include "testing.h"
-#include "fblib/feature/indexed_match.h"
+#include "mvg/feature/indexed_match.h"
 
-using namespace fblib::feature;
+using namespace mvg::feature;
 
 TEST(IndexedMatch, DuplicateRemoval_NoRemoval)
 {

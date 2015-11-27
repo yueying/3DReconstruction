@@ -1,10 +1,10 @@
 ﻿
 #include "testing.h"
 
-#include "fblib/tracking/tracks.h"
-#include "fblib/feature/indexed_match.h"
-using namespace fblib::tracking;
-using namespace fblib::feature;
+#include "mvg/tracking/tracks.h"
+#include "mvg/feature/indexed_match.h"
+using namespace mvg::tracking;
+using namespace mvg::feature;
 
 #include <vector>
 #include <utility>

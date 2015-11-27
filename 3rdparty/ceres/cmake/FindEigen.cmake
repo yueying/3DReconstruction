@@ -87,7 +87,7 @@ ENDMACRO(EIGEN_REPORT_NOT_FOUND)
 #
 # TODO: Add standard Windows search locations for Eigen.
 LIST(APPEND EIGEN_CHECK_INCLUDE_DIRS
-	${FBLIB_SOURCE_DIR}/3rdparty/eigen3/
+	${MVG_SOURCE_DIR}/3rdparty/eigen3/
   /usr/local/include/eigen3
   /usr/local/homebrew/include/eigen3 # Mac OS X
   /opt/local/var/macports/software/eigen3 # Mac OS X.

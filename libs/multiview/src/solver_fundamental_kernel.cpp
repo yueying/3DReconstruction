@@ -1,10 +1,10 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/solver_fundamental_kernel.h"
-#include "fblib/math/poly.h"
-#include "fblib/math/numeric.h"
-using namespace fblib::math;
+#include "mvg/multiview/solver_fundamental_kernel.h"
+#include "mvg/math/poly.h"
+#include "mvg/math/numeric.h"
+using namespace mvg::math;
 
-namespace fblib {
+namespace mvg {
 	namespace multiview {
 		namespace fundamental {
 
@@ -104,4 +104,4 @@ namespace fblib {
 
 		}  // namespace fundamental
 	}  // namespace multiview
-}  // namespace fblib
+}  // namespace mvg

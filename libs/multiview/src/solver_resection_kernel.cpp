@@ -1,8 +1,8 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/solver_resection_kernel.h"
+#include "mvg/multiview/solver_resection_kernel.h"
 #include <cassert>
 
-namespace fblib {
+namespace mvg {
 	namespace multiview {
 		namespace resection {
 
@@ -137,9 +137,9 @@ namespace fblib {
 
 		}  // namespace kernel
 	}  // namespace resection
-}  // namespace fblib
+}  // namespace mvg
 
-namespace fblib {
+namespace mvg {
 	namespace multiview {
 		namespace euclidean {
 
@@ -521,5 +521,5 @@ namespace fblib {
 
 		}  // namespace euclidean
 	}  // namespace euclidean_resection
-}  // namespace fblib
+}  // namespace mvg
 

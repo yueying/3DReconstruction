@@ -1,28 +1,28 @@
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/ceres/include")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/ceres/internal")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/ceres/internal/ceres/miniglog")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/ceres/config")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/lemon")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/osi_clp/Clp/src/OsiClp")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/osi_clp/CoinUtils/src")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/osi_clp/Clp/src")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/osi_clp/Osi/src/Osi")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/ceres/include")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/ceres/internal")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/ceres/internal/ceres/miniglog")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/ceres/config")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/lemon")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/osi_clp/Clp/src/OsiClp")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/osi_clp/CoinUtils/src")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/osi_clp/Clp/src")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/osi_clp/Osi/src/Osi")
 #---------------------------------------------
-# Macro declared in "DeclareFBLIBLib.cmake":
+# Macro declared in "DeclareMVGLib.cmake":
 #---------------------------------------------
-define_fblib_lib(
+define_mvg_lib(
 	# Lib name
 	sfm 		
 	# Dependencies
-	fblib_base
-	fblib_image
-	fblib_feature
-	fblib_camera
-	fblib_tracking
-	fblib_multiview
+	mvg_base
+	mvg_image
+	mvg_feature
+	mvg_camera
+	mvg_tracking
+	mvg_multiview
 	)
 
-IF(BUILD_fblib_sfm) 
+IF(BUILD_mvg_sfm) 
 
-ENDIF(BUILD_fblib_sfm) 
+ENDIF(BUILD_mvg_sfm) 
 

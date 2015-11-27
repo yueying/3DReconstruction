@@ -1,9 +1,9 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/triangulation_nview.h"
-#include "fblib/camera/projection.h"
-using namespace fblib::camera;
+#include "mvg/multiview/triangulation_nview.h"
+#include "mvg/camera/projection.h"
+using namespace mvg::camera;
 
-namespace fblib {
+namespace mvg {
 	namespace multiview{
 		void TriangulateNView(const Mat2X &x,
 			const std::vector<Mat34> &Ps,
@@ -121,5 +121,5 @@ namespace fblib {
 		}
 
 	}// namespace multiview
-}  // namespace fblib
+}  // namespace mvg
 

@@ -8,8 +8,8 @@
  *
 ********************************************************************************/
 #include "base_precomp.h"
-#include <fblib/utils/notify.h>
-#include <fblib/utils/ref_ptr.h>
+#include <mvg/utils/notify.h>
+#include <mvg/utils/ref_ptr.h>
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,9 +18,9 @@
 
 #include <ctype.h>
 
-#define FBLIB_INIT_SINGLETON_PROXY(ProxyName, Func) static struct ProxyName{ ProxyName() { Func; } } s_##ProxyName;
+#define MVG_INIT_SINGLETON_PROXY(ProxyName, Func) static struct ProxyName{ ProxyName() { Func; } } s_##ProxyName;
 
-namespace fblib
+namespace mvg
 {
 	namespace utils{
 
@@ -56,15 +56,15 @@ namespace fblib
 		 */
 		struct NotifyStreamBuffer : public std::stringbuf
 		{
-			NotifyStreamBuffer() : m_severity(fblib::utils::NOTICE)
+			NotifyStreamBuffer() : m_severity(mvg::utils::NOTICE)
 			{
 			}
 
-			void setNotifyHandler(fblib::utils::NotifyHandler *handler) { m_handler = handler; }
-			fblib::utils::NotifyHandler *getNotifyHandler() const { return m_handler.get(); }
+			void setNotifyHandler(mvg::utils::NotifyHandler *handler) { m_handler = handler; }
+			mvg::utils::NotifyHandler *getNotifyHandler() const { return m_handler.get(); }
 
 			/** 设置消息通知等级，给下一次通知使用 */
-			void setCurrentSeverity(fblib::utils::NotifySeverity severity)
+			void setCurrentSeverity(mvg::utils::NotifySeverity severity)
 			{
 				if (m_severity != severity)
 				{
@@ -73,7 +73,7 @@ namespace fblib
 				}
 			}
 
-			fblib::utils::NotifySeverity getCurrentSeverity() const { return m_severity; }
+			mvg::utils::NotifySeverity getCurrentSeverity() const { return m_severity; }
 
 		private:
 
@@ -86,8 +86,8 @@ namespace fblib
 				return 0;
 			}
 
-			fblib::utils::ref_ptr<fblib::utils::NotifyHandler> m_handler;
-			fblib::utils::NotifySeverity m_severity;
+			mvg::utils::ref_ptr<mvg::utils::NotifyHandler> m_handler;
+			mvg::utils::NotifySeverity m_severity;
 		};
 
 		struct NotifyStream : public std::ostream
@@ -99,12 +99,12 @@ namespace fblib
 				m_buffer = dynamic_cast<NotifyStreamBuffer *>(rdbuf());
 			}
 
-			void setCurrentSeverity(fblib::utils::NotifySeverity severity)
+			void setCurrentSeverity(mvg::utils::NotifySeverity severity)
 			{
 				m_buffer->setCurrentSeverity(severity);
 			}
 
-			fblib::utils::NotifySeverity getCurrentSeverity() const
+			mvg::utils::NotifySeverity getCurrentSeverity() const
 			{
 				return m_buffer->getCurrentSeverity();
 			}
@@ -122,7 +122,7 @@ namespace fblib
 	}
 }
 
-using namespace fblib::utils;
+using namespace mvg::utils;
 
 
 struct NotifySingleton
@@ -130,43 +130,43 @@ struct NotifySingleton
     NotifySingleton()
     {
         //默认消息等级
-        m_notifyLevel = fblib::utils::NOTICE;
+        m_notifyLevel = mvg::utils::NOTICE;
 
-        char* FBLIBNOTIFYLEVEL=getenv("FBLIB_NOTIFY_LEVEL");
-        if (!FBLIBNOTIFYLEVEL) FBLIBNOTIFYLEVEL=getenv("FBLIBNOTIFYLEVEL");
-        if(FBLIBNOTIFYLEVEL)
+        char* MVGNOTIFYLEVEL=getenv("MVG_NOTIFY_LEVEL");
+        if (!MVGNOTIFYLEVEL) MVGNOTIFYLEVEL=getenv("MVGNOTIFYLEVEL");
+        if(MVGNOTIFYLEVEL)
         {
-            std::string stringFBLIBNOTIFYLEVEL(FBLIBNOTIFYLEVEL);
+            std::string stringMVGNOTIFYLEVEL(MVGNOTIFYLEVEL);
 
             // 转换为大写
-            for(std::string::iterator i=stringFBLIBNOTIFYLEVEL.begin();
-                i!=stringFBLIBNOTIFYLEVEL.end();
+            for(std::string::iterator i=stringMVGNOTIFYLEVEL.begin();
+                i!=stringMVGNOTIFYLEVEL.end();
                 ++i)
             {
                 *i=toupper(*i);
             }
 
-            if(stringFBLIBNOTIFYLEVEL.find("ALWAYS")!=std::string::npos)          m_notifyLevel=fblib::utils::ALWAYS;
-            else if(stringFBLIBNOTIFYLEVEL.find("WRONG")!=std::string::npos)      m_notifyLevel=fblib::utils::WRONG;
-            else if(stringFBLIBNOTIFYLEVEL.find("WARN")!=std::string::npos)       m_notifyLevel=fblib::utils::WARN;
-            else if(stringFBLIBNOTIFYLEVEL.find("NOTICE")!=std::string::npos)     m_notifyLevel=fblib::utils::NOTICE;
-            else if(stringFBLIBNOTIFYLEVEL.find("DEBUG_INFO")!=std::string::npos) m_notifyLevel=fblib::utils::DEBUG_INFO;
-            else if(stringFBLIBNOTIFYLEVEL.find("DEBUG_FP")!=std::string::npos)   m_notifyLevel=fblib::utils::DEBUG_FP;
-            else if(stringFBLIBNOTIFYLEVEL.find("DEBUG")!=std::string::npos)      m_notifyLevel=fblib::utils::DEBUG_INFO;
-            else if(stringFBLIBNOTIFYLEVEL.find("INFO")!=std::string::npos)       m_notifyLevel=fblib::utils::INFO;
-            else std::cout << "Warning: invalid FBLIB_NOTIFY_LEVEL set ("<<stringFBLIBNOTIFYLEVEL<<")"<<std::endl;
+            if(stringMVGNOTIFYLEVEL.find("ALWAYS")!=std::string::npos)          m_notifyLevel=mvg::utils::ALWAYS;
+            else if(stringMVGNOTIFYLEVEL.find("WRONG")!=std::string::npos)      m_notifyLevel=mvg::utils::WRONG;
+            else if(stringMVGNOTIFYLEVEL.find("WARN")!=std::string::npos)       m_notifyLevel=mvg::utils::WARN;
+            else if(stringMVGNOTIFYLEVEL.find("NOTICE")!=std::string::npos)     m_notifyLevel=mvg::utils::NOTICE;
+            else if(stringMVGNOTIFYLEVEL.find("DEBUG_INFO")!=std::string::npos) m_notifyLevel=mvg::utils::DEBUG_INFO;
+            else if(stringMVGNOTIFYLEVEL.find("DEBUG_FP")!=std::string::npos)   m_notifyLevel=mvg::utils::DEBUG_FP;
+            else if(stringMVGNOTIFYLEVEL.find("DEBUG")!=std::string::npos)      m_notifyLevel=mvg::utils::DEBUG_INFO;
+            else if(stringMVGNOTIFYLEVEL.find("INFO")!=std::string::npos)       m_notifyLevel=mvg::utils::INFO;
+            else std::cout << "Warning: invalid MVG_NOTIFY_LEVEL set ("<<stringMVGNOTIFYLEVEL<<")"<<std::endl;
 
         }
 
         // 设置标准的消息通知handler
-        fblib::utils::NotifyStreamBuffer *buffer = dynamic_cast<fblib::utils::NotifyStreamBuffer *>(m_notifyStream.rdbuf());
+        mvg::utils::NotifyStreamBuffer *buffer = dynamic_cast<mvg::utils::NotifyStreamBuffer *>(m_notifyStream.rdbuf());
         if (buffer && !buffer->getNotifyHandler())
             buffer->setNotifyHandler(new StandardNotifyHandler);
     }
 
-    fblib::utils::NotifySeverity m_notifyLevel;
-    fblib::utils::NullStream     m_nullStream;
-    fblib::utils::NotifyStream   m_notifyStream;
+    mvg::utils::NotifySeverity m_notifyLevel;
+    mvg::utils::NullStream     m_nullStream;
+    mvg::utils::NotifyStream   m_notifyStream;
 };
 
 static NotifySingleton& getNotifySingleton()
@@ -175,46 +175,46 @@ static NotifySingleton& getNotifySingleton()
     return s_NotifySingleton;
 }
 
-bool fblib::utils::initNotifyLevel()
+bool mvg::utils::initNotifyLevel()
 {
     getNotifySingleton();
     return true;
 }
 
 // 通过代理模式，强制NotifySingleton初始化
-FBLIB_INIT_SINGLETON_PROXY(NotifySingletonProxy, fblib::utils::initNotifyLevel())
+MVG_INIT_SINGLETON_PROXY(NotifySingletonProxy, mvg::utils::initNotifyLevel())
 
-void fblib::utils::setNotifyLevel(fblib::utils::NotifySeverity severity)
+void mvg::utils::setNotifyLevel(mvg::utils::NotifySeverity severity)
 {
     getNotifySingleton().m_notifyLevel = severity;
 }
 
-fblib::utils::NotifySeverity fblib::utils::getNotifyLevel()
+mvg::utils::NotifySeverity mvg::utils::getNotifyLevel()
 {
     return getNotifySingleton().m_notifyLevel;
 }
 
-void fblib::utils::setNotifyHandler(fblib::utils::NotifyHandler *handler)
+void mvg::utils::setNotifyHandler(mvg::utils::NotifyHandler *handler)
 {
-    fblib::utils::NotifyStreamBuffer *buffer = static_cast<fblib::utils::NotifyStreamBuffer*>(getNotifySingleton().m_notifyStream.rdbuf());
+    mvg::utils::NotifyStreamBuffer *buffer = static_cast<mvg::utils::NotifyStreamBuffer*>(getNotifySingleton().m_notifyStream.rdbuf());
     if (buffer) buffer->setNotifyHandler(handler);
 }
 
-fblib::utils::NotifyHandler* fblib::utils::getNotifyHandler()
+mvg::utils::NotifyHandler* mvg::utils::getNotifyHandler()
 {
-    fblib::utils::NotifyStreamBuffer *buffer = static_cast<fblib::utils::NotifyStreamBuffer *>(getNotifySingleton().m_notifyStream.rdbuf());
+    mvg::utils::NotifyStreamBuffer *buffer = static_cast<mvg::utils::NotifyStreamBuffer *>(getNotifySingleton().m_notifyStream.rdbuf());
     return buffer ? buffer->getNotifyHandler() : 0;
 }
 
 
-bool fblib::utils::isNotifyEnabled( fblib::utils::NotifySeverity severity )
+bool mvg::utils::isNotifyEnabled( mvg::utils::NotifySeverity severity )
 {
     return severity<=getNotifySingleton().m_notifyLevel;
 }
 
-std::ostream& fblib::utils::notify(const fblib::utils::NotifySeverity severity)
+std::ostream& mvg::utils::notify(const mvg::utils::NotifySeverity severity)
 {
-    if (fblib::utils::isNotifyEnabled(severity))
+    if (mvg::utils::isNotifyEnabled(severity))
     {
         getNotifySingleton().m_notifyStream.setCurrentSeverity(severity);
         return getNotifySingleton().m_notifyStream;
@@ -222,9 +222,9 @@ std::ostream& fblib::utils::notify(const fblib::utils::NotifySeverity severity)
     return getNotifySingleton().m_nullStream;
 }
 
-void fblib::utils::StandardNotifyHandler::notify(fblib::utils::NotifySeverity severity, const char *message)
+void mvg::utils::StandardNotifyHandler::notify(mvg::utils::NotifySeverity severity, const char *message)
 {
-    if (severity <= fblib::utils::WARN)
+    if (severity <= mvg::utils::WARN)
         fputs(message, stderr);
     else
         fputs(message, stdout);
@@ -237,7 +237,7 @@ void fblib::utils::StandardNotifyHandler::notify(fblib::utils::NotifySeverity se
 #endif
 #include <windows.h>
 
-void fblib::utils::WinDebugNotifyHandler::notify(fblib::utils::NotifySeverity severity, const char *message)
+void mvg::utils::WinDebugNotifyHandler::notify(mvg::utils::NotifySeverity severity, const char *message)
 {
     OutputDebugStringA(message);
 }

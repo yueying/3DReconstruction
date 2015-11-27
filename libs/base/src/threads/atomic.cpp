@@ -1,5 +1,5 @@
 ﻿#include "base_precomp.h"
-#include <fblib/threads/atomic.h>
+#include <mvg/threads/atomic.h>
 
 #include <windows.h>
 #include <intrin.h>
@@ -8,7 +8,7 @@
 #pragma intrinsic(_InterlockedXor)
 
 
-namespace fblib {
+namespace mvg {
 	namespace threads{
 		unsigned Atomic::operator++()
 		{

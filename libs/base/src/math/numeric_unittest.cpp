@@ -1,8 +1,8 @@
 ﻿#include <iostream>
 #include "testing.h"
 
-#include "fblib/math/numeric.h"
-using namespace fblib::math;
+#include "mvg/math/numeric.h"
+using namespace mvg::math;
 
 // 验证输出
 TEST ( TinyMatrix, print )

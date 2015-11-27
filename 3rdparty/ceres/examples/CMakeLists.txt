@@ -107,13 +107,13 @@ IF (GFLAGS)
                  bal_problem.cc)
   TARGET_LINK_LIBRARIES(bundle_adjuster ceres ${GFLAGS_LIBRARIES})
 
-  ADD_EXECUTABLE(fblib_bundle_adjuster
-                 fblib_bundle_adjuster.cc)
-  TARGET_LINK_LIBRARIES(fblib_bundle_adjuster ceres ${GFLAGS_LIBRARIES})
+  ADD_EXECUTABLE(mvg_bundle_adjuster
+                 mvg_bundle_adjuster.cc)
+  TARGET_LINK_LIBRARIES(mvg_bundle_adjuster ceres ${GFLAGS_LIBRARIES})
 
-  ADD_EXECUTABLE(fblib_homography
-                 fblib_homography.cc)
-  TARGET_LINK_LIBRARIES(fblib_homography ceres ${GFLAGS_LIBRARIES})
+  ADD_EXECUTABLE(mvg_homography
+                 mvg_homography.cc)
+  TARGET_LINK_LIBRARIES(mvg_homography ceres ${GFLAGS_LIBRARIES})
 
   ADD_EXECUTABLE(denoising
                  denoising.cc

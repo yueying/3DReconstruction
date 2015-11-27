@@ -6,10 +6,10 @@
  *
  * 说明： exif测试
  *************************************************************************/
-#include "fblib/image/exif_simple.h"
-#include "fblib/utils/cmd_line.h"
+#include "mvg/image/exif_simple.h"
+#include "mvg/utils/cmd_line.h"
 
-using namespace fblib::utils;
+using namespace mvg::utils;
 
 int main(int argc, char *argv[])
 {
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 		<< argv[0] << std::endl
 		<< "--imagefile " << input_image << std::endl;
 
-	fblib::image::EXIFSimple exif_sample;
+	mvg::image::EXIFSimple exif_sample;
 	bool is_parse = exif_sample.open(input_image);
 	if (!is_parse)
 	{

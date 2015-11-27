@@ -1,11 +1,11 @@
 #include <cstdlib>
 
-#include "fblib/sfm/sfm_global_engine.h"
-#include "fblib/utils/cmd_line.h"
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/timer.h"
+#include "mvg/sfm/sfm_global_engine.h"
+#include "mvg/utils/cmd_line.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/timer.h"
 
-using namespace fblib::sfm;
+using namespace mvg::sfm;
 
 int main(int argc, char **argv)
 {
@@ -55,10 +55,10 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-	if (!fblib::utils::folder_exists(out_dir))
-		fblib::utils::folder_create(out_dir);
+	if (!mvg::utils::folder_exists(out_dir))
+		mvg::utils::folder_create(out_dir);
 
-	fblib::utils::Timer timer;
+	mvg::utils::Timer timer;
 	timer.Start();
 	GlobalReconstructionEngine to_3d_engine(image_dir,
 		matches_dir,
@@ -80,15 +80,15 @@ int main(int argc, char **argv)
 
 		//-- Export computed data to disk
 		reconstructor_helper_ref.exportToPlyFile(
-			fblib::utils::create_filespec(out_dir, "FinalColorized", ".ply"),
+			mvg::utils::create_filespec(out_dir, "FinalColorized", ".ply"),
 			is_colored_point_cloud ? &vec_tracks_color : NULL);
 
-		// Export to fblib format
-		std::cout << std::endl << "Export 3D scene to fblib format" << std::endl
+		// Export to mvg format
+		std::cout << std::endl << "Export 3D scene to mvg format" << std::endl
 			<< " -- Point cloud color: " << (is_colored_point_cloud ? "ON" : "OFF") << std::endl;
 
 		reconstructor_helper_ref.ExportToOpenMVGFormat(
-			fblib::utils::folder_append_separator(out_dir) + "SfM_output",
+			mvg::utils::folder_append_separator(out_dir) + "SfM_output",
 			to_3d_engine.getFilenamesVector(),
 			image_dir,
 			to_3d_engine.getImagesSize(),

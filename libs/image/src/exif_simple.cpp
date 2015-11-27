@@ -7,13 +7,13 @@
  * 说明： EXIF文件简单获取
  *
 ********************************************************************************/
-#include <fblib/image/exif_simple.h>
+#include <mvg/image/exif_simple.h>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <vector>
 
-namespace fblib
+namespace mvg
 {
 	namespace image
 	{

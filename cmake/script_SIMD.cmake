@@ -1,16 +1,16 @@
 # SSE{2,3,4} extensions?
 # ===================================================
-SET(FBLIB_AUTODETECT_SSE ON CACHE BOOL "Check /proc/cpuinfo to determine if SSE{2,3,4} optimizations are available")
-MARK_AS_ADVANCED(FBLIB_AUTODETECT_SSE)
+SET(MVG_AUTODETECT_SSE ON CACHE BOOL "Check /proc/cpuinfo to determine if SSE{2,3,4} optimizations are available")
+MARK_AS_ADVANCED(MVG_AUTODETECT_SSE)
 
 # Read info about CPUs:
 SET(DO_SSE_AUTODETECT 0)
-IF(FBLIB_AUTODETECT_SSE AND EXISTS "/proc/cpuinfo")
+IF(MVG_AUTODETECT_SSE AND EXISTS "/proc/cpuinfo")
 	SET(DO_SSE_AUTODETECT 1)
-ENDIF(FBLIB_AUTODETECT_SSE AND EXISTS "/proc/cpuinfo")
+ENDIF(MVG_AUTODETECT_SSE AND EXISTS "/proc/cpuinfo")
 
 IF (DO_SSE_AUTODETECT)
-	FILE(READ "/proc/cpuinfo" FBLIB_CPU_INFO)
+	FILE(READ "/proc/cpuinfo" MVG_CPU_INFO)
 ENDIF (DO_SSE_AUTODETECT)
 
 # Macro for each SSE* var: Invoke with name in uppercase:
@@ -19,17 +19,17 @@ macro(DEFINE_SSE_VAR  _setname)
 
 	IF (DO_SSE_AUTODETECT)
 		# Automatic detection:
-		SET(CMAKE_FBLIB_HAS_${_setname} 0)
-		IF (${FBLIB_CPU_INFO} MATCHES ".*${_set}.*")
-			SET(CMAKE_FBLIB_HAS_${_setname} 1)
+		SET(CMAKE_MVG_HAS_${_setname} 0)
+		IF (${MVG_CPU_INFO} MATCHES ".*${_set}.*")
+			SET(CMAKE_MVG_HAS_${_setname} 1)
 		ENDIF()
 	ELSE (DO_SSE_AUTODETECT)
 		# Manual:
 		SET("DISABLE_${_setname}" OFF CACHE BOOL "Forces compilation WITHOUT ${_setname} extensions")
 		MARK_AS_ADVANCED("DISABLE_${_setname}")
-		SET(CMAKE_FBLIB_HAS_${_setname} 0)
+		SET(CMAKE_MVG_HAS_${_setname} 0)
 		IF (NOT DISABLE_${_setname})
-			SET(CMAKE_FBLIB_HAS_${_setname} 1)
+			SET(CMAKE_MVG_HAS_${_setname} 1)
 		ENDIF (NOT DISABLE_${_setname})	
 	ENDIF (DO_SSE_AUTODETECT)
 endmacro(DEFINE_SSE_VAR)

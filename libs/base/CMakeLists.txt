@@ -1,5 +1,5 @@
 macro(add_base_srcs _PATH)
-	LIST(APPEND base_EXTRA_SRCS			"${FBLIB_LIBS_ROOT}/base/src/${_PATH}/*.cpp" "${FBLIB_LIBS_ROOT}/base/include/fblib/${_PATH}/*.h")
+	LIST(APPEND base_EXTRA_SRCS			"${MVG_LIBS_ROOT}/base/src/${_PATH}/*.cpp" "${MVG_LIBS_ROOT}/base/include/mvg/${_PATH}/*.h")
 	LIST(APPEND base_EXTRA_SRCS_NAME 	"${_PATH}" "${_PATH}")
 endmacro(add_base_srcs)
 
@@ -10,23 +10,23 @@ add_base_srcs(threads)
 add_base_srcs(system)
 add_base_srcs(utils)
 #---------------------------------------------
-# Macro declared in "DeclareFBLIBLib.cmake":
+# Macro declared in "DeclareMVGLib.cmake":
 #---------------------------------------------
-define_fblib_lib(
+define_mvg_lib(
 	base 		# Lib name
 				# Dependencies: None
 	)
 
-IF(BUILD_fblib_base) 
+IF(BUILD_mvg_base) 
 	# Ignore precompiled headers in some sources:
-	IF(FBLIB_ENABLE_PRECOMPILED_HDRS)
+	IF(MVG_ENABLE_PRECOMPILED_HDRS)
 		IF (MSVC)
 			set_source_files_properties(
 				PROPERTIES COMPILE_FLAGS "/Y-"
 				)
 
 		ENDIF (MSVC)
-	ENDIF(FBLIB_ENABLE_PRECOMPILED_HDRS)
+	ENDIF(MVG_ENABLE_PRECOMPILED_HDRS)
 
-ENDIF(BUILD_fblib_base) 
+ENDIF(BUILD_mvg_base) 
 

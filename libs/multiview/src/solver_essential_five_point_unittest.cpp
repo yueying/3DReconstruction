@@ -1,16 +1,16 @@
 ﻿#include <iostream>
 
-#include "fblib/math/numeric.h"
-#include "fblib/multiview/essential.h"
-#include "fblib/camera/projection.h"
-#include "fblib/multiview/solver_essential_five_point.h"
+#include "mvg/math/numeric.h"
+#include "mvg/multiview/essential.h"
+#include "mvg/camera/projection.h"
+#include "mvg/multiview/solver_essential_five_point.h"
 #include "testing.h"
 
-#include "fblib/multiview/nview_data_sets.h"
+#include "mvg/multiview/nview_data_sets.h"
 
-using namespace fblib::multiview;
-using namespace fblib::math;
-using namespace fblib::camera;
+using namespace mvg::multiview;
+using namespace mvg::math;
+using namespace mvg::camera;
 struct TestData {
   //-- Dataset that encapsulate :
   // 3D points and their projection given P1 and P2

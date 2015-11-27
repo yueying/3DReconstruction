@@ -4,19 +4,19 @@
 #include <fstream>
 #include <map>
 
-#include "fblib/feature/indexed_match.h"
-#include "fblib/feature/indexed_match_utils.h"
-#include "fblib/image/image.h"
-#include "fblib/feature/features.h"
+#include "mvg/feature/indexed_match.h"
+#include "mvg/feature/indexed_match_utils.h"
+#include "mvg/image/image.h"
+#include "mvg/feature/features.h"
 
-#include "fblib/feature/image_list_io_helper.h"
-#include "fblib/utils/cmd_line.h"
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/progress.h"
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/feature/image_list_io_helper.h"
+#include "mvg/utils/cmd_line.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/progress.h"
+#include "mvg/utils/svg_drawer.h"
 
-using namespace fblib::utils;
-using namespace fblib::feature;
+using namespace mvg::utils;
+using namespace mvg::feature;
 
 int main(int argc, char ** argv)
 {
@@ -54,10 +54,10 @@ int main(int argc, char ** argv)
 	}
 
 	// 读取图像文件名
-	std::vector<fblib::feature::CameraInfo> vec_camera_info;
-	std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-	if (!fblib::feature::loadImageList(
-		fblib::utils::create_filespec(matches_dir, "lists", "txt"),
+	std::vector<mvg::feature::CameraInfo> vec_camera_info;
+	std::vector<mvg::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
+	if (!mvg::feature::loadImageList(
+		mvg::utils::create_filespec(matches_dir, "lists", "txt"),
 		vec_camera_info,
 		vec_cameras_intrinsic
 		))
@@ -71,7 +71,7 @@ int main(int argc, char ** argv)
 	pairedIndexedMatchImport(match_file, map_matches);
 
 	// 导出匹配对
-	fblib::utils::folder_create(out_dir);
+	mvg::utils::folder_create(out_dir);
 	std::cout << "\n Export pairwise matches" << std::endl;
 	ControlProgressDisplay my_progress_bar(map_matches.size());
 	for (PairWiseMatches::const_iterator iter = map_matches.begin();
@@ -81,18 +81,18 @@ int main(int argc, char ** argv)
 		const size_t I = iter->first.first;
 		const size_t J = iter->first.second;
 
-		std::vector<fblib::feature::CameraInfo>::const_iterator caminfoI_it = vec_camera_info.begin() + I;
-		std::vector<fblib::feature::CameraInfo>::const_iterator caminfoJ_it = vec_camera_info.begin() + J;
+		std::vector<mvg::feature::CameraInfo>::const_iterator caminfoI_it = vec_camera_info.begin() + I;
+		std::vector<mvg::feature::CameraInfo>::const_iterator caminfoJ_it = vec_camera_info.begin() + J;
 
 		const std::pair<size_t, size_t>
 			dim_image0 = std::make_pair(vec_cameras_intrinsic[caminfoI_it->intrinsic_id].width, vec_cameras_intrinsic[caminfoI_it->intrinsic_id].height),
 			dim_image1 = std::make_pair(vec_cameras_intrinsic[caminfoJ_it->intrinsic_id].width, vec_cameras_intrinsic[caminfoJ_it->intrinsic_id].height);
 
 		SvgDrawer svg_stream(dim_image0.first + dim_image1.first, max(dim_image0.second, dim_image1.second));
-		svg_stream.drawImage(fblib::utils::create_filespec(image_dir, vec_camera_info[I].image_name),
+		svg_stream.drawImage(mvg::utils::create_filespec(image_dir, vec_camera_info[I].image_name),
 			dim_image0.first,
 			dim_image0.second);
-		svg_stream.drawImage(fblib::utils::create_filespec(image_dir, vec_camera_info[J].image_name),
+		svg_stream.drawImage(mvg::utils::create_filespec(image_dir, vec_camera_info[J].image_name),
 			dim_image1.first,
 			dim_image1.second, dim_image0.first);
 
@@ -102,10 +102,10 @@ int main(int argc, char ** argv)
 			// 从特征文件中导入特征
 			std::vector<ScalePointFeature> vec_featI, vec_featJ;
 			LoadFeatsFromFile(
-				fblib::utils::create_filespec(matches_dir, fblib::utils::basename_part(vec_camera_info[I].image_name), ".feat"),
+				mvg::utils::create_filespec(matches_dir, mvg::utils::basename_part(vec_camera_info[I].image_name), ".feat"),
 				vec_featI);
 			LoadFeatsFromFile(
-				fblib::utils::create_filespec(matches_dir, fblib::utils::basename_part(vec_camera_info[J].image_name), ".feat"),
+				mvg::utils::create_filespec(matches_dir, mvg::utils::basename_part(vec_camera_info[J].image_name), ".feat"),
 				vec_featJ);
 
 			// 在两幅特征之间划线
@@ -127,7 +127,7 @@ int main(int argc, char ** argv)
 			}
 		}
 		std::ostringstream os;
-		os << fblib::utils::folder_append_separator(out_dir)
+		os << mvg::utils::folder_append_separator(out_dir)
 			<< iter->first.first << "_" << iter->first.second
 			<< "_" << iter->second.size() << "_.svg";
 		ofstream svg_file(os.str().c_str());

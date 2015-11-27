@@ -1,20 +1,20 @@
 ﻿#include "base_precomp.h"
 #include <stdlib.h>
 
-#include <fblib/utils/referenced.h>
-#include <fblib/utils/notify.h>
+#include <mvg/utils/referenced.h>
+#include <mvg/utils/notify.h>
 
 
 #include <typeinfo>
 #include <memory>
 #include <set>
 
-#include <fblib/threads/scoped_lock.h>
-#include <fblib/threads/mutex.h>
+#include <mvg/threads/scoped_lock.h>
+#include <mvg/threads/mutex.h>
 
-#include <fblib/utils/delete_handler.h>
+#include <mvg/utils/delete_handler.h>
 
-namespace fblib
+namespace mvg
 {
 	namespace utils{
 		//#define ENFORCE_THREADSAFE
@@ -67,11 +67,11 @@ namespace fblib
 		};
 
 		typedef ResetPointer<DeleteHandler> DeleteHandlerPointer;
-		typedef ResetPointer<fblib::threads::Mutex> GlobalMutexPointer;
+		typedef ResetPointer<mvg::threads::Mutex> GlobalMutexPointer;
 
-		fblib::threads::Mutex* Referenced::getGlobalReferencedMutex()
+		mvg::threads::Mutex* Referenced::getGlobalReferencedMutex()
 		{
-			static GlobalMutexPointer s_ReferencedGlobalMutext = new fblib::threads::Mutex;
+			static GlobalMutexPointer s_ReferencedGlobalMutext = new mvg::threads::Mutex;
 			return s_ReferencedGlobalMutext.get();
 		}
 
@@ -117,8 +117,8 @@ namespace fblib
 		{
 			if (m_refCount > 0)
 			{
-				FBLIB_WARN << "Warning: deleting still referenced object " << this << " of type '" << typeid(this).name() << "'" << std::endl;
-				FBLIB_WARN << "         the final reference count was " << m_refCount << ", memory corruption possible." << std::endl;
+				MVG_WARN << "Warning: deleting still referenced object " << this << " of type '" << typeid(this).name() << "'" << std::endl;
+				MVG_WARN << "         the final reference count was " << m_refCount << ", memory corruption possible." << std::endl;
 			}		
 		}
 

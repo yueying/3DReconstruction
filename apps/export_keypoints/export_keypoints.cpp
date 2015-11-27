@@ -1,13 +1,13 @@
-#include "fblib/feature/indexed_match.h"
-#include "fblib/feature/indexed_match_utils.h"
-#include "fblib/image/image.h"
-#include "fblib/feature/features.h"
+#include "mvg/feature/indexed_match.h"
+#include "mvg/feature/indexed_match_utils.h"
+#include "mvg/image/image.h"
+#include "mvg/feature/features.h"
 
-#include "fblib/feature/image_list_io_helper.h"
-#include "fblib/utils/cmd_line.h"
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/progress.h"
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/feature/image_list_io_helper.h"
+#include "mvg/utils/cmd_line.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/progress.h"
+#include "mvg/utils/svg_drawer.h"
 
 #include <cstdlib>
 #include <string>
@@ -15,8 +15,8 @@
 #include <fstream>
 #include <map>
 
-using namespace fblib::utils;
-using namespace fblib::feature;
+using namespace mvg::utils;
+using namespace mvg::feature;
 
 int main(int argc, char ** argv)
 {
@@ -55,10 +55,10 @@ int main(int argc, char ** argv)
 	// Read images names
 	//---------------------------------------
 
-	std::vector<fblib::feature::CameraInfo> vec_camera_info;
-	std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-	if (!fblib::feature::loadImageList(
-		fblib::utils::create_filespec(matches_dir, "lists", "txt"),
+	std::vector<mvg::feature::CameraInfo> vec_camera_info;
+	std::vector<mvg::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
+	if (!mvg::feature::loadImageList(
+		mvg::utils::create_filespec(matches_dir, "lists", "txt"),
 		vec_camera_info,
 		vec_cameras_intrinsic
 		))
@@ -72,15 +72,15 @@ int main(int argc, char ** argv)
 	// For each image, export visually the keypoints
 	// ------------
 
-	fblib::utils::folder_create(out_dir);
+	mvg::utils::folder_create(out_dir);
 	std::cout << "\n Export extracted keypoints for all images" << std::endl;
 	ControlProgressDisplay my_progress_bar(vec_camera_info.size());
-	for (std::vector<fblib::feature::CameraInfo>::const_iterator iterFilename = vec_camera_info.begin();
+	for (std::vector<mvg::feature::CameraInfo>::const_iterator iterFilename = vec_camera_info.begin();
 		iterFilename != vec_camera_info.end();
 		++iterFilename, ++my_progress_bar)
 	{
 		const size_t I = std::distance(
-			(std::vector<fblib::feature::CameraInfo>::const_iterator)vec_camera_info.begin(),
+			(std::vector<mvg::feature::CameraInfo>::const_iterator)vec_camera_info.begin(),
 			iterFilename);
 
 		const std::pair<size_t, size_t>
@@ -88,14 +88,14 @@ int main(int argc, char ** argv)
 			vec_cameras_intrinsic[iterFilename->intrinsic_id].height);
 
 		SvgDrawer svg_stream(dimImage.first, dimImage.second);
-		svg_stream.drawImage(fblib::utils::create_filespec(image_dir, iterFilename->image_name),
+		svg_stream.drawImage(mvg::utils::create_filespec(image_dir, iterFilename->image_name),
 			dimImage.first,
 			dimImage.second);
 
 		// Load the features from the feature file
 		std::vector<ScalePointFeature> vec_feat;
 		LoadFeatsFromFile(
-			fblib::utils::create_filespec(matches_dir, fblib::utils::basename_part(iterFilename->image_name), ".feat"),
+			mvg::utils::create_filespec(matches_dir, mvg::utils::basename_part(iterFilename->image_name), ".feat"),
 			vec_feat);
 
 		//-- Draw features
@@ -107,8 +107,8 @@ int main(int argc, char ** argv)
 
 		// Write the SVG file
 		std::ostringstream os;
-		os << fblib::utils::folder_append_separator(out_dir)
-			<< fblib::utils::basename_part(iterFilename->image_name)
+		os << mvg::utils::folder_append_separator(out_dir)
+			<< mvg::utils::basename_part(iterFilename->image_name)
 			<< "_" << vec_feat.size() << "_.svg";
 		ofstream svg_file(os.str().c_str());
 		svg_file << svg_stream.closeSvgFile().str();

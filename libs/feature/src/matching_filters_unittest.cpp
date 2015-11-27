@@ -1,7 +1,7 @@
 ﻿#include "testing.h"
 
-#include "fblib/feature/matching_filters.h"
-using namespace fblib::feature;
+#include "mvg/feature/matching_filters.h"
+using namespace mvg::feature;
 
 // 测试排序数组的交集
 TEST( matching, setIntersection)

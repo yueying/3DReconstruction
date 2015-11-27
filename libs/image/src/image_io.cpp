@@ -1,4 +1,4 @@
-﻿#include "fblib/image/image.h"
+﻿#include "mvg/image/image.h"
 
 #include <cstring>
 #include <iostream>
@@ -9,7 +9,7 @@ extern "C" {
   #include "png.h"
 }
 
-namespace fblib {
+namespace mvg {
 	namespace image{
 
 		static bool CmpFormatExt(const char *a, const char *b) {
@@ -551,4 +551,4 @@ namespace fblib {
 			return 1;
 		}
 	}// namespace image
-}  // namespace fblib
+}  // namespace mvg

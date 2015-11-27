@@ -1,16 +1,16 @@
 #include "tracking_precomp.h"
-#include "fblib/tracking/brute_region_tracker.h"
+#include "mvg/tracking/brute_region_tracker.h"
 
-#include "fblib/utils/aligned_malloc.h"
-#include "fblib/image/image.h"
-#include "fblib/image/correlation.h"
-#include "fblib/image/sample.h"
-#include "fblib/utils/notify.h"
+#include "mvg/utils/aligned_malloc.h"
+#include "mvg/image/image.h"
+#include "mvg/image/correlation.h"
+#include "mvg/image/sample.h"
+#include "mvg/utils/notify.h"
 
-using namespace fblib::image;
-using namespace fblib::utils;
+using namespace mvg::image;
+using namespace mvg::utils;
 
-namespace fblib {
+namespace mvg {
 	namespace tracking{
 
 		/**	检查区域是否在图像内
@@ -229,4 +229,4 @@ namespace fblib {
 			return true;
 		}
 	} //namespace tracking
-}  // namespace fblib
+}  // namespace mvg

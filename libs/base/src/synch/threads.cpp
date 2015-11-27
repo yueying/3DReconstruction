@@ -8,7 +8,7 @@
  *
 ********************************************************************************/
 #include "base_precomp.h"
-#include <fblib/synch/threads.h>
+#include <mvg/synch/threads.h>
 
 #include <conio.h>
 #include <windows.h>
@@ -23,12 +23,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include <fblib/utils/fblib_macros.h>
-#include <fblib/synch/semaphore.h>
+#include <mvg/utils/mvg_macros.h>
+#include <mvg/synch/semaphore.h>
 
 /**当前线程sleep时间，单位毫秒，采用这种方式便于以后扩展
 */
-void fblib::synch::sleep(int time_ms) FBLIB_NO_THROWS
+void mvg::synch::sleep(int time_ms) MVG_NO_THROWS
 {
 	Sleep(time_ms);
 }
@@ -36,7 +36,7 @@ void fblib::synch::sleep(int time_ms) FBLIB_NO_THROWS
 /*---------------------------------------------------------------
 createThread
 ---------------------------------------------------------------*/
-namespace fblib
+namespace mvg
 {
 	namespace synch
 	{
@@ -82,12 +82,12 @@ namespace fblib
 } // end namespace
 
 
-fblib::synch::TThreadHandle fblib::synch::detail::createThreadImpl(
+mvg::synch::TThreadHandle mvg::synch::detail::createThreadImpl(
 	void(*func)(void *),
 	void       *param
 	)
 {
-	FBLIB_START
+	MVG_START
 
 	TAuxThreadLaucher   *auxData = new TAuxThreadLaucher();
 	auxData->ptrFunc = func;
@@ -112,13 +112,13 @@ fblib::synch::TThreadHandle fblib::synch::detail::createThreadImpl(
 
 	return threadHandle;
 
-	FBLIB_END
+	MVG_END
 }
 
 
 /** 等待给出的线程结束.
 */
-void fblib::synch::joinThread(const TThreadHandle &threadHandle)
+void mvg::synch::joinThread(const TThreadHandle &threadHandle)
 {
 	if (threadHandle.isClear()) return;
 
@@ -128,22 +128,22 @@ void fblib::synch::joinThread(const TThreadHandle &threadHandle)
 
 	DWORD ret = WaitForSingleObject((HANDLE)threadHandle.hThread, INFINITE);
 	if (ret != WAIT_OBJECT_0)
-		std::cerr << "[fblib::synch::joinThread] Error waiting for thread completion!" << std::endl;
+		std::cerr << "[mvg::synch::joinThread] Error waiting for thread completion!" << std::endl;
 
 }
 
 /** 返回当前线程的ID
 */
-unsigned long fblib::synch::getCurrentThreadId() FBLIB_NO_THROWS
+unsigned long mvg::synch::getCurrentThreadId() MVG_NO_THROWS
 {
 	return GetCurrentThreadId();
 }
 
 /** 返回当前线程的handle
 */
-fblib::synch::TThreadHandle fblib::synch::getCurrentThreadHandle() FBLIB_NO_THROWS
+mvg::synch::TThreadHandle mvg::synch::getCurrentThreadHandle() MVG_NO_THROWS
 {
-	fblib::synch::TThreadHandle h;
+	mvg::synch::TThreadHandle h;
 	h.hThread = GetCurrentThread();
 	h.idThread = GetCurrentThreadId();
 	return h;
@@ -151,7 +151,7 @@ fblib::synch::TThreadHandle fblib::synch::getCurrentThreadHandle() FBLIB_NO_THRO
 
 /**更改给定线程的优先级
 */
-void  fblib::synch::changeThreadPriority(
+void  mvg::synch::changeThreadPriority(
 const TThreadHandle &threadHandle,
 TThreadPriority priority)
 {
@@ -160,7 +160,7 @@ TThreadPriority priority)
 
 /**更改给定进程的优先级（包括所有的线程）
 */
-void  fblib::synch::changeCurrentProcessPriority(TProcessPriority priority)
+void  mvg::synch::changeCurrentProcessPriority(TProcessPriority priority)
 {
 	DWORD dwPri;
 	switch (priority)
@@ -177,12 +177,12 @@ void  fblib::synch::changeCurrentProcessPriority(TProcessPriority priority)
 
 /**返回当前线程创建到退出消耗的CPU时间
 */
-void fblib::synch::getCurrentThreadTimes(
+void mvg::synch::getCurrentThreadTimes(
 	time_t			&creationTime,
 	time_t			&exitTime,
 	double			&cpuTime)
 {
-	FBLIB_START
+	MVG_START
 
 	FILETIME	timCreat, timExit, timKernel, timUser;
 	uint64_t	t;
@@ -214,12 +214,12 @@ void fblib::synch::getCurrentThreadTimes(
 	cpuTime = ((double)(t1 + t2)) * 100e-9;	// FILETIME counts intervals of 100ns
 
 
-	FBLIB_END
+	MVG_END
 }
 
 /**执行给定命令（程序+参数），等待直到其结束
 */
-bool fblib::synch::launchProcess(const std::string & command)
+bool mvg::synch::launchProcess(const std::string & command)
 {
 	STARTUPINFOA			SI;
 	PROCESS_INFORMATION		PI;
@@ -250,14 +250,14 @@ bool fblib::synch::launchProcess(const std::string & command)
 
 /** 显示关闭当前正在运行的线程，不要经常使用，最好在运行线程返回的时候使用
 */
-void fblib::synch::exitThread() FBLIB_NO_THROWS
+void mvg::synch::exitThread() MVG_NO_THROWS
 {
 	ExitThread(0);
 }
 
 /** 终止线程，删除最后所有资源
 */
-void fblib::synch::terminateThread(TThreadHandle &threadHandle) FBLIB_NO_THROWS
+void mvg::synch::terminateThread(TThreadHandle &threadHandle) MVG_NO_THROWS
 {
 	if (threadHandle.isClear()) return; // done
 	TerminateThread(threadHandle.hThread, -1);

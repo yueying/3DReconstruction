@@ -1,12 +1,12 @@
-#ifndef  FBLIB_VERSION_H
-#define  FBLIB_VERSION_H
+#ifndef  MVG_VERSION_H
+#define  MVG_VERSION_H
 
-const char FBLIB_version_str[] = "${CMAKE_FBLIB_COMPLETE_NAME}";
+const char MVG_version_str[] = "${CMAKE_MVG_COMPLETE_NAME}";
 
 /** Version number of package in hexadecimal:
   * A three digits version code, eg. 0.5.1 -> 0x051,  1.2.0 -> 0x120
   */
-#define FBLIB_VERSION ${CMAKE_FBLIB_VERSION_CODE}
+#define MVG_VERSION ${CMAKE_MVG_VERSION_CODE}
 
 
 #endif

@@ -11,8 +11,8 @@
 #include "base_precomp.h"  // 预编译头
 
 
-#include <fblib/system/datetime.h>
-#include <fblib/utils/fblib_macros.h>
+#include <mvg/system/datetime.h>
+#include <mvg/utils/mvg_macros.h>
 
 #include <conio.h>
 #include <windows.h>
@@ -25,16 +25,16 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include <fblib/utils/stringformat.h>
+#include <mvg/utils/stringformat.h>
 
-using namespace fblib;
-using namespace fblib::system;
+using namespace mvg;
+using namespace mvg::system;
 using namespace std;
 
 /*---------------------------------------------------------------
 					time_tToTimestamp
 ---------------------------------------------------------------*/
-fblib::system::TTimeStamp  fblib::system::time_tToTimestamp(const time_t &t)
+mvg::system::TTimeStamp  mvg::system::time_tToTimestamp(const time_t &t)
 {
 	return (((uint64_t)t) * (uint64_t)10000000) + ((uint64_t)116444736 * 1000000000);
 }
@@ -42,7 +42,7 @@ fblib::system::TTimeStamp  fblib::system::time_tToTimestamp(const time_t &t)
 /*---------------------------------------------------------------
 					time_tToTimestamp
 ---------------------------------------------------------------*/
-fblib::system::TTimeStamp  fblib::system::time_tToTimestamp(const double &t)
+mvg::system::TTimeStamp  mvg::system::time_tToTimestamp(const double &t)
 {
 	return (uint64_t)(t*10000000.0) + ((uint64_t)116444736 * 1000000000);
 }
@@ -50,7 +50,7 @@ fblib::system::TTimeStamp  fblib::system::time_tToTimestamp(const double &t)
 /*---------------------------------------------------------------
 					timestampTotime_t
 ---------------------------------------------------------------*/
-double fblib::system::timestampTotime_t(const fblib::system::TTimeStamp  &t)
+double mvg::system::timestampTotime_t(const mvg::system::TTimeStamp  &t)
 {
 	return double(t - ((uint64_t)116444736 * 1000000000)) / 10000000.0;
 }
@@ -59,7 +59,7 @@ double fblib::system::timestampTotime_t(const fblib::system::TTimeStamp  &t)
 /*---------------------------------------------------------------
 				返回当前系统时间
 ---------------------------------------------------------------*/
-fblib::system::TTimeStamp  fblib::system::getCurrentTime()
+mvg::system::TTimeStamp  mvg::system::getCurrentTime()
 {
 	FILETIME		t;
 	GetSystemTimeAsFileTime(&t);
@@ -70,9 +70,9 @@ fblib::system::TTimeStamp  fblib::system::getCurrentTime()
 /*---------------------------------------------------------------
 					timestampToParts
 ---------------------------------------------------------------*/
-void fblib::system::timestampToParts(TTimeStamp t, TTimeParts &p, bool localTime)
+void mvg::system::timestampToParts(TTimeStamp t, TTimeParts &p, bool localTime)
 {
-	double T = fblib::system::timestampTotime_t(t);
+	double T = mvg::system::timestampTotime_t(t);
 	time_t tt = time_t(T);
 
 	double sec_frac = T - tt;
@@ -106,7 +106,7 @@ void fblib::system::timestampToParts(TTimeStamp t, TTimeParts &p, bool localTime
 /*---------------------------------------------------------------
 					buildTimestampFromParts
 ---------------------------------------------------------------*/
-TTimeStamp fblib::system::buildTimestampFromParts(const TTimeParts &p)
+TTimeStamp mvg::system::buildTimestampFromParts(const TTimeParts &p)
 {
 	struct tm parts;
 
@@ -123,13 +123,13 @@ TTimeStamp fblib::system::buildTimestampFromParts(const TTimeParts &p)
 
 	time_t  tt = _mkgmtime(&parts); 
 
-	return fblib::system::time_tToTimestamp(double(tt) + sec_frac);
+	return mvg::system::time_tToTimestamp(double(tt) + sec_frac);
 }
 
 /*---------------------------------------------------------------
 					buildTimestampFromPartsLocalTime
 ---------------------------------------------------------------*/
-TTimeStamp fblib::system::buildTimestampFromPartsLocalTime(const TTimeParts &p)
+TTimeStamp mvg::system::buildTimestampFromPartsLocalTime(const TTimeParts &p)
 {
 	struct tm parts;
 
@@ -146,13 +146,13 @@ TTimeStamp fblib::system::buildTimestampFromPartsLocalTime(const TTimeParts &p)
 
 	time_t  tt = mktime(&parts);
 
-	return fblib::system::time_tToTimestamp(double(tt) + sec_frac);
+	return mvg::system::time_tToTimestamp(double(tt) + sec_frac);
 }
 
 /*---------------------------------------------------------------
 					Returns the current local time.
 ---------------------------------------------------------------*/
-fblib::system::TTimeStamp  fblib::system::getCurrentLocalTime()
+mvg::system::TTimeStamp  mvg::system::getCurrentLocalTime()
 {
 	FILETIME		tt,t;
 	GetSystemTimeAsFileTime(&tt);
@@ -163,29 +163,29 @@ fblib::system::TTimeStamp  fblib::system::getCurrentLocalTime()
 /*---------------------------------------------------------------
 					timeDifference
 ---------------------------------------------------------------*/
-double fblib::system::timeDifference(const fblib::system::TTimeStamp &t1, const fblib::system::TTimeStamp &t2)
+double mvg::system::timeDifference(const mvg::system::TTimeStamp &t1, const mvg::system::TTimeStamp &t2)
 {
-	FBLIB_START
+	MVG_START
 		ASSERT_(t1 != INVALID_TIMESTAMP)
 		ASSERT_(t2 != INVALID_TIMESTAMP)
 
 		return ((double)((int64_t)(t2 - t1))) / 10000000.0;
 
-	FBLIB_END
+	MVG_END
 }
 
 /*---------------------------------------------------------------
 					secondsToTimestamp
 ---------------------------------------------------------------*/
-fblib::system::TTimeStamp fblib::system::secondsToTimestamp(const double &nSeconds)
+mvg::system::TTimeStamp mvg::system::secondsToTimestamp(const double &nSeconds)
 {
-	return (fblib::system::TTimeStamp)(nSeconds*10000000.0);
+	return (mvg::system::TTimeStamp)(nSeconds*10000000.0);
 }
 
 /*---------------------------------------------------------------
 					formatTimeInterval
 ---------------------------------------------------------------*/
-string fblib::system::formatTimeInterval(const double &t)
+string mvg::system::formatTimeInterval(const double &t)
 {
 	double timeSeconds = (t < 0) ? (-t) : t;
 
@@ -205,7 +205,7 @@ string fblib::system::formatTimeInterval(const double &t)
 /*---------------------------------------------------------------
   将一个时间戳转变为一个文本形式(UTC time): YEAR/MONTH/DAY,HH:MM:SS.MMM
   ---------------------------------------------------------------*/
-string  fblib::system::dateTimeToString(const fblib::system::TTimeStamp &t)
+string  mvg::system::dateTimeToString(const mvg::system::TTimeStamp &t)
 {
 	if (t == INVALID_TIMESTAMP) return string("INVALID_TIMESTAMP");
 
@@ -230,7 +230,7 @@ string  fblib::system::dateTimeToString(const fblib::system::TTimeStamp &t)
 /*---------------------------------------------------------------
   将一个时间戳转变为一个文本形式(local time): YEAR/MONTH/DAY,HH:MM:SS.MMM
   ---------------------------------------------------------------*/
-string  fblib::system::dateTimeLocalToString(const fblib::system::TTimeStamp &t)
+string  mvg::system::dateTimeLocalToString(const mvg::system::TTimeStamp &t)
 {
 	if (t == INVALID_TIMESTAMP) return string("INVALID_TIMESTAMP");
 
@@ -256,23 +256,23 @@ string  fblib::system::dateTimeLocalToString(const fblib::system::TTimeStamp &t)
 /*---------------------------------------------------------------
 						根据时间戳返回一个与当天零点差值
 ---------------------------------------------------------------*/
-double  fblib::system::extractDayTimeFromTimestamp(const fblib::system::TTimeStamp &t)
+double  mvg::system::extractDayTimeFromTimestamp(const mvg::system::TTimeStamp &t)
 {
-	FBLIB_START
+	MVG_START
 		ASSERT_(t != INVALID_TIMESTAMP)
 
 	SYSTEMTIME		sysT;
 	FileTimeToSystemTime( (FILETIME*)&t, &sysT );
 	return sysT.wHour * 3600.0 + sysT.wMinute * 60.0 + sysT.wSecond + sysT.wMilliseconds * 0.001;
 
-	FBLIB_END
+	MVG_END
 }
 
 
 /*---------------------------------------------------------------
   将一个时间戳转变为时间文本形式(local time): HH:MM:SS.MMMMMM
   ---------------------------------------------------------------*/
-string  fblib::system::timeLocalToString(const fblib::system::TTimeStamp &t, unsigned int secondFractionDigits)
+string  mvg::system::timeLocalToString(const mvg::system::TTimeStamp &t, unsigned int secondFractionDigits)
 {
 	if (t == INVALID_TIMESTAMP) return string("INVALID_TIMESTAMP");
 
@@ -295,7 +295,7 @@ string  fblib::system::timeLocalToString(const fblib::system::TTimeStamp &t, uns
 /*---------------------------------------------------------------
   将一个时间戳转变为时间文本形式(UTC): HH:MM:SS.MMMMMM
   ---------------------------------------------------------------*/
-string  fblib::system::timeToString(const fblib::system::TTimeStamp &t)
+string  mvg::system::timeToString(const mvg::system::TTimeStamp &t)
 {
 	if (t == INVALID_TIMESTAMP) return string("INVALID_TIMESTAMP");
 
@@ -318,7 +318,7 @@ string  fblib::system::timeToString(const fblib::system::TTimeStamp &t)
 /*---------------------------------------------------------------
   将一个时间戳转变为文本形式，只有日期: YEAR/MONTH/DAY
   ---------------------------------------------------------------*/
-string  fblib::system::dateToString(const fblib::system::TTimeStamp &t)
+string  mvg::system::dateToString(const mvg::system::TTimeStamp &t)
 {
 	if (t == INVALID_TIMESTAMP) return string("INVALID_TIMESTAMP");
 
@@ -340,7 +340,7 @@ string  fblib::system::dateToString(const fblib::system::TTimeStamp &t)
  * 例如: 1.23 年, 3.50 天, 9.3 小时, 5.3 分钟, 3.34 秒, 178.1 毫秒,  87.1 纳秒.
  * \sa unitsFormat
  */
-std::string fblib::system::intervalFormat(const double seconds)
+std::string mvg::system::intervalFormat(const double seconds)
 {
 	if (seconds >= 365 * 24 * 3600)
 		return format("%.2f years", seconds / (365 * 24 * 3600));

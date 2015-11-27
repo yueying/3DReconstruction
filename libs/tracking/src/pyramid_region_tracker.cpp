@@ -1,15 +1,15 @@
 #include "tracking_precomp.h"
-#include "fblib/tracking/pyramid_region_tracker.h"
+#include "mvg/tracking/pyramid_region_tracker.h"
 
 #include <vector>
 
-#include "fblib/image/convolve.h"
-#include "fblib/image/image.h"
-#include "fblib/image/sample.h"
-#include "fblib/utils/notify.h"
-using namespace fblib::image;
-using namespace fblib::utils;
-namespace fblib {
+#include "mvg/image/convolve.h"
+#include "mvg/image/image.h"
+#include "mvg/image/sample.h"
+#include "mvg/utils/notify.h"
+using namespace mvg::image;
+using namespace mvg::utils;
+namespace mvg {
 	namespace tracking{
 		static void MakePyramid(const Image<float> &image, int num_levels,
 			std::vector<Image<float>> *pyramid) {
@@ -78,4 +78,4 @@ namespace fblib {
 			return true;
 		}
 	}
-}  // namespace fblib
+}  // namespace mvg

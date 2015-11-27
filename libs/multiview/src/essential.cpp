@@ -1,11 +1,11 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/math/numeric.h"
-#include "fblib/camera/projection.h"
-#include "fblib/multiview/triangulation.h"
-#include "fblib/multiview/essential.h"
+#include "mvg/math/numeric.h"
+#include "mvg/camera/projection.h"
+#include "mvg/multiview/triangulation.h"
+#include "mvg/multiview/essential.h"
 
-using namespace fblib::camera;
-namespace fblib {
+using namespace mvg::camera;
+namespace mvg {
 	namespace multiview{
 		
 		/**
@@ -154,4 +154,4 @@ namespace fblib {
 			}
 		}
 	}// namespace multiview
-}  // namespace fblib
+}  // namespace mvg

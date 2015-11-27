@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------------------------
-# CMake file for the FBLIB example:  /exif_parsing
+# CMake file for the MVG example:  /exif_parsing
 #
 #  Run with "ccmake ." at the root directory, or use it as a template for 
 #   starting your own programs
@@ -32,7 +32,7 @@ SET(EXECUTABLE_OUTPUT_PATH ".")
 #   The dependencies of a library are automatically added, so you only 
 #    need to specify the top-most libraries your code depend on.
 # --------------------------------------------------------------------------
-FIND_PACKAGE(FBLIB REQUIRED base;image)
+FIND_PACKAGE(MVG REQUIRED base;image)
 
 # ---------------------------------------------
 # TARGET:
@@ -53,7 +53,7 @@ ENDIF(MY_DEFS)
 
 # Add the required libraries for linking:
 TARGET_LINK_LIBRARIES(${sampleName} 
-	${FBLIB_LIBS}  # This is filled by FIND_PACKAGE(FBLIB ...)
+	${MVG_LIBS}  # This is filled by FIND_PACKAGE(MVG ...)
 	""  # Optional extra libs...
 	)
 
@@ -65,10 +65,10 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
 
 # -------------------------------------------------------------------------
 # This part can be removed if you are compiling this program outside of 
-#  the FBLIB tree:
+#  the MVG tree:
 # -------------------------------------------------------------------------
-IF(${CMAKE_PROJECT_NAME} STREQUAL "FBLIB") # Fails if build outside of FBLIB project.
-	DeclareAppDependencies(${sampleName} fblib_base;fblib_image) # Dependencies
-ENDIF(${CMAKE_PROJECT_NAME} STREQUAL "FBLIB")
+IF(${CMAKE_PROJECT_NAME} STREQUAL "MVG") # Fails if build outside of MVG project.
+	DeclareAppDependencies(${sampleName} mvg_base;mvg_image) # Dependencies
+ENDIF(${CMAKE_PROJECT_NAME} STREQUAL "MVG")
 # -------------------------------------------------------------------------
 

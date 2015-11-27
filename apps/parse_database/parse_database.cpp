@@ -1,7 +1,7 @@
-#include "fblib/utils/cmd_line.h"
-#include "fblib/utils/parse_database.h"
+#include "mvg/utils/cmd_line.h"
+#include "mvg/utils/parse_database.h"
 
-using namespace fblib::utils;
+using namespace mvg::utils;
 int main(int argc, char ** argv)
 {
 	CmdLine cmd;

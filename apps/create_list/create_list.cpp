@@ -5,20 +5,20 @@
 #include <vector>
 #include <algorithm>
 
-#include "fblib/image/exif_simple.h"
-#include "fblib/image/image.h"
-#include "fblib/image/image_io.h"
-#include "fblib/utils/parse_database.h"
+#include "mvg/image/exif_simple.h"
+#include "mvg/image/image.h"
+#include "mvg/image/image_io.h"
+#include "mvg/utils/parse_database.h"
 
-#include "fblib/utils/cmd_line.h"
-#include "fblib/utils/file_system.h"
+#include "mvg/utils/cmd_line.h"
+#include "mvg/utils/file_system.h"
 
 #ifdef max
 #undef max
 #endif // max
 
-using namespace fblib::image;
-using namespace fblib::utils;
+using namespace mvg::image;
+using namespace mvg::utils;
 
 int main(int argc, char **argv)
 {
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 		<< "--outputDirectory " << output_dir << std::endl
 		<< "--focal " << focal_pix_per_mm << std::endl;
 
-	if (!fblib::utils::folder_exists(image_dir))
+	if (!mvg::utils::folder_exists(image_dir))
 	{
 		std::cerr << "\nThe input directory doesn't exist" << std::endl;
 		return EXIT_FAILURE;
@@ -69,18 +69,18 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-	if (!fblib::utils::folder_exists(output_dir))
+	if (!mvg::utils::folder_exists(output_dir))
 	{
-		if (!fblib::utils::folder_create(output_dir))
+		if (!mvg::utils::folder_create(output_dir))
 		{
 			std::cerr << "\nCannot create output directory" << std::endl;
 			return EXIT_FAILURE;
 		}
 	}
 
-	std::vector<std::string> vec_image = fblib::utils::folder_files(image_dir);
+	std::vector<std::string> vec_image = mvg::utils::folder_files(image_dir);
 	// 写入新的文件
-	std::ofstream list_txt(fblib::utils::create_filespec(output_dir,
+	std::ofstream list_txt(mvg::utils::create_filespec(output_dir,
 		"lists.txt").c_str());
 	if (list_txt)
 	{
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 			iter_image++)
 		{
 			// 读取数据获得图像高度宽度，和相机焦距
-			std::string image_filename = fblib::utils::create_filespec(image_dir, *iter_image);
+			std::string image_filename = mvg::utils::create_filespec(image_dir, *iter_image);
 
 			size_t width = -1;
 			size_t height = -1;

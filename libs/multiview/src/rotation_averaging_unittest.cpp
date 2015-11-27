@@ -1,18 +1,18 @@
-﻿#include "fblib/multiview/rotation_averaging.h"
-#include "fblib/multiview/essential.h"
+﻿#include "mvg/multiview/rotation_averaging.h"
+#include "mvg/multiview/essential.h"
 #include "testing.h"
 
-#include "fblib/multiview/nview_data_sets.h"
+#include "mvg/multiview/nview_data_sets.h"
 
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <iterator>
 
-using namespace fblib;
-using namespace fblib::multiview;
-using namespace fblib::multiview::l1;
-using namespace fblib::multiview::l2;
+using namespace mvg;
+using namespace mvg::multiview;
+using namespace mvg::multiview::l1;
+using namespace mvg::multiview::l2;
 
 TEST ( rotation_averaging, ClosestSVDRotationMatrix )
 {

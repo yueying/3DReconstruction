@@ -8,17 +8,17 @@
  *
 ********************************************************************************/
 
-#ifndef FBLIB_BASE_BASE_PRECOMP_H_
-#define FBLIB_BASE_BASE_PRECOMP_H_
+#ifndef MVG_BASE_BASE_PRECOMP_H_
+#define MVG_BASE_BASE_PRECOMP_H_
 
-#include <fblib/config.h>
-#include <fblib/version.h>
+#include <mvg/config.h>
+#include <mvg/version.h>
 
-#if FBLIB_ENABLE_PRECOMPILED_HEADERS //预编译头
+#if MVG_ENABLE_PRECOMPILED_HEADERS //预编译头
 
 #include <iostream>//TODO:测试的时候用一下，以后删除，下面有空整理一下debug的输出
 
 #endif
 
-#endif // FBLIB_BASE_BASE_PRECOMP_H_
+#endif // MVG_BASE_BASE_PRECOMP_H_
 

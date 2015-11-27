@@ -1,7 +1,7 @@
 ﻿#include "multiview_precomp.h"
-#include "fblib/multiview/solver_homography_kernel.h"
+#include "mvg/multiview/solver_homography_kernel.h"
 
-namespace fblib {
+namespace mvg {
 	namespace multiview {
 		namespace homography {
 
@@ -59,4 +59,4 @@ namespace fblib {
 
 		}  // namespace homography
 	}  // namespace multiview
-}  // namespace fblib
+}  // namespace mvg

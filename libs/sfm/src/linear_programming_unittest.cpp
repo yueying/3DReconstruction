@@ -3,8 +3,8 @@
 #include <vector>
 
 #include "testing.h"
-#include "fblib/sfm/linear_programming_osi.h"
-using namespace fblib::sfm;
+#include "mvg/sfm/linear_programming_osi.h"
+using namespace mvg::sfm;
 
 
 /**	 线性规划问题

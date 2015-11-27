@@ -1,8 +1,8 @@
 #include <iostream>
-#include "fblib/image/image.h"
-#include "fblib/image/convolve.h"
+#include "mvg/image/image.h"
+#include "mvg/image/convolve.h"
 
-using namespace fblib::image;
+using namespace mvg::image;
 
 int main()
 {

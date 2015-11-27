@@ -1,16 +1,16 @@
 #include "multiview_precomp.h"
-#include "fblib/multiview/homography.h"
+#include "mvg/multiview/homography.h"
 
 #include "ceres/ceres.h"
 
-#include "fblib/utils/notify.h"
-#include "fblib/multiview/conditioning.h"
-#include "fblib/multiview/homography_parameterization.h"
-#include "fblib/math/numeric.h"
+#include "mvg/utils/notify.h"
+#include "mvg/multiview/conditioning.h"
+#include "mvg/multiview/homography_parameterization.h"
+#include "mvg/math/numeric.h"
 
-using namespace fblib::math;
+using namespace mvg::math;
 
-namespace fblib {
+namespace mvg {
 	namespace multiview{
 		/**   
 		 * \brief 2D单应矩阵估计，所有的坐标是欧几里得坐标
@@ -262,7 +262,7 @@ namespace fblib {
 			Mat x1_normalized, x2_normalized;
 
 			if (options.use_normalization) {
-				fblib::utils::notify(fblib::utils::INFO) << "Estimating homography using normalization.";
+				mvg::utils::notify(mvg::utils::INFO) << "Estimating homography using normalization.";
 				GetNormalizedPoints(x1, &x1_normalized, &T1);
 				GetNormalizedPoints(x2, &x2_normalized, &T2);
 			}
@@ -279,7 +279,7 @@ namespace fblib {
 				*H = T2.inverse() * (*H) * T1;
 			}
 
-			fblib::utils::notify(fblib::utils::INFO) << "Estimated matrix after algebraic estimation:\n" << *H;
+			mvg::utils::notify(mvg::utils::INFO) << "Estimated matrix after algebraic estimation:\n" << *H;
 
 			// Step 2: Refine matrix using Ceres minimizer.
 			ceres::Problem problem;
@@ -312,9 +312,9 @@ namespace fblib {
 			ceres::Solver::Summary summary;
 			ceres::Solve(solver_options, &problem, &summary);
 
-			fblib::utils::notify(fblib::utils::INFO) << "Summary:\n" << summary.FullReport();
+			mvg::utils::notify(mvg::utils::INFO) << "Summary:\n" << summary.FullReport();
 
-			fblib::utils::notify(fblib::utils::INFO) << "Final refined matrix:\n" << *H;
+			mvg::utils::notify(mvg::utils::INFO) << "Final refined matrix:\n" << *H;
 
 			return summary.IsSolutionUsable();
 		}
@@ -450,4 +450,4 @@ namespace fblib {
 				(Hinv_y.head<2>() - x.head<2>()).squaredNorm();
 		}
 	} //namespace multiview
-}  // namespace fblib
+}  // namespace mvg

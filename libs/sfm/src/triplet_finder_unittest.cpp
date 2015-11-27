@@ -3,8 +3,8 @@
 #include <iostream>
 #include <vector>
 
-#include "fblib/sfm/triplet_finder.h"
-using namespace fblib::sfm;
+#include "mvg/sfm/triplet_finder.h"
+using namespace mvg::sfm;
 
 TEST(TripletFinder, TestNoTriplet) {
 

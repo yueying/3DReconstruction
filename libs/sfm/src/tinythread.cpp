@@ -22,7 +22,7 @@ freely, subject to the following restrictions:
 */
 
 #include <exception>
-#include "fblib/sfm/tinythread.h"
+#include "mvg/sfm/tinythread.h"
 
 #if defined(_TTHREAD_POSIX_)
   #include <unistd.h>

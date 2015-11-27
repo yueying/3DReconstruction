@@ -1,7 +1,7 @@
-#include "fblib/image/sample.h"
+#include "mvg/image/sample.h"
 #include "testing.h"
 
-using namespace fblib::image;
+using namespace mvg::image;
 
 TEST(Image, Nearest) {
 	Image<unsigned char> image(2, 2);

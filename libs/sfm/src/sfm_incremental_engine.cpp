@@ -5,23 +5,23 @@
 #include <functional>
 #include <sstream>
 
-#include "fblib/image/image.h"
-#include "fblib/feature/indexed_match_utils.h"
-#include "fblib/feature/indexed_match.h"
-#include "fblib/sfm/pinhole_brown_rt_ceres_functor.h"
-#include "fblib/sfm/problem_data_container.h"
-#include "fblib/sfm/sfm_incremental_engine.h"
-#include "fblib/sfm/sfm_robust.h"
+#include "mvg/image/image.h"
+#include "mvg/feature/indexed_match_utils.h"
+#include "mvg/feature/indexed_match.h"
+#include "mvg/sfm/pinhole_brown_rt_ceres_functor.h"
+#include "mvg/sfm/problem_data_container.h"
+#include "mvg/sfm/sfm_incremental_engine.h"
+#include "mvg/sfm/sfm_robust.h"
 
-#include "fblib/tracking/tracks.h"
+#include "mvg/tracking/tracks.h"
 
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/svg_drawer.h"
-#include "fblib/utils/stl_map.h"
-#include "fblib/utils/indexed_sort.h"
-#include "fblib/utils/notify.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/svg_drawer.h"
+#include "mvg/utils/stl_map.h"
+#include "mvg/utils/indexed_sort.h"
+#include "mvg/utils/notify.h"
 
-using namespace fblib::tracking;
+using namespace mvg::tracking;
 
 #ifdef min
 #undef min
@@ -31,7 +31,7 @@ using namespace fblib::tracking;
 #undef max
 #endif
 
-namespace fblib{
+namespace mvg{
 	namespace sfm{
 
 		typedef ScalePointFeature FeatureT;
@@ -45,16 +45,16 @@ namespace fblib{
 			is_use_bundle_adjustment_(true)
 		{
 			is_html_report_ = is_html_report;
-			if (!fblib::utils::folder_exists(out_dir)) {
-				fblib::utils::folder_create(out_dir);
+			if (!mvg::utils::folder_exists(out_dir)) {
+				mvg::utils::folder_create(out_dir);
 			}
 			if (is_html_report_)
 			{
 				html_doc_stream_ = std::shared_ptr<HtmlDocumentStream>(
-					new HtmlDocumentStream("fblib A Contrario Incremental SFM report."));
+					new HtmlDocumentStream("mvg A Contrario Incremental SFM report."));
 
 				html_doc_stream_->pushInfo(
-					htmlMarkup("h1", "fblib A Contrario Incremental SFM report."));
+					htmlMarkup("h1", "mvg A Contrario Incremental SFM report."));
 
 				html_doc_stream_->pushInfo(
 					htmlMarkup("h1", std::string("Current directory: ") +
@@ -65,7 +65,7 @@ namespace fblib{
 
 		IncrementalReconstructionEngine::~IncrementalReconstructionEngine()
 		{
-			ofstream htmlFileStream(string(fblib::utils::folder_append_separator(out_dir_) +
+			ofstream htmlFileStream(string(mvg::utils::folder_append_separator(out_dir_) +
 				"Reconstruction_Report.html").c_str());
 			htmlFileStream << html_doc_stream_->getDoc();
 		}
@@ -73,7 +73,7 @@ namespace fblib{
 		void PauseProcess()
 		{
 			unsigned char i;
-			FBLIB_INFO << "\nPause : type key and press enter: ";
+			MVG_INFO << "\nPause : type key and press enter: ";
 			cin >> i;
 		}
 
@@ -104,7 +104,7 @@ namespace fblib{
 				{
 					std::ostringstream os;
 					os << std::setw(8) << std::setfill('0') << round << "_Resection";
-					reconstructor_data_.exportToPlyFile(fblib::utils::create_filespec(out_dir_, os.str(), ".ply"));
+					reconstructor_data_.exportToPlyFile(mvg::utils::create_filespec(out_dir_, os.str(), ".ply"));
 					bImageAdded = true;
 				}
 				++round;
@@ -120,7 +120,7 @@ namespace fblib{
 
 			//-- Reconstruction done.
 			//-- Display some statistics
-			FBLIB_INFO << "\n\n-------------------------------" << "\n"
+			MVG_INFO << "\n\n-------------------------------" << "\n"
 				<< "-- Structure from Motion (statistics):\n"
 				<< "-- #Camera calibrated: " << reconstructor_data_.map_Camera.size()
 				<< " from " << camera_image_names_.size() << " input images.\n"
@@ -129,7 +129,7 @@ namespace fblib{
 
 			Histogram<double> h;
 			ComputeResidualsHistogram(&h);
-			FBLIB_INFO << "\nHistogram of residuals:" << h.ToString() << std::endl;
+			MVG_INFO << "\nHistogram of residuals:" << h.ToString() << std::endl;
 
 			if (is_html_report_)
 			{
@@ -166,19 +166,19 @@ namespace fblib{
 
 		bool IncrementalReconstructionEngine::readInputData()
 		{
-			if (!fblib::utils::is_folder(image_path_) ||
-				!fblib::utils::is_folder(matches_path_) ||
-				!fblib::utils::is_folder(out_dir_))
+			if (!mvg::utils::is_folder(image_path_) ||
+				!mvg::utils::is_folder(matches_path_) ||
+				!mvg::utils::is_folder(out_dir_))
 			{
 				std::cerr << std::endl
 					<< "One of the required directory is not a valid directory" << std::endl;
 				return false;
 			}
 
-			std::string file_lists = fblib::utils::create_filespec(matches_path_, "lists", "txt");
-			std::string computed_matches_file = fblib::utils::create_filespec(matches_path_, "matches.f", "txt");
-			if (!fblib::utils::is_file(file_lists) ||
-				!fblib::utils::is_file(computed_matches_file))
+			std::string file_lists = mvg::utils::create_filespec(matches_path_, "lists", "txt");
+			std::string computed_matches_file = mvg::utils::create_filespec(matches_path_, "matches.f", "txt");
+			if (!mvg::utils::is_file(file_lists) ||
+				!mvg::utils::is_file(computed_matches_file))
 			{
 				std::cerr << std::endl
 					<< "One of the input required file is not a present (lists.txt, matches.f.txt)" << std::endl;
@@ -186,7 +186,7 @@ namespace fblib{
 			}
 
 			// a、读取图像名
-			if (!fblib::feature::loadImageList(file_lists, camera_image_names_,
+			if (!mvg::feature::loadImageList(file_lists, camera_image_names_,
 				vec_intrinsic_groups_
 				))
 			{
@@ -196,12 +196,12 @@ namespace fblib{
 			else
 			{
 				// 找到图像对应的内参
-				for (std::vector<fblib::feature::CameraInfo>::const_iterator iter = camera_image_names_.begin();
+				for (std::vector<mvg::feature::CameraInfo>::const_iterator iter = camera_image_names_.begin();
 					iter != camera_image_names_.end(); ++iter)
 				{
-					const fblib::feature::CameraInfo &camera_info = *iter;
+					const mvg::feature::CameraInfo &camera_info = *iter;
 					// 得到索引
-					size_t idx = std::distance((std::vector<fblib::feature::CameraInfo>::const_iterator)camera_image_names_.begin(), iter);
+					size_t idx = std::distance((std::vector<mvg::feature::CameraInfo>::const_iterator)camera_image_names_.begin(), iter);
 					set_remaining_image_id_.insert(idx);
 					map_intrinsic_id_per_image_id_[idx] = camera_info.intrinsic_id;
 				}
@@ -217,17 +217,17 @@ namespace fblib{
 			TracksBuilder tracks_builder;
 
 			{
-				FBLIB_INFO << std::endl << "Track building" << std::endl;
+				MVG_INFO << std::endl << "Track building" << std::endl;
 				tracks_builder.Build(map_matches_fundamental_);
-				FBLIB_INFO << std::endl << "Track filtering" << std::endl;
+				MVG_INFO << std::endl << "Track filtering" << std::endl;
 				tracks_builder.Filter();
-				FBLIB_INFO << std::endl << "Track filtering : min occurence" << std::endl;
+				MVG_INFO << std::endl << "Track filtering : min occurence" << std::endl;
 				tracks_builder.FilterPairWiseMinimumMatches(20);
-				FBLIB_INFO << std::endl << "Track export to internal struct" << std::endl;
+				MVG_INFO << std::endl << "Track export to internal struct" << std::endl;
 				//-- Build tracks with STL compliant type :
 				tracks_builder.ExportToSTL(map_tracks_);
 
-				FBLIB_INFO << std::endl << "Track stats" << std::endl;
+				MVG_INFO << std::endl << "Track stats" << std::endl;
 				{
 					std::ostringstream osTrack;
 					//-- Display stats :
@@ -252,7 +252,7 @@ namespace fblib{
 						osTrack << "\t" << iter->first << "\t" << iter->second << "\n";
 					}
 					osTrack << "\n";
-					FBLIB_INFO << osTrack.str();
+					MVG_INFO << osTrack.str();
 				}
 			}
 
@@ -260,7 +260,7 @@ namespace fblib{
 			for (size_t i = 0; i < camera_image_names_.size(); ++i)  {
 				const size_t camIndex = i;
 				if (!LoadFeatsFromFile(
-					fblib::utils::create_filespec(matches_path_, fblib::utils::basename_part(camera_image_names_[camIndex].image_name), ".feat"),
+					mvg::utils::create_filespec(matches_path_, mvg::utils::basename_part(camera_image_names_[camIndex].image_name), ".feat"),
 					map_features_[camIndex])) {
 					std::cerr << "Bad reading of feature files" << std::endl;
 					return false;
@@ -325,7 +325,7 @@ namespace fblib{
 			}
 			else
 			{
-				FBLIB_INFO << std::endl
+				MVG_INFO << std::endl
 					<< "---------------------------------------------------\n"
 					<< "IncrementalReconstructionEngine::InitialPairChoice\n"
 					<< "---------------------------------------------------\n"
@@ -336,26 +336,26 @@ namespace fblib{
 
 				// Display to the user the 10 top Fundamental matches pair
 				std::vector< size_t > vec_NbMatchesPerPair;
-				for (fblib::feature::PairWiseMatches::const_iterator
+				for (mvg::feature::PairWiseMatches::const_iterator
 					iter = map_matches_fundamental_.begin();
 					iter != map_matches_fundamental_.end(); ++iter)
 				{
 					vec_NbMatchesPerPair.push_back(iter->second.size());
 				}
 				// sort in descending order
-				std::vector< fblib::utils::SortIndexPacketDescend< size_t, size_t> > packet_vec(vec_NbMatchesPerPair.size());
-				fblib::utils::SortIndexHelper(packet_vec, &vec_NbMatchesPerPair[0], std::min((size_t)10, map_matches_fundamental_.size()));
+				std::vector< mvg::utils::SortIndexPacketDescend< size_t, size_t> > packet_vec(vec_NbMatchesPerPair.size());
+				mvg::utils::SortIndexHelper(packet_vec, &vec_NbMatchesPerPair[0], std::min((size_t)10, map_matches_fundamental_.size()));
 
 				for (size_t i = 0; i < std::min((size_t)10, map_matches_fundamental_.size()); ++i) {
 					size_t index = packet_vec[i].index;
-					fblib::feature::PairWiseMatches::const_iterator iter = map_matches_fundamental_.begin();
+					mvg::feature::PairWiseMatches::const_iterator iter = map_matches_fundamental_.begin();
 					std::advance(iter, index);
-					FBLIB_INFO << "(" << iter->first.first << "," << iter->first.second << ")\t\t"
+					MVG_INFO << "(" << iter->first.first << "," << iter->first.second << ")\t\t"
 						<< iter->second.size() << " matches" << std::endl;
 				}
 
 				// Manual choice of the initial pair
-				FBLIB_INFO << std::endl << " type INITIAL pair Indexes: X enter Y enter\n";
+				MVG_INFO << std::endl << " type INITIAL pair Indexes: X enter Y enter\n";
 				int val, val2;
 				if (std::cin >> val && std::cin >> val2) {
 					initial_pair_index.first = val;
@@ -363,7 +363,7 @@ namespace fblib{
 				}
 			}
 
-			FBLIB_INFO << "\nPutative starting pair is: (" << initial_pair_index.first
+			MVG_INFO << "\nPutative starting pair is: (" << initial_pair_index.first
 				<< "," << initial_pair_index.second << ")" << std::endl;
 
 			// Check validity of the initial pair indices:
@@ -394,7 +394,7 @@ namespace fblib{
 			}
 
 			// a.coords Get common tracks between the two images
-			fblib::tracking::MapTracks map_tracksCommon;
+			mvg::tracking::MapTracks map_tracksCommon;
 			std::set<size_t> set_image_index;
 			set_image_index.insert(I);
 			set_image_index.insert(J);
@@ -408,7 +408,7 @@ namespace fblib{
 			const size_t n = map_tracksCommon.size();
 			Mat x1(2, n), x2(2, n);
 			size_t cptIndex = 0;
-			for (fblib::tracking::MapTracks::const_iterator
+			for (mvg::tracking::MapTracks::const_iterator
 				iterT = map_tracksCommon.begin();
 				iterT != map_tracksCommon.end();
 			++iterT)
@@ -429,8 +429,8 @@ namespace fblib{
 			std::vector<size_t> vec_inliers;
 			double errorMax = std::numeric_limits<double>::max();
 
-			const fblib::feature::IntrinsicCameraInfo & intrinsicCamI = vec_intrinsic_groups_[camera_image_names_[I].intrinsic_id];
-			const fblib::feature::IntrinsicCameraInfo & intrinsicCamJ = vec_intrinsic_groups_[camera_image_names_[J].intrinsic_id];
+			const mvg::feature::IntrinsicCameraInfo & intrinsicCamI = vec_intrinsic_groups_[camera_image_names_[I].intrinsic_id];
+			const mvg::feature::IntrinsicCameraInfo & intrinsicCamJ = vec_intrinsic_groups_[camera_image_names_[J].intrinsic_id];
 
 			if (!intrinsicCamI.is_known_intrinsic ||
 				!intrinsicCamJ.is_known_intrinsic)
@@ -450,7 +450,7 @@ namespace fblib{
 				return false;
 			}
 
-			FBLIB_INFO << std::endl
+			MVG_INFO << std::endl
 				<< "-- Robust Essential Matrix estimation " << std::endl
 				<< "--  #tentative/#inliers: " << x1.cols() << " / " << vec_inliers.size() << std::endl
 				<< "--  Threshold: " << errorMax << std::endl;
@@ -462,10 +462,10 @@ namespace fblib{
 				x1, x2, E, vec_inliers,
 				&RJ, &tJ))
 			{
-				FBLIB_INFO << " /!\\ Failed to compute initial R|t for the initial pair" << std::endl;
+				MVG_INFO << " /!\\ Failed to compute initial R|t for the initial pair" << std::endl;
 				return false;
 			}
-			FBLIB_INFO << std::endl
+			MVG_INFO << std::endl
 				<< "-- Rotation|Translation matrices: --" << std::endl
 				<< RJ << std::endl << std::endl << tJ << std::endl;
 
@@ -476,7 +476,7 @@ namespace fblib{
 			BrownPinholeCamera camJ(intrinsicCamJ.focal, intrinsicCamJ.camera_matrix(0, 2), intrinsicCamJ.camera_matrix(1, 2), RJ, tJ);
 
 			std::vector<IndexedMatch> vec_index;
-			for (fblib::tracking::MapTracks::const_iterator
+			for (mvg::tracking::MapTracks::const_iterator
 				iterT = map_tracksCommon.begin();
 				iterT != map_tracksCommon.end();
 			++iterT)
@@ -496,7 +496,7 @@ namespace fblib{
 			//- Add reconstructed point to the reconstruction data
 			//- Write corresponding that the track have a corresponding 3D point
 			cptIndex = 0;
-			for (fblib::tracking::MapTracks::const_iterator
+			for (mvg::tracking::MapTracks::const_iterator
 				iterT = map_tracksCommon.begin();
 				iterT != map_tracksCommon.end();
 			++iterT, cptIndex++)
@@ -532,9 +532,9 @@ namespace fblib{
 				}
 			}
 
-			FBLIB_INFO << "--#Triangulated 3D points: " << vec_inliers.size() << "\n";
-			FBLIB_INFO << "--#Triangulated 3D points under threshold: " << reconstructor_data_.map_3d_points.size() << "\n";
-			FBLIB_INFO << "--#Putative correspondences: " << x1.cols() << "\n";
+			MVG_INFO << "--#Triangulated 3D points: " << vec_inliers.size() << "\n";
+			MVG_INFO << "--#Triangulated 3D points under threshold: " << reconstructor_data_.map_3d_points.size() << "\n";
+			MVG_INFO << "--#Putative correspondences: " << x1.cols() << "\n";
 
 			set_remaining_image_id_.erase(I);
 			set_remaining_image_id_.erase(J);
@@ -565,10 +565,10 @@ namespace fblib{
 			}
 
 
-			reconstructor_data_.exportToPlyFile(fblib::utils::create_filespec(out_dir_, "sceneStart", "ply"));
+			reconstructor_data_.exportToPlyFile(mvg::utils::create_filespec(out_dir_, "sceneStart", "ply"));
 
 			Histogram<double> histoResiduals;
-			FBLIB_INFO << std::endl
+			MVG_INFO << std::endl
 				<< "=========================\n"
 				<< " MSE Residual InitialPair Inlier: " << ComputeResidualsHistogram(&histoResiduals) << "\n"
 				<< "=========================" << std::endl;
@@ -580,8 +580,8 @@ namespace fblib{
 				os << std::endl
 					<< "-------------------------------" << "<br>"
 					<< "-- Robust Essential matrix: <" << I << "," << J << "> images: "
-					<< fblib::utils::basename_part(camera_image_names_[I].image_name) << ","
-					<< fblib::utils::basename_part(camera_image_names_[J].image_name) << "<br>"
+					<< mvg::utils::basename_part(camera_image_names_[I].image_name) << ","
+					<< mvg::utils::basename_part(camera_image_names_[J].image_name) << "<br>"
 					<< "-- Threshold: " << errorMax << "<br>"
 					<< "-- Resection status: " << "OK" << "<br>"
 					<< "-- Nb points used for robust Essential matrix estimation: "
@@ -622,7 +622,7 @@ namespace fblib{
 
 				html_doc_stream_->pushInfo("<hr>");
 
-				ofstream htmlFileStream(string(fblib::utils::folder_append_separator(out_dir_) +
+				ofstream htmlFileStream(string(mvg::utils::folder_append_separator(out_dir_) +
 					"Reconstruction_Report.html").c_str());
 				htmlFileStream << html_doc_stream_->getDoc();
 			}
@@ -664,7 +664,7 @@ namespace fblib{
 				const size_t imageIndex = *iter;
 
 				// Compute 2D - 3D possible content
-				fblib::tracking::MapTracks map_tracksCommon;
+				mvg::tracking::MapTracks map_tracksCommon;
 				std::set<size_t> set_image_index;
 				set_image_index.insert(imageIndex);
 				TracksUtilsMap::GetTracksInImages(set_image_index, map_tracks_, map_tracksCommon);
@@ -696,7 +696,7 @@ namespace fblib{
 				vec_possible_indexes.push_back(vec_putative[0].first);
 
 				// TEMPORARY
-				// FBLIB_INFO << std::endl << std::endl << "TEMPORARY return only the best image" << std::endl;
+				// MVG_INFO << std::endl << std::endl << "TEMPORARY return only the best image" << std::endl;
 				// return true;
 				// END TEMPORARY
 
@@ -734,13 +734,13 @@ namespace fblib{
 		/// Add a single Image to the scene and triangulate new possible tracks
 		bool IncrementalReconstructionEngine::Resection(size_t imageIndex)
 		{
-			FBLIB_INFO << std::endl
+			MVG_INFO << std::endl
 				<< "-------------------------------" << std::endl
 				<< "-- Resection of camera index: " << imageIndex << std::endl
 				<< "-------------------------------" << std::endl;
 
 			// Compute 2D - 3D possible content
-			fblib::tracking::MapTracks map_tracksCommon;
+			mvg::tracking::MapTracks map_tracksCommon;
 			std::set<size_t> set_image_index;
 			set_image_index.insert(imageIndex);
 			TracksUtilsMap::GetTracksInImages(set_image_index, map_tracks_, map_tracksCommon);
@@ -765,7 +765,7 @@ namespace fblib{
 				imageIndex,
 				&vec_featIdForResection);
 
-			FBLIB_INFO << std::endl << std::endl
+			MVG_INFO << std::endl << std::endl
 				<< " Tracks in: " << imageIndex << std::endl
 				<< " \t" << map_tracksCommon.size() << std::endl
 				<< " #Reconstructed tracks:" << std::endl
@@ -800,7 +800,7 @@ namespace fblib{
 			Mat34 P;
 			double errorMax = std::numeric_limits<double>::max();
 
-			const fblib::feature::IntrinsicCameraInfo & intrinsicCam = vec_intrinsic_groups_[camera_image_names_[imageIndex].intrinsic_id];
+			const mvg::feature::IntrinsicCameraInfo & intrinsicCam = vec_intrinsic_groups_[camera_image_names_[imageIndex].intrinsic_id];
 
 			bool bResection = robustResection(
 				std::make_pair(intrinsicCam.width, intrinsicCam.height),
@@ -810,7 +810,7 @@ namespace fblib{
 				(intrinsicCam.is_known_intrinsic == true) ? &intrinsicCam.camera_matrix : NULL,
 				&P, &errorMax);
 
-			FBLIB_INFO << std::endl
+			MVG_INFO << std::endl
 				<< "-------------------------------" << std::endl
 				<< "-- Robust Resection of camera index: " << imageIndex << std::endl
 				<< "-- Resection status: " << bResection << std::endl
@@ -823,14 +823,14 @@ namespace fblib{
 			{
 				ostringstream os;
 				os << "Resection of Image index: <" << imageIndex << "> image: "
-					<< fblib::utils::basename_part(camera_image_names_[imageIndex].image_name) << "<br> \n";
+					<< mvg::utils::basename_part(camera_image_names_[imageIndex].image_name) << "<br> \n";
 				html_doc_stream_->pushInfo(htmlMarkup("h1", os.str()));
 
 				os.str("");
 				os << std::endl
 					<< "-------------------------------" << "<br>"
 					<< "-- Robust Resection of camera index: <" << imageIndex << "> image: "
-					<< fblib::utils::basename_part(camera_image_names_[imageIndex].image_name) << "<br>"
+					<< mvg::utils::basename_part(camera_image_names_[imageIndex].image_name) << "<br>"
 					<< "-- Threshold: " << errorMax << "<br>"
 					<< "-- Resection status: " << (bResection ? "OK" : "FAILED") << "<br>"
 					<< "-- Nb points used for Resection: " << vec_featIdForResection.size() << "<br>"
@@ -851,7 +851,7 @@ namespace fblib{
 				Mat3 K, R;
 				Vec3 t;
 				KRt_From_P(P, &K, &R, &t);
-				FBLIB_INFO << "\n Resection Calibration Matrix \n" << K << std::endl << std::endl;
+				MVG_INFO << "\n Resection Calibration Matrix \n" << K << std::endl << std::endl;
 
 				BrownPinholeCamera cam(K(0, 0), K(0, 2), K(1, 2), R, t);
 				reconstructor_data_.map_Camera.insert(std::make_pair(imageIndex, cam));
@@ -984,7 +984,7 @@ namespace fblib{
 				  ostringstream os;
 				  os << "scene_" << I << "-" << J;
 				  exportToPly(vec_3dPoint,
-					  fblib::utils::create_filespec(out_dir_, os.str(), "ply"));
+					  mvg::utils::create_filespec(out_dir_, os.str(), "ply"));
 			  }
 
 			  // Analyze 3D reconstructed point
@@ -1028,7 +1028,7 @@ namespace fblib{
 				  }
 			  }
 
-			  FBLIB_INFO << "--Triangulated 3D points [" << I << "-" << J << "]: "
+			  MVG_INFO << "--Triangulated 3D points [" << I << "-" << J << "]: "
 				  << "\t #Validated/#Possible: " << reconstructor_data_.map_3d_points.size() - cardPointsBefore
 				  << "/" << vec_3dPoint.size() << std::endl
 				  << " #3DPoint for the entire scene: " << reconstructor_data_.set_trackId.size() << std::endl;
@@ -1036,7 +1036,7 @@ namespace fblib{
 			  if (bVisual) {
 				  ostringstream file_name;
 				  file_name << "incremental_" << indexI << "-" << imageIndex;
-				  reconstructor_data_.exportToPlyFile(fblib::utils::create_filespec(out_dir_, file_name.str(), "ply"));
+				  reconstructor_data_.exportToPlyFile(mvg::utils::create_filespec(out_dir_, file_name.str(), "ply"));
 			  }
 		  }
 	  }
@@ -1133,7 +1133,7 @@ namespace fblib{
 				}
 			}
 
-			FBLIB_INFO << "\n#rejected track: " << set_trackToErase.size() << std::endl
+			MVG_INFO << "\n#rejected track: " << set_trackToErase.size() << std::endl
 				<< "#rejected Entire track: " << rejectedTrack << std::endl
 				<< "#rejected Measurement: " << rejectedMeasurement << std::endl;
 			return rejectedTrack + rejectedMeasurement;
@@ -1154,14 +1154,14 @@ namespace fblib{
 				//Build a list of contiguous index for the trackIds
 				std::map<size_t, size_t> trackIds_to_contiguousIndexes;
 				size_t cpt = 0;
-				for (fblib::tracking::MapTracks::const_iterator it = map_reconstructed_.begin();
+				for (mvg::tracking::MapTracks::const_iterator it = map_reconstructed_.begin();
 					it != map_reconstructed_.end(); ++it, ++cpt)
 				{
 					trackIds_to_contiguousIndexes[it->first] = cpt;
 				}
 
 				// The track list that will be colored (point removed during the process)
-				fblib::tracking::MapTracks mapTrackToColor(map_reconstructed_);
+				mvg::tracking::MapTracks mapTrackToColor(map_reconstructed_);
 				while (!mapTrackToColor.empty())
 				{
 					// Find the most representative image
@@ -1169,7 +1169,7 @@ namespace fblib{
 					//  b. Sort to find the most representative image
 
 					std::map<size_t, size_t> map_IndexCardinal; // ImageIndex, Cardinal
-					for (fblib::tracking::MapTracks::const_iterator
+					for (mvg::tracking::MapTracks::const_iterator
 						iterT = mapTrackToColor.begin();
 						iterT != mapTrackToColor.end();
 					++iterT)
@@ -1193,23 +1193,23 @@ namespace fblib{
 						map_IndexCardinal.end(),
 						std::back_inserter(vec_cardinal),
 						RetrieveValue());
-					std::vector< fblib::utils::SortIndexPacketDescend< size_t, size_t> > packet_vec(vec_cardinal.size());
-					fblib::utils::SortIndexHelper(packet_vec, &vec_cardinal[0]);
+					std::vector< mvg::utils::SortIndexPacketDescend< size_t, size_t> > packet_vec(vec_cardinal.size());
+					mvg::utils::SortIndexHelper(packet_vec, &vec_cardinal[0]);
 
 					//First index is the image with the most of matches
 					std::map<size_t, size_t>::const_iterator iterTT = map_IndexCardinal.begin();
 					std::advance(iterTT, packet_vec[0].index);
 					const size_t indexImage = iterTT->first;
-					fblib::image::Image<fblib::image::RGBColor> image;
+					mvg::image::Image<mvg::image::RGBColor> image;
 					readImage(
-						fblib::utils::create_filespec(
+						mvg::utils::create_filespec(
 						image_path_,
-						fblib::utils::basename_part(camera_image_names_[indexImage].image_name),
-						fblib::utils::extension_part(camera_image_names_[indexImage].image_name)).c_str(), &image);
+						mvg::utils::basename_part(camera_image_names_[indexImage].image_name),
+						mvg::utils::extension_part(camera_image_names_[indexImage].image_name)).c_str(), &image);
 
 					// Iterate through the track
 					std::set<size_t> set_toRemove;
-					for (fblib::tracking::MapTracks::const_iterator
+					for (mvg::tracking::MapTracks::const_iterator
 						iterT = mapTrackToColor.begin();
 						iterT != mapTrackToColor.end();
 					++iterT)
@@ -1223,7 +1223,7 @@ namespace fblib{
 							// Color the track
 							const size_t featId = iterF->second;
 							const ScalePointFeature & feat = map_features_.find(indexImage)->second[featId];
-							fblib::image::RGBColor color = image(feat.y(), feat.x());
+							mvg::image::RGBColor color = image(feat.y(), feat.x());
 
 							vec_tracks_color[trackIds_to_contiguousIndexes[trackId]] = Vec3(color.r(), color.g(), color.b());
 							set_toRemove.insert(trackId);
@@ -1242,7 +1242,7 @@ namespace fblib{
 
 		void IncrementalReconstructionEngine::BundleAdjustment()
 		{
-			FBLIB_INFO << "--      BUNDLE ADJUSTMENT      --" << std::endl;
+			MVG_INFO << "--      BUNDLE ADJUSTMENT      --" << std::endl;
 
 			//-- All the data that I must fill:
 			using namespace std;
@@ -1263,13 +1263,13 @@ namespace fblib{
 				nbmeasurements += track.size();
 			}
 
-			FBLIB_INFO << "#Cams: " << nbCams << std::endl
+			MVG_INFO << "#Cams: " << nbCams << std::endl
 				<< "#Intrinsics: " << nbIntrinsics << std::endl
 				<< "#Points3D: " << nbPoints3D << std::endl
 				<< "#measurements: " << nbmeasurements << std::endl;
 
 			// Setup a BA problem
-			using namespace fblib::sfm;
+			using namespace mvg::sfm;
 			BA_Problem_data_camMotionAndIntrinsic<6, 6> ba_problem;
 			// Will refine extrinsics[R,t] per camera and grouped intrinsics [focal,ppx,ppy,k1,k2,k3].
 
@@ -1470,13 +1470,13 @@ namespace fblib{
 			// Solve BA
 			ceres::Solver::Summary summary;
 			ceres::Solve(options, &problem, &summary);
-			FBLIB_INFO << summary.FullReport() << std::endl;
+			MVG_INFO << summary.FullReport() << std::endl;
 
 			// If no error, get back refined parameters
 			if (summary.IsSolutionUsable())
 			{
 				// Display statistics about the minimization
-				FBLIB_INFO << std::endl
+				MVG_INFO << std::endl
 					<< "Bundle Adjustment statistics:\n"
 					<< " Initial RMSE: " << std::sqrt(summary.initial_cost / (ba_problem.num_observations_*2.)) << "\n"
 					<< " Final RMSE: " << std::sqrt(summary.final_cost / (ba_problem.num_observations_*2.)) << "\n"
@@ -1536,7 +1536,7 @@ namespace fblib{
 						camIntrinsics[OFFSET_K2],
 						camIntrinsics[OFFSET_K3];
 
-					FBLIB_INFO << " for camera Idx=[" << cpt << "]: " << std::endl
+					MVG_INFO << " for camera Idx=[" << cpt << "]: " << std::endl
 						<< "\t focal: " << camIntrinsics[OFFSET_FOCAL_LENGTH] << std::endl
 						<< "\t ppx: " << camIntrinsics[OFFSET_PRINCIPAL_POINT_X] << std::endl
 						<< "\t ppy: " << camIntrinsics[OFFSET_PRINCIPAL_POINT_Y] << std::endl
@@ -1601,8 +1601,8 @@ namespace fblib{
 					histo->Add(vec_residuals.begin(), vec_residuals.end());
 				}
 
-				FBLIB_INFO << std::endl << std::endl;
-				FBLIB_INFO << std::endl
+				MVG_INFO << std::endl << std::endl;
+				MVG_INFO << std::endl
 					<< "IncrementalReconstructionEngine::ComputeResidualsMSE." << "\n"
 					<< "\t-- #Tracks:\t" << map_reconstructed_.size() << std::endl
 					<< "\t-- Residual min:\t" << min_residual << std::endl
@@ -1615,4 +1615,4 @@ namespace fblib{
 			return -1.0;
 		}
 	}
-} // namespace fblib
+} // namespace mvg

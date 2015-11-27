@@ -4,29 +4,29 @@
 #include <iterator>
 #include <vector>
 
-#include "fblib/utils/cmd_line.h"
-#include "fblib/utils/file_system.h"
-#include "fblib/utils/progress.h"
+#include "mvg/utils/cmd_line.h"
+#include "mvg/utils/file_system.h"
+#include "mvg/utils/progress.h"
 
-#include "fblib/image/image.h"
+#include "mvg/image/image.h"
 
-#include "fblib/feature/features.h"
-#include "fblib/feature/sift.hpp"
-#include "fblib/feature/matcher_all_in_memory.h"
-#include "fblib/feature/geometric_filter.h"
-#include "fblib/feature/pairwise_adjacency_display.h"
-#include "fblib/feature/image_list_io_helper.h"
-#include "fblib/feature/matcher_brute_force.h"
-#include "fblib/feature/matcher_kdtree_flann.h"
-#include "fblib/feature/indexed_match_utils.h"
+#include "mvg/feature/features.h"
+#include "mvg/feature/sift.hpp"
+#include "mvg/feature/matcher_all_in_memory.h"
+#include "mvg/feature/geometric_filter.h"
+#include "mvg/feature/pairwise_adjacency_display.h"
+#include "mvg/feature/image_list_io_helper.h"
+#include "mvg/feature/matcher_brute_force.h"
+#include "mvg/feature/matcher_kdtree_flann.h"
+#include "mvg/feature/indexed_match_utils.h"
 
-#include "fblib/multiview/fundamental_acransac.h"
-#include "fblib/multiview/essential_acransac.h"
-#include "fblib/multiview/homography_acransac.h"
+#include "mvg/multiview/fundamental_acransac.h"
+#include "mvg/multiview/essential_acransac.h"
+#include "mvg/multiview/homography_acransac.h"
 
-using namespace fblib::utils;
-using namespace fblib::feature;
-using namespace fblib::multiview;
+using namespace mvg::utils;
+using namespace mvg::feature;
+using namespace mvg::multiview;
 using namespace std;
 /**两幅图像计算的关系*/
 enum GeometricModel
@@ -126,20 +126,20 @@ int main(int argc, char **argv)
 	// -------------------------------------------
 
 	// 创建输出目录
-	if (!fblib::utils::folder_exists(out_dir))
-		fblib::utils::folder_create(out_dir);
+	if (!mvg::utils::folder_exists(out_dir))
+		mvg::utils::folder_create(out_dir);
 
 	//根据list.txt文件获取图像集的焦距信息
-	std::string file_lists = fblib::utils::create_filespec(out_dir, "lists.txt");
-	if (!fblib::utils::is_file(file_lists)) {
+	std::string file_lists = mvg::utils::create_filespec(out_dir, "lists.txt");
+	if (!mvg::utils::is_file(file_lists)) {
 		std::cerr << std::endl
 			<< "The input file \"" << file_lists << "\" is missing" << std::endl;
 		return false;
 	}
 
-	std::vector<fblib::feature::CameraInfo> vec_camera_info;
-	std::vector<fblib::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
-	if (!fblib::feature::loadImageList(file_lists, vec_camera_info,
+	std::vector<mvg::feature::CameraInfo> vec_camera_info;
+	std::vector<mvg::feature::IntrinsicCameraInfo> vec_cameras_intrinsic;
+	if (!mvg::feature::loadImageList(file_lists, vec_camera_info,
 		vec_cameras_intrinsic
 		))
 	{
@@ -150,7 +150,7 @@ int main(int argc, char **argv)
 	if (geometric_model_to_compute == ESSENTIAL_MATRIX)
 	{
 		// 对所有图像的相机矩阵信息进行去重，目前只处理具有相同内参的图片
-		std::vector<fblib::feature::IntrinsicCameraInfo>::iterator iterE =
+		std::vector<mvg::feature::IntrinsicCameraInfo>::iterator iterE =
 			std::unique(vec_cameras_intrinsic.begin(), vec_cameras_intrinsic.end(), testIntrinsicsEquality);
 		vec_cameras_intrinsic.resize(std::distance(vec_cameras_intrinsic.begin(), iterE));
 		if (vec_cameras_intrinsic.size() == 1) {
@@ -168,14 +168,14 @@ int main(int argc, char **argv)
 	// 两个别名，以便方便的访问图像文件名及图像大小
 	std::vector<std::string> file_names;
 	std::vector<std::pair<size_t, size_t> > vec_images_size;
-	for (std::vector<fblib::feature::CameraInfo>::const_iterator
+	for (std::vector<mvg::feature::CameraInfo>::const_iterator
 		iter_camera_info = vec_camera_info.begin();
 		iter_camera_info != vec_camera_info.end();
 	iter_camera_info++)
 	{
 		vec_images_size.push_back(std::make_pair(vec_cameras_intrinsic[iter_camera_info->intrinsic_id].width,
 			vec_cameras_intrinsic[iter_camera_info->intrinsic_id].height));
-		file_names.push_back(fblib::utils::create_filespec(image_dir, iter_camera_info->image_name));
+		file_names.push_back(mvg::utils::create_filespec(image_dir, iter_camera_info->image_name));
 	}
 
 	//计算特征和描述子，如果特征已经计算，则导入特征，否则重新计算并保存
@@ -193,13 +193,13 @@ int main(int argc, char **argv)
 		// 显示处理百分比
 		ControlProgressDisplay my_progress_bar(file_names.size());
 		for (size_t i = 0; i < file_names.size(); ++i)  {
-			std::string feat = fblib::utils::create_filespec(out_dir,
-				fblib::utils::basename_part(file_names[i]), "feat");
-			std::string desc = fblib::utils::create_filespec(out_dir,
-				fblib::utils::basename_part(file_names[i]), "desc");
+			std::string feat = mvg::utils::create_filespec(out_dir,
+				mvg::utils::basename_part(file_names[i]), "feat");
+			std::string desc = mvg::utils::create_filespec(out_dir,
+				mvg::utils::basename_part(file_names[i]), "desc");
 
 			//如果文件夹下不存在特征及描述，则进行计算
-			if (!fblib::utils::file_exists(feat) || !fblib::utils::file_exists(desc)) {
+			if (!mvg::utils::file_exists(feat) || !mvg::utils::file_exists(desc)) {
 
 				if (!readImage(file_names[i].c_str(), &gray_image))
 					continue;
@@ -227,7 +227,7 @@ int main(int argc, char **argv)
 	//typedef ArrayMatcherBruteForce<DescriptorT::bin_type, MetricT> MatcherT;
 
 	// 如果匹配已经存在，重新导入
-	if (fblib::utils::file_exists(out_dir + "/matches.putative.txt"))
+	if (mvg::utils::file_exists(out_dir + "/matches.putative.txt"))
 	{
 		pairedIndexedMatchImport(out_dir + "/matches.putative.txt", map_putatives_matches);
 		std::cout << std::endl << "PUTATIVE MATCHES -- PREVIOUS RESULTS LOADED" << std::endl;
@@ -249,7 +249,7 @@ int main(int argc, char **argv)
 	//导出可能的匹配，通过邻接矩阵的方式显示
 	PairWiseMatchingToAdjacencyMatrixSVG(file_names.size(),
 		map_putatives_matches,
-		fblib::utils::create_filespec(out_dir, "PutativeAdjacencyMatrix", "svg"));
+		mvg::utils::create_filespec(out_dir, "PutativeAdjacencyMatrix", "svg"));
 
 	// 根据几何性质对可能的匹配进行过滤
 	PairWiseMatches map_geometric_matches;
@@ -322,7 +322,7 @@ int main(int argc, char **argv)
 			<< std::endl;
 		PairWiseMatchingToAdjacencyMatrixSVG(file_names.size(),
 			map_geometric_matches,
-			fblib::utils::create_filespec(out_dir, "GeometricAdjacencyMatrix", "svg"));
+			mvg::utils::create_filespec(out_dir, "GeometricAdjacencyMatrix", "svg"));
 	}
 	return EXIT_SUCCESS;
 }

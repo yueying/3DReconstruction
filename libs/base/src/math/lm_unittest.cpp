@@ -1,14 +1,14 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
-#include "fblib/math/numeric.h"
-#include "fblib/math/lm.h"
+#include "mvg/math/numeric.h"
+#include "mvg/math/lm.h"
 #include "testing.h"
 
-#include "fblib/utils/svg_drawer.h"
+#include "mvg/utils/svg_drawer.h"
 
-using namespace fblib::math;
-using namespace fblib::utils;
+using namespace mvg::math;
+using namespace mvg::utils;
 using namespace std;
 
 // Implementation of the prolem found here :

@@ -1,7 +1,7 @@
-﻿#include "fblib/image/image.h"
+﻿#include "mvg/image/image.h"
 #include "testing.h"
 
-using namespace fblib::image;
+using namespace mvg::image;
 
 // Horizontal / Vertical scanlines
 // Assert that pixels was drawn at the good place

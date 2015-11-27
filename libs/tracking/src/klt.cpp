@@ -1,14 +1,14 @@
 #include "tracking_precomp.h"
-#include "fblib/tracking/klt.h"
+#include "mvg/tracking/klt.h"
 
-#include "fblib/math/numeric.h"
-#include "fblib/image/image.h"
-#include "fblib/image/sample.h"
+#include "mvg/math/numeric.h"
+#include "mvg/image/image.h"
+#include "mvg/image/sample.h"
 
-using namespace fblib::math;
-using namespace fblib::image;
+using namespace mvg::math;
+using namespace mvg::image;
 
-namespace fblib {
+namespace mvg {
 	namespace tracking{
 		Tracker::Tracker(const Image<float> &image1,
 			float x,
@@ -194,4 +194,4 @@ namespace fblib {
 			return false;
 		}
 	}
-}  // namespace fblib
+}  // namespace mvg

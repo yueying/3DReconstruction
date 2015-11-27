@@ -1,12 +1,12 @@
-﻿#include "fblib/multiview/essential.h"
-#include "fblib/multiview/solver_essential_kernel.h"
-#include "fblib/camera/projection.h"
+﻿#include "mvg/multiview/essential.h"
+#include "mvg/multiview/solver_essential_kernel.h"
+#include "mvg/camera/projection.h"
 #include "testing.h"
 
-#include "fblib/multiview/nview_data_sets.h"
+#include "mvg/multiview/nview_data_sets.h"
 
-using namespace fblib::multiview;
-using namespace fblib::camera;
+using namespace mvg::multiview;
+using namespace mvg::camera;
 
 /// Check that the E matrix fit the Essential Matrix properties
 /// Determinant is 0

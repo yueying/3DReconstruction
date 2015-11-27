@@ -9,11 +9,11 @@
 ********************************************************************************/
 #include "base_precomp.h"
 
-#include <fblib/utils/string_list.h>
-#include <fblib/utils/fblib_macros.h>
-#include <fblib/utils/string_utils.h>
+#include <mvg/utils/string_list.h>
+#include <mvg/utils/mvg_macros.h>
+#include <mvg/utils/string_utils.h>
 
-using namespace fblib::utils;
+using namespace mvg::utils;
 
 /** 默认构造函数，空的字符串列表
 */
@@ -26,9 +26,9 @@ StringList::StringList()
 */
 StringList::StringList(const std::string& text)
 {
-	FBLIB_START
+	MVG_START
 		setText(text);
-	FBLIB_END
+	MVG_END
 }
 
 
@@ -43,24 +43,24 @@ void  StringList::add(const std::string &str)
 */
 void  StringList::insert(size_t index, const std::string &str)
 {
-	FBLIB_START
+	MVG_START
 
 	if (index >= m_strings.size()) THROW_EXCEPTION("index out of bounds!");
 	m_strings.insert(m_strings.begin() + index, str);
 
-	FBLIB_END
+	MVG_END
 }
 
 /** 对指定位置的值进行重写(0代表起始位置)
 */
 void  StringList::set(size_t index, const std::string &str)
 {
-	FBLIB_START
+	MVG_START
 
 	if (index >= m_strings.size()) THROW_EXCEPTION("index out of bounds!");
 	m_strings[index] = str;
 
-	FBLIB_END
+	MVG_END
 }
 
 /** 清除整个字符串列表
@@ -75,12 +75,12 @@ void  StringList::clear()
 */
 void  StringList::remove(size_t index)
 {
-	FBLIB_START
+	MVG_START
 
 	if (index >= m_strings.size()) THROW_EXCEPTION("index out of bounds!");
 	m_strings.erase(m_strings.begin() + index);
 
-	FBLIB_END
+	MVG_END
 }
 
 
@@ -92,7 +92,7 @@ bool  StringList::find(
 	size_t					foundIndex,
 	bool					caseSensitive) const
 {
-	FBLIB_START
+	MVG_START
 
 	foundIndex = 0;
 	if (caseSensitive)
@@ -109,14 +109,14 @@ bool  StringList::find(
 	}
 
 	return false;
-	FBLIB_END
+	MVG_END
 }
 
 /** 将整个字符串列表组成一个字符串返回通过'\r\n'.
 */
 void  StringList::getText(std::string &outText) const
 {
-	FBLIB_START
+	MVG_START
 	std::deque<std::string>::const_iterator	it;
 	size_t	curPos = 0, totalLen = 0;
 
@@ -137,16 +137,16 @@ void  StringList::getText(std::string &outText) const
 		outText[curPos++] = '\n';
 	}
 
-	FBLIB_END
+	MVG_END
 }
 
 /** 将一个字符串切分通过转义字符'\r', '\n', 或者 '\r\n'.
 */
 void  StringList::setText(const std::string &inText)
 {
-	FBLIB_START
-		fblib::utils::tokenize(inText, "\r\n", m_strings);
-	FBLIB_END
+	MVG_START
+		mvg::utils::tokenize(inText, "\r\n", m_strings);
+	MVG_END
 }
 
 
@@ -161,40 +161,40 @@ size_t  StringList::size() const
 */
 void  StringList::get(size_t index, std::string &outText) const
 {
-	FBLIB_START
+	MVG_START
 
 	if (index >= m_strings.size()) THROW_EXCEPTION("index out of bounds!");
 	outText = m_strings[index];
 
-	FBLIB_END
+	MVG_END
 }
 
 /*重载操作符()*/
 std::string  StringList::operator ()(size_t index) const
 {
-	FBLIB_START
+	MVG_START
 
 	if (index >= m_strings.size()) THROW_EXCEPTION("index out of bounds!");
 	return m_strings[index];
 
-	FBLIB_END
+	MVG_END
 }
 
 /*重载操作符()*/
 std::string&  StringList::operator ()(size_t index)
 {
-	FBLIB_START
+	MVG_START
 
 	if (index >= m_strings.size()) THROW_EXCEPTION("index out of bounds!");
 	return m_strings[index];
 
-	FBLIB_END
+	MVG_END
 }
 
 /*根据key返回value*/
 std::string  StringList::get_string(const std::string &keyName)
 {
-	FBLIB_START
+	MVG_START
 
 	std::string		strToLookFor(keyName + std::string("="));
 	size_t			idx = std::string::npos;
@@ -208,57 +208,57 @@ std::string  StringList::get_string(const std::string &keyName)
 
 	THROW_EXCEPTION(format("Key '%s' not found!", keyName.c_str()));
 
-	FBLIB_END
+	MVG_END
 }
 
 /*根据key返回value*/
 float StringList::get_float(const std::string &keyName)
 {
-	FBLIB_START
+	MVG_START
 
 	std::string	s(get_string(keyName));
 	return (float)atof(s.c_str());
 
-	FBLIB_END
+	MVG_END
 }
 
 /*根据key返回value*/
 int StringList::get_int(const std::string &keyName)
 {
-	FBLIB_START
+	MVG_START
 
 	std::string	s(get_string(keyName));
 	return atoi(s.c_str());
 
-	FBLIB_END
+	MVG_END
 }
 
 /*根据key返回value*/
 double StringList::get_double(const std::string &keyName)
 {
-	FBLIB_START
+	MVG_START
 
 	std::string	s(get_string(keyName));
 	return atof(s.c_str());
 
-	FBLIB_END
+	MVG_END
 }
 
 /*根据key返回value*/
 bool StringList::get_bool(const std::string &keyName)
 {
-	FBLIB_START
+	MVG_START
 
 	std::string	s(get_string(keyName));
 	return atoi(s.c_str()) != 0;
 
-	FBLIB_END
+	MVG_END
 }
 
 /*设置值根据给定的keyy ("key=value"),如果存在则覆盖.*/
 void  StringList::set(const std::string &keyName, const std::string &value)
 {
-	FBLIB_START
+	MVG_START
 
 	std::string		strToLookFor(keyName + std::string("="));
 	size_t			idx = std::string::npos;
@@ -277,35 +277,35 @@ void  StringList::set(const std::string &keyName, const std::string &value)
 	// 如果是一个新key添加该字符串
 	m_strings.push_back(strToLookFor + value);
 
-	FBLIB_END
+	MVG_END
 }
 /*设置值根据给定的keyy ("key=value"),如果存在则覆盖.*/
 void  StringList::set(const std::string &keyName, const int &value)
 {
-	FBLIB_START
+	MVG_START
 		set(keyName, format("%i", value));
-	FBLIB_END
+	MVG_END
 }
 /*设置值根据给定的keyy ("key=value"),如果存在则覆盖.*/
 void  StringList::set(const std::string &keyName, const float &value)
 {
-	FBLIB_START
+	MVG_START
 		set(keyName, format("%.10e", value));
-	FBLIB_END
+	MVG_END
 }
 
 /*设置值根据给定的keyy ("key=value"),如果存在则覆盖.*/
 void  StringList::set(const std::string &keyName, const double &value)
 {
-	FBLIB_START
+	MVG_START
 		set(keyName, format("%.16e", value));
-	FBLIB_END
+	MVG_END
 }
 
 /*设置值根据给定的keyy ("key=value"),如果存在则覆盖.*/
 void  StringList::set(const std::string &keyName, const bool &value)
 {
-	FBLIB_START
+	MVG_START
 		set(keyName, std::string(value ? "1" : "0"));
-	FBLIB_END
+	MVG_END
 }

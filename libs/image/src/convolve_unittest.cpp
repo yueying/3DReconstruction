@@ -1,12 +1,12 @@
 #include <iostream>
 
-#include "fblib/image/convolve.h"
-#include "fblib/image/image.h"
-#include "fblib/math/numeric.h"
+#include "mvg/image/convolve.h"
+#include "mvg/image/image.h"
+#include "mvg/math/numeric.h"
 #include "testing.h"
 
-using namespace fblib::image;
-using namespace fblib::math;
+using namespace mvg::image;
+using namespace mvg::math;
 
 TEST(Convolve, ComputeGaussianKernel) {
   Vec kernel, derivative;

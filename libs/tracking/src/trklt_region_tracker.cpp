@@ -1,14 +1,14 @@
 #include "tracking_precomp.h"
-#include "fblib/tracking/trklt_region_tracker.h"
+#include "mvg/tracking/trklt_region_tracker.h"
 
-#include "fblib/utils/notify.h"
-#include "fblib/math/numeric.h"
-#include "fblib/image/image.h"
-#include "fblib/image/convolve.h"
-#include "fblib/image/sample.h"
-using namespace fblib::image;
-using namespace fblib::utils;
-namespace fblib {
+#include "mvg/utils/notify.h"
+#include "mvg/math/numeric.h"
+#include "mvg/image/image.h"
+#include "mvg/image/convolve.h"
+#include "mvg/image/sample.h"
+using namespace mvg::image;
+using namespace mvg::utils;
+namespace mvg {
 	namespace tracking{
 		// TODO(keir): Switch this to use the smarter LM loop like in ESM.
 
@@ -155,4 +155,4 @@ namespace fblib {
 			return false;
 		}
 	}
-}  // namespace fblib
+}  // namespace mvg

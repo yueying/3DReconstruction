@@ -2,19 +2,19 @@
 #include <vector>
 
 #include "testing.h"
-#include "fblib/math/numeric.h"
-#include "fblib/multiview/nview_data_sets.h"
-#include "fblib/camera/projection.h"
+#include "mvg/math/numeric.h"
+#include "mvg/multiview/nview_data_sets.h"
+#include "mvg/camera/projection.h"
 
-#include "fblib/sfm/linear_programming_interface.h"
-#include "fblib/sfm/linear_programming_osi.h"
-#include "fblib/sfm/bisection_linear_programming.h"
-#include "fblib/sfm/triangulation.h"
+#include "mvg/sfm/linear_programming_interface.h"
+#include "mvg/sfm/linear_programming_osi.h"
+#include "mvg/sfm/bisection_linear_programming.h"
+#include "mvg/sfm/triangulation.h"
 
-using namespace fblib::math;
-using namespace fblib::multiview;
-using namespace fblib::sfm;
-using namespace fblib::camera;
+using namespace mvg::math;
+using namespace mvg::multiview;
+using namespace mvg::sfm;
+using namespace mvg::camera;
 
 TEST(lInfinityCV, Triangulation_OSICLPSOLVER) {
 

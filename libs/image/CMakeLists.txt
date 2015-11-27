@@ -1,25 +1,25 @@
-LIST(APPEND image_EXTRA_SRCS       "${FBLIB_SOURCE_DIR}/3rdparty/jpeg/*.h" "${FBLIB_SOURCE_DIR}/3rdparty/jpeg/*.c")
+LIST(APPEND image_EXTRA_SRCS       "${MVG_SOURCE_DIR}/3rdparty/jpeg/*.h" "${MVG_SOURCE_DIR}/3rdparty/jpeg/*.c")
 LIST(APPEND image_EXTRA_SRCS_NAME  "utils/jpeg" "utils/jpeg")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/jpeg")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/jpeg")
 
-LIST(APPEND image_EXTRA_SRCS       "${FBLIB_SOURCE_DIR}/3rdparty/png/*.h" "${FBLIB_SOURCE_DIR}/3rdparty/png/*.c")
+LIST(APPEND image_EXTRA_SRCS       "${MVG_SOURCE_DIR}/3rdparty/png/*.h" "${MVG_SOURCE_DIR}/3rdparty/png/*.c")
 LIST(APPEND image_EXTRA_SRCS_NAME  "utils/png" "utils/png")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/png")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/png")
 
-LIST(APPEND image_EXTRA_SRCS       "${FBLIB_SOURCE_DIR}/3rdparty/zlib/*.h" "${FBLIB_SOURCE_DIR}/3rdparty/zlib/*.c")
+LIST(APPEND image_EXTRA_SRCS       "${MVG_SOURCE_DIR}/3rdparty/zlib/*.h" "${MVG_SOURCE_DIR}/3rdparty/zlib/*.c")
 LIST(APPEND image_EXTRA_SRCS_NAME  "utils/zlib" "utils/zlib")
-INCLUDE_DIRECTORIES("${FBLIB_SOURCE_DIR}/3rdparty/zlib")
+INCLUDE_DIRECTORIES("${MVG_SOURCE_DIR}/3rdparty/zlib")
 #---------------------------------------------
-# Macro declared in "DeclareFBLIBLib.cmake":
+# Macro declared in "DeclareMVGLib.cmake":
 #---------------------------------------------
-define_fblib_lib(
+define_mvg_lib(
 	# Lib name
 	image 		
 	# Dependencies
-	fblib_base
+	mvg_base
 	)
 
-IF(BUILD_fblib_image) 
+IF(BUILD_mvg_image) 
 
-ENDIF(BUILD_fblib_image) 
+ENDIF(BUILD_mvg_image) 
 

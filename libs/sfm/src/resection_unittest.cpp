@@ -3,17 +3,17 @@
 #include <iostream>
 #include <vector>
 
-#include "fblib/multiview/nview_data_sets.h"
-#include "fblib/camera/projection.h"
-#include "fblib/sfm/linear_programming_interface.h"
-#include "fblib/sfm/linear_programming_osi.h"
-#include "fblib/sfm/bisection_linear_programming.h"
-#include "fblib/sfm/resection.h"
+#include "mvg/multiview/nview_data_sets.h"
+#include "mvg/camera/projection.h"
+#include "mvg/sfm/linear_programming_interface.h"
+#include "mvg/sfm/linear_programming_osi.h"
+#include "mvg/sfm/bisection_linear_programming.h"
+#include "mvg/sfm/resection.h"
 
-using namespace fblib::math;
-using namespace fblib::multiview;
-using namespace fblib::sfm;
-using namespace fblib::camera;
+using namespace mvg::math;
+using namespace mvg::multiview;
+using namespace mvg::sfm;
+using namespace mvg::camera;
 
 // 平移操作
 void Translate(const Mat3X &input_3d_point, const Vec3 &translation,

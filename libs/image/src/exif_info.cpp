@@ -7,9 +7,9 @@
  * 说明： JPEG头文件的解析 IFD：Image File Directory
  *
 ********************************************************************************/
-#include <fblib/image/exif_info.h>
+#include <mvg/image/exif_info.h>
 
-namespace fblib
+namespace mvg
 {
 	namespace image
 	{

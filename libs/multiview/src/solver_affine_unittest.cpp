@@ -1,7 +1,7 @@
 ﻿#include "testing.h"
-#include "fblib/multiview/solver_affine.h"
+#include "mvg/multiview/solver_affine.h"
 
-using namespace fblib::multiview;
+using namespace mvg::multiview;
 
 TEST(Affine2DTest, TranslationX) {
 	Mat x1(2, 3);
