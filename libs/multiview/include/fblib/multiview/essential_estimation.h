@@ -21,7 +21,7 @@ namespace fblib{
 		 * \param	right_camera_intrinsic	右相机的内参.
 		 * \param	left_points			  	左图像中的特征点
 		 * \param	right_points		  	右图像中的特征点
-		 * \param [in,out]	pE			  	If non-null, the p e.
+		 * \param [in,out]	essential_matrix			  	If non-null, the p e.
 		 * \param [in,out]	pvec_inliers  	If non-null, the pvec inliers.
 		 * \param	left_image_size		  	左边图像的大小
 		 * \param	right_image_size	  	右边图像的大小
@@ -35,7 +35,7 @@ namespace fblib{
 		bool robustEssential(
 			const Mat3 &left_camera_intrinsic, const Mat3 &right_camera_intrinsic,
 			const Mat &left_points, const Mat &right_points,
-			Mat3 *pE,
+			Mat3 *essential_matrix,
 			std::vector<size_t> * pvec_inliers,
 			const std::pair<size_t, size_t> &left_image_size,
 			const std::pair<size_t, size_t> &right_image_size,
@@ -44,7 +44,7 @@ namespace fblib{
 			double precision = std::numeric_limits<double>::infinity())
 		{
 			assert(pvec_inliers != NULL);
-			assert(pE != NULL);
+			assert(essential_matrix != NULL);
 
 			// 通过5点算法求解本质矩阵essential_matrix
 			typedef fblib::multiview::essential::FivePointKernel SolverType;
@@ -61,7 +61,7 @@ namespace fblib{
 
 			// Robustly estimation of the Essential matrix and it's precision
 			std::pair<double, double> acransac_out = ACRANSAC(kernel, *pvec_inliers,
-				4096, pE, precision, true);
+				4096, essential_matrix, precision, true);
 			*errorMax = acransac_out.first;
 			*NFA = acransac_out.second;
 

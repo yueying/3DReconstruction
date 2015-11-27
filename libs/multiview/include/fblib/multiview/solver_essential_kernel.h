@@ -34,24 +34,23 @@ namespace fblib {
 				static void Solve(const Mat &x1, const Mat &x2, std::vector<Mat3> *E);
 			};
 
-			//-- Generic Solver for the 5pt Essential Matrix Estimation.
-			//-- Need a new Class that inherit of two_view::kernel::kernel.
-			//    Error must be overwrite in order to compute fundamental_matrix from E and K's.
-			//-- Fitting must normalize image values to camera values.
-			template<typename SolverArg,
-				typename ErrorArg,
-				typename ModelArg = Mat3>
-			class EssentialKernel :
-				public two_view::Kernel < SolverArg, ErrorArg, ModelArg >
+			/** 
+			* \brief 给出一个通用的5点法对本质矩阵进行估计，通过继承two_view::Kernel
+			* \tparam	SolverArg	解决问题模型
+			* \tparam	ErrorArg 	度量模型
+			* \tparam	ModelArg 	解决问题对应的矩阵类型
+			*/
+			template<typename SolverArg,typename ErrorArg,typename ModelArg = Mat3>
+			class EssentialKernel : public two_view::Kernel < SolverArg, ErrorArg, ModelArg >
 			{
 			public:
-				EssentialKernel(const Mat &x1, const Mat &x2,
-					const Mat3 &K1, const Mat3 &K2) :
-					two_view::Kernel<SolverArg, ErrorArg, ModelArg>(x1, x2),
-					K1_(K1), K2_(K2) {}
+				/**传入左右两幅图像的对应点及对应相机内参*/
+				EssentialKernel(const Mat &x1, const Mat &x2, const Mat3 &K1, const Mat3 &K2) :
+					two_view::Kernel<SolverArg, ErrorArg, ModelArg>(x1, x2),K1_(K1), K2_(K2) {}
+				/**从样本中适配模型*/
 				void Fit(const std::vector<size_t> &samples, std::vector<ModelArg> *models) const {
-					Mat x1 = ExtractColumns(this->x1_, samples);
-					Mat x2 = ExtractColumns(this->x2_, samples);
+					Mat x1 = extractColumns(this->x1_, samples);
+					Mat x2 = extractColumns(this->x2_, samples);
 
 					assert(2 == x1.rows());
 					assert(SolverArg::MINIMUM_SAMPLES <= x1.cols());
@@ -59,11 +58,11 @@ namespace fblib {
 					assert(x1.cols() == x2.cols());
 
 					// Normalize the data (image coords to camera coords).
-					Mat3 K1Inverse = K1_.inverse();
-					Mat3 K2Inverse = K2_.inverse();
+					Mat3 K1_inverse = K1_.inverse();
+					Mat3 K2_inverse = K2_.inverse();
 					Mat x1_normalized, x2_normalized;
-					ApplyTransformationToPoints(x1, K1Inverse, &x1_normalized);
-					ApplyTransformationToPoints(x2, K2Inverse, &x2_normalized);
+					applyTransformationToPoints(x1, K1_inverse, &x1_normalized);
+					applyTransformationToPoints(x2, K2_inverse, &x2_normalized);
 					SolverArg::Solve(x1_normalized, x2_normalized, models);
 				}
 
@@ -82,8 +81,8 @@ namespace fblib {
 
 
 			// 5点法进行本质矩阵估计
-			typedef essential::EssentialKernel < FivePointSolver,
-				fundamental::SampsonError, Mat3 > FivePointKernel;
+			typedef essential::EssentialKernel <FivePointSolver,
+				fundamental::SampsonError, Mat3> FivePointKernel;
 
 
 		}  // namespace essential

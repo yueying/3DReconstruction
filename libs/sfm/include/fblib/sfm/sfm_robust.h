@@ -35,7 +35,7 @@ static const size_t ACRANSAC_ITER = 4096;
  * @param[in] K2 camera 2 intrinsics
  * @param[in] x1 camera 1 image points
  * @param[in] x2 camera 2 image points
- * @param[out] pE essential matrix (can be NULL)
+ * @param[out] essential_matrix essential matrix (can be NULL)
  * @param[out] pvec_inliers inliers indices (can be empty)
  * @param[in] size_ima1 width, height of image 1
  * @param[in] size_ima2 width, height of image 2
@@ -45,14 +45,14 @@ static const size_t ACRANSAC_ITER = 4096;
 bool robustEssential(
   const Mat3 & K1, const Mat3 & K2,
   const Mat & x1, const Mat & x2,
-  Mat3 * pE, std::vector<size_t> * pvec_inliers,
+  Mat3 * essential_matrix, std::vector<size_t> * pvec_inliers,
   const std::pair<size_t, size_t> & size_ima1,
   const std::pair<size_t, size_t> & size_ima2,
   double * errorMax,
   double precision = std::numeric_limits<double>::infinity())
 {
   assert(pvec_inliers != NULL);
-  assert(pE != NULL);
+  assert(essential_matrix != NULL);
 
   // Use the 5 point solver to estimate E
   typedef fblib::multiview::essential::FivePointKernel SolverType;
@@ -69,7 +69,7 @@ bool robustEssential(
 
   // Robustly estimation of the Essential matrix and it's precision
   std::pair<double,double> acRansacOut = ACRANSAC(kernel, *pvec_inliers,
-    ACRANSAC_ITER, pE, precision, false);
+    ACRANSAC_ITER, essential_matrix, precision, false);
   *errorMax = acRansacOut.first;
 
   return pvec_inliers->size() > 2.5 * SolverType::MINIMUM_SAMPLES;

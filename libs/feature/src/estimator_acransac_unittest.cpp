@@ -39,7 +39,7 @@ public:
   enum { MAX_MODELS = Solver::MAX_MODELS };
 
   void Fit(const std::vector<size_t> &samples, std::vector<Model> *models) const {
-    Mat sampled_xs = ExtractColumns(x1_, samples);
+    Mat sampled_xs = extractColumns(x1_, samples);
     Solver::Solve(sampled_xs, models);
   }
   double Error(size_t sample, const Model &model) const {

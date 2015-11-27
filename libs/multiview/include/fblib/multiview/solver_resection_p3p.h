@@ -318,8 +318,8 @@ namespace fblib {
 			}
 
 			void Fit(const std::vector<size_t> &samples, std::vector<Model> *models) const {
-				Mat3X x = ExtractColumns(x_camera_, samples);
-				Mat3X X = ExtractColumns(X_, samples);
+				Mat3X x = extractColumns(x_camera_, samples);
+				Mat3X X = extractColumns(X_, samples);
 				assert(x.cols() == 3);
 				Mat solutions(3, 4 * 4);
 				Mat3 pt2D_3x3 = x;

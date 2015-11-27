@@ -55,11 +55,10 @@ namespace fblib {
 			(*T)(1, 2) = -.5*height*dNorm;
 		}
 
-		void ApplyTransformationToPoints(const Mat &points,
-			const Mat3 &T,
-			Mat *transformed_points) {
-			const Mat::Index n = points.cols();//Mat::Index 索引的类型
-			transformed_points->resize(2, n);
+		void applyTransformationToPoints(const Mat &points, const Mat3 &T, Mat *transformed_points) 
+		{
+			const Mat::Index n = points.cols();//Mat::Index 索引的类型,点的个数
+			transformed_points->resize(2, n);//设置变换之后的矩阵
 			for (Mat::Index i = 0; i < n; ++i) {
 				Vec3 in, out;
 				in << points(0, i), points(1, i), 1;
@@ -75,7 +74,7 @@ namespace fblib {
 			int width,
 			int height) {
 			PreconditionerFromPoints(width, height, T);
-			ApplyTransformationToPoints(points, *T, normalized_points);
+			applyTransformationToPoints(points, *T, normalized_points);
 		}
 
 
@@ -83,14 +82,14 @@ namespace fblib {
 			Mat *normalized_points,
 			Mat3 *T) {
 			PreconditionerFromPoints(points, T);
-			ApplyTransformationToPoints(points, *T, normalized_points);
+			applyTransformationToPoints(points, *T, normalized_points);
 		}
 
 		void NormalizeIsotropicPoints(const Mat &points,
 			Mat *normalized_points,
 			Mat3 *T) {
 			IsotropicPreconditionerFromPoints(points, T);
-			ApplyTransformationToPoints(points, *T, normalized_points);
+			applyTransformationToPoints(points, *T, normalized_points);
 		}
 
 		// Denormalize the results. See HZ page 109.

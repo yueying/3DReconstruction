@@ -74,7 +74,7 @@ namespace fblib {
 				// 确保样本数大小计算模型所需要的最小样本数
 				assert(samples.size() >= (unsigned int)MINIMUM_SAMPLES);
 				// 采样标准的最小二乘来解决
-				Mat2X sampled_xs = ExtractColumns(xs_, samples);
+				Mat2X sampled_xs = extractColumns(xs_, samples);
 
 				LineSolver::Solve(sampled_xs, lines);
 			}

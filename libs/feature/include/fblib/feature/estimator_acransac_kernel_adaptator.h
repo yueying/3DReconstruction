@@ -66,8 +66,8 @@ namespace fblib {
 			enum { MAX_MODELS = Solver::MAX_MODELS };
 
 			void Fit(const std::vector<size_t> &samples, std::vector<Model> *models) const {
-				Mat left_points = ExtractColumns(left_points_, samples);
-				Mat right_points = ExtractColumns(x2_, samples);
+				Mat left_points = extractColumns(left_points_, samples);
+				Mat right_points = extractColumns(x2_, samples);
 				Solver::Solve(left_points, right_points, models);
 			}
 
@@ -132,8 +132,8 @@ namespace fblib {
 			enum { MAX_MODELS = Solver::MAX_MODELS };
 
 			void Fit(const std::vector<size_t> &samples, std::vector<Model> *models) const {
-				Mat left_points = ExtractColumns(x2d_, samples);
-				Mat right_points = ExtractColumns(right_points_, samples);
+				Mat left_points = extractColumns(x2d_, samples);
+				Mat right_points = extractColumns(right_points_, samples);
 				Solver::Solve(left_points, right_points, models);
 			}
 
@@ -183,15 +183,15 @@ namespace fblib {
 				assert(x2d_.cols() == right_points_.cols());
 
 				// Normalize points by inverse(K)
-				ApplyTransformationToPoints(x2d, N1_, &x2d_);
+				applyTransformationToPoints(x2d, N1_, &x2d_);
 			}
 
 			enum { MINIMUM_SAMPLES = Solver::MINIMUM_SAMPLES };
 			enum { MAX_MODELS = Solver::MAX_MODELS };
 
 			void Fit(const std::vector<size_t> &samples, std::vector<Model> *models) const {
-				Mat left_points = ExtractColumns(x2d_, samples);
-				Mat right_points = ExtractColumns(right_points_, samples);
+				Mat left_points = extractColumns(x2d_, samples);
+				Mat right_points = extractColumns(right_points_, samples);
 				Solver::Solve(left_points, right_points, models);
 			}
 
@@ -244,8 +244,8 @@ namespace fblib {
 				assert(left_points_.rows() == right_points_.rows());
 				assert(left_points_.cols() == right_points_.cols());
 				// 将图像像素坐标转相机成像平面的位置坐标
-				ApplyTransformationToPoints(left_points_, left_camera_intrinsic_.inverse(), &left_camera_plane_points_);
-				ApplyTransformationToPoints(right_points_, right_camera_intrinsic_.inverse(), &right_camera_plane_points_);
+				applyTransformationToPoints(left_points_, left_camera_intrinsic_.inverse(), &left_camera_plane_points_);
+				applyTransformationToPoints(right_points_, right_camera_intrinsic_.inverse(), &right_camera_plane_points_);
 
 				//Point to line probability (line is the epipolar line)
 				double D = sqrt(right_image_width*(double)right_image_width + right_image_hight*(double)right_image_hight); // 直径
@@ -257,8 +257,8 @@ namespace fblib {
 			enum { MAX_MODELS = Solver::MAX_MODELS };
 
 			void Fit(const std::vector<size_t> &samples, std::vector<Model> *models) const {
-				Mat left_points = ExtractColumns(left_camera_plane_points_, samples);
-				Mat right_points = ExtractColumns(right_camera_plane_points_, samples);
+				Mat left_points = extractColumns(left_camera_plane_points_, samples);
+				Mat right_points = extractColumns(right_camera_plane_points_, samples);
 				Solver::Solve(left_points, right_points, models);
 			}
 

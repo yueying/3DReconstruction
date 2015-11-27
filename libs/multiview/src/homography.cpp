@@ -155,7 +155,7 @@ namespace fblib {
 			Mat *normalized_points,
 			Mat3 *normalization_matrix) {
 			IsotropicPreconditionerFromPoints(original_points, normalization_matrix);
-			ApplyTransformationToPoints(original_points,
+			applyTransformationToPoints(original_points,
 				*normalization_matrix,
 				normalized_points);
 		}

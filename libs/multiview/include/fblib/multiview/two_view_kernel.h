@@ -28,9 +28,7 @@ namespace fblib {
 			 * \tparam	ModelArg 	解决问题对应的矩阵类型
 			 */
 
-			template<typename SolverArg,
-				typename ErrorArg,
-				typename ModelArg = Mat3>
+			template<typename SolverArg,typename ErrorArg,typename ModelArg = Mat3>
 			class Kernel {
 			public:
 				Kernel(const Mat &x1, const Mat &x2) : x1_(x1), x2_(x2) {}
@@ -44,8 +42,8 @@ namespace fblib {
 				/**	提取所需要的样本，根据样本进行适配模型
 				 */
 				void Fit(const std::vector<size_t> &samples, std::vector<Model> *models) const {
-					Mat x1 = ExtractColumns(x1_, samples),
-						x2 = ExtractColumns(x2_, samples);
+					Mat x1 = extractColumns(x1_, samples),
+						x2 = extractColumns(x2_, samples);
 					Solver::Solve(x1, x2, models);
 				}
 				/**	返回关联的n样本点之间的偏差值
@@ -65,14 +63,12 @@ namespace fblib {
 					Solver::Solve(x1, x2, models);
 				}
 			protected:
-				const Mat & x1_, &x2_; // 左右对应的点
+				const Mat &x1_, &x2_; // 左右对应的点
 			};
 
 			/**	前面处理的规范化版本
 			 */
-			template<typename SolverArg,
-				typename UnnormalizerArg,
-				typename ModelArg = Mat3>
+			template<typename SolverArg,typename UnnormalizerArg,typename ModelArg = Mat3>
 			class NormalizedSolver {
 			public:
 				enum { MINIMUM_SAMPLES = SolverArg::MINIMUM_SAMPLES };

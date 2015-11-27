@@ -46,8 +46,8 @@ namespace fblib {
 					two_view::Kernel<SolverArg, ErrorArg, ModelArg>(point_2d, point_3d){}
 
 				void Fit(const std::vector<size_t> &samples, std::vector<ModelArg> *models) const {
-					Mat pt2d = ExtractColumns(this->x1_, samples);
-					Mat point_3d = ExtractColumns(this->x2_, samples);
+					Mat pt2d = extractColumns(this->x1_, samples);
+					Mat point_3d = extractColumns(this->x2_, samples);
 
 					assert(2 == pt2d.rows());
 					assert(3 == point_3d.rows());
@@ -139,8 +139,8 @@ namespace fblib {
 				}
 
 				void Fit(const std::vector<size_t> &samples, std::vector<Model> *models) const {
-					Mat2X x = ExtractColumns(x_camera_, samples);
-					Mat3X X = ExtractColumns(X_, samples);
+					Mat2X x = extractColumns(x_camera_, samples);
+					Mat3X X = extractColumns(X_, samples);
 					Mat34 P;
 					Mat3 R;
 					Vec3 t;

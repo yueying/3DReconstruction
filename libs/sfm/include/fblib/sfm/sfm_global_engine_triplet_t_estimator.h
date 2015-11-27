@@ -115,9 +115,9 @@ namespace fblib{
 				// Normalize points by inverse(K)
 
 				N_ = K_.inverse();
-				ApplyTransformationToPoints(x1_, N_, &x1n_);
-				ApplyTransformationToPoints(x2_, N_, &x2n_);
-				ApplyTransformationToPoints(x3_, N_, &x3n_);
+				applyTransformationToPoints(x1_, N_, &x1n_);
+				applyTransformationToPoints(x2_, N_, &x2n_);
+				applyTransformationToPoints(x3_, N_, &x3n_);
 
 				vec_KR_[0] = N_ * vec_KR_[0];
 				vec_KR_[1] = N_ * vec_KR_[1];
@@ -133,9 +133,9 @@ namespace fblib{
 
 				// Create a model from the points
 				Solver::Solve(
-					ExtractColumns(x1n_, samples),
-					ExtractColumns(x2n_, samples),
-					ExtractColumns(x3n_, samples),
+					extractColumns(x1n_, samples),
+					extractColumns(x2n_, samples),
+					extractColumns(x3n_, samples),
 					vec_KR_, K_, models);
 			}
 

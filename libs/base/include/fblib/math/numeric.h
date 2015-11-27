@@ -365,7 +365,7 @@ namespace fblib {
 		 * \return	抽取的矩阵
 		 */
 		template <typename TMat, typename TCols>
-		TMat ExtractColumns(const TMat &A, const TCols &columns) {
+		TMat extractColumns(const TMat &A, const TCols &columns) {
 			TMat compressed(A.rows(), columns.size());
 			for (size_t i = 0; i < static_cast<size_t>(columns.size()); ++i) {
 				compressed.col(i) = A.col(columns[i]);

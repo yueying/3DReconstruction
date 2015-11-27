@@ -9,6 +9,7 @@
 //  that make scale and coordinate origin invariant.
 // The implementation follows Algorithm 4.2 from HZ page 109.
 using namespace fblib::math;
+
 namespace fblib {
 	namespace multiview{
 		// Point conditioning :
@@ -22,9 +23,7 @@ namespace fblib {
 		 * \param [in,out]	transformed_points	输出的点
 		 *
 		 */
-		void MULTVIEW_IMPEXP ApplyTransformationToPoints(const Mat &points,
-			const Mat3 &T,
-			Mat *transformed_points);
+		void MULTVIEW_IMPEXP applyTransformationToPoints(const Mat &points,const Mat3 &T,Mat *transformed_points);
 
 		// Normalize point in [-.5, .5] and return transformation matrix
 		void MULTVIEW_IMPEXP NormalizePoints(const Mat &points,
@@ -35,14 +34,14 @@ namespace fblib {
 		void MULTVIEW_IMPEXP PreconditionerFromPoints(int width, int height, Mat3 *T);
 
 		// Point conditioning (isotropic)
-		void IsotropicPreconditionerFromPoints(const Mat &points, Mat3 *T);
+		void MULTVIEW_IMPEXP IsotropicPreconditionerFromPoints(const Mat &points, Mat3 *T);
 
 		///  Normalize point rom image coordinates to [-.5, .5]
 		void MULTVIEW_IMPEXP NormalizePoints(const Mat &points,
 			Mat *normalized_points,
 			Mat3 *T, int width, int height);
 
-		void NormalizeIsotropicPoints(const Mat &points,
+		void MULTVIEW_IMPEXP NormalizeIsotropicPoints(const Mat &points,
 			Mat *normalized_points,
 			Mat3 *T);
 
